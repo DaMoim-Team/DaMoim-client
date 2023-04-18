@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 import FirebaseAuth
 
 class registerViewController: UIViewController {
@@ -13,10 +14,15 @@ class registerViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var repwTextField: UITextField!
+    @IBOutlet weak var nameTextField: UITextField!
     
-    @IBOutlet weak var idIsInvaild: UILabel!
+    @IBOutlet weak var whoAmI: UISegmentedControl!
+    
+    @IBOutlet weak var idIsInvalid: UILabel!
     @IBOutlet weak var pwIsInvalid: UILabel!
     @IBOutlet weak var pwIsNotCorrect: UILabel!
+    @IBOutlet weak var nameIsInvalid: UILabel!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,20 +34,23 @@ class registerViewController: UIViewController {
         let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
         return emailPred.evaluate(with: email)
     }
-
+    
+    
     
     @IBAction func signupButtonTapped(_ sender: Any) {
         
-        idIsInvaild.isHidden = true
+        idIsInvalid.isHidden = true
         pwIsNotCorrect.isHidden = true
         pwIsInvalid.isHidden = true
+        nameIsInvalid.isHidden = true
         
         
         guard let email = emailTextField.text, !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty,
-              let repassword = repwTextField.text, !repassword.isEmpty else{
-            print("이메일, 비밀번호, 비밀번호 재확인을 입력하세요.")
-            let alertController = UIAlertController(title: "오류", message: "이메일, 비밀번호, 비밀번호 재확인을 입력하세요.", preferredStyle: .alert)
+              let repassword = repwTextField.text, !repassword.isEmpty,
+              let name = nameTextField.text, !name.isEmpty else{
+            print("모든 항목을 입력하세요.")
+            let alertController = UIAlertController(title: "오류", message: "모든 항목을 입력하세요.", preferredStyle: .alert)
             let okAction = UIAlertAction(title: "확인", style: .default, handler: { action in
                 
             })
@@ -55,7 +64,7 @@ class registerViewController: UIViewController {
             print("이메일형식 맞음")
         } else {
             print("이메일형식이 아님")
-            idIsInvaild.isHidden = false
+            idIsInvalid.isHidden = false
             return
         }
         
@@ -71,12 +80,31 @@ class registerViewController: UIViewController {
             return
         }
         
+        if name.count > 7 {
+            print("너무 긴 이름")
+            nameIsInvalid.isHidden = false
+            return
+        }
+        
+        if name.count < 2 {
+            print("너무 짧은 이름")
+            nameIsInvalid.isHidden = false
+            return
+        }
+        
+        if whoAmI.selectedSegmentIndex == 0{
+            print("미화원")
+        }else{
+            print("단속반")
+        }
+        
         Auth.auth().createUser(withEmail: email, password: password){ (result, error) in
             if let error = error {
                 print("회원가입 실패")
                 
             } else{
                 print("회원가입 성공")
+                Firestore.firestore().collection("users").document(email).setData(["name": name , "email": email , "job": self.whoAmI.selectedSegmentIndex])
             }
             
         }

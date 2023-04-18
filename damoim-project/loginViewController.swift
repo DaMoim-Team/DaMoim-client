@@ -57,7 +57,7 @@ class loginViewController: UIViewController {
                 
                 let alertController = UIAlertController(title: "로그인 실패", message: "이메일, 비밀번호를 확인해주세요.", preferredStyle: .alert)
                 let okAction = UIAlertAction(title: "확인", style: .default, handler: { [weak self] action in
-                    // 클로저 내에서 self를 weak 또는 unowned로 캡처하여 강한 참조 순환 참조 방지
+                    // 클로저 내에서 self를 weak 또는 unowned로 캡처하여 강한 참조 순환 참조 방지kkk
                     guard let self = self else { return }
                 })
                 alertController.addAction(okAction)

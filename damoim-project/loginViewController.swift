@@ -94,11 +94,12 @@ class loginViewController: UIViewController {
             transition.type = CATransitionType.push
             transition.subtype = CATransitionSubtype.fromRight
             transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-            view.window!.layer.add(transition, forKey: kCATransition)
-
-            // 탭바 컨트롤러를 새로운 루트 뷰 컨트롤러로 설정합니다.
-            view.window?.rootViewController = tabBarController
-            view.window?.makeKeyAndVisible()
+            
+            if let window = view.window {
+                window.layer.add(transition, forKey: kCATransition)
+                window.rootViewController = tabBarController
+                window.makeKeyAndVisible()
+            }
         }
     }
 

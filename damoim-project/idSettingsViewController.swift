@@ -18,6 +18,7 @@ class idSettingsViewController: UIViewController {
     
     @IBOutlet weak var jobControl: UISegmentedControl!
     
+    @IBOutlet weak var changeButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,6 +39,7 @@ class idSettingsViewController: UIViewController {
                         }
                         self.nameText.text = userName + " 님"
                         self.emailText.text = userEmail
+                        self.changeButton.isEnabled = true
                     }
                 }
             }

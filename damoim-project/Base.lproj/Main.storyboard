@@ -283,7 +283,7 @@
                                     <segment title="금연구역 단속반"/>
                                 </segments>
                             </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m4t-jD-Ber">
+                            <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m4t-jD-Ber">
                                 <rect key="frame" x="20" y="278" width="353" height="35"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="변경"/>
@@ -308,6 +308,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="changeButton" destination="m4t-jD-Ber" id="yvh-Ux-q6U"/>
                         <outlet property="emailText" destination="46w-51-a5j" id="dFs-Oh-0br"/>
                         <outlet property="jobControl" destination="4go-N4-bfK" id="kev-yy-AuK"/>
                         <outlet property="nameText" destination="Z4P-49-zvn" id="aUJ-gT-Vhr"/>

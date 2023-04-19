@@ -36,7 +36,6 @@ class registerViewController: UIViewController {
     }
     
     
-    
     @IBAction func signupButtonTapped(_ sender: Any) {
         
         idIsInvalid.isHidden = true
@@ -105,6 +104,7 @@ class registerViewController: UIViewController {
             } else{
                 print("회원가입 성공")
                 Firestore.firestore().collection("users").document(email).setData(["name": name , "email": email , "job": self.whoAmI.selectedSegmentIndex])
+                self.navigationController?.popViewController(animated: true)
             }
             
         }

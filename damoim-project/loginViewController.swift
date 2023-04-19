@@ -26,6 +26,7 @@ class loginViewController: UIViewController {
         if let user = Auth.auth().currentUser{
             guard let mainViewController = self.storyboard?.instantiateViewController(identifier: "mainViewControllerID") as? mainViewController else { return }
             navigateToSecondNavigationController()
+            navigateToTabBarController()
             self.present(mainViewController, animated: true, completion: nil)
         }
     }
@@ -49,6 +50,7 @@ class loginViewController: UIViewController {
             if authResult != nil{
                 print("로그인성공")
                 self.navigateToSecondNavigationController()
+                self.navigateToTabBarController()
                 self.present(mainViewController, animated: true, completion: nil)
                 
             } else{
@@ -80,10 +82,26 @@ class loginViewController: UIViewController {
     func navigateToSecondNavigationController() {
         if let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController {
             secondNavController.modalPresentationStyle = .fullScreen
-            self.present(secondNavController, animated: true, completion: nil)
         }
     }
     
+    func navigateToTabBarController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil) // "Main"은 스토리보드의 이름입니다.
+        if let tabBarController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as? UITabBarController {
+            // 애니메이션과 함께 뷰 컨트롤러 전환 (옵션)
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromRight
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            view.window!.layer.add(transition, forKey: kCATransition)
+
+            // 탭바 컨트롤러를 새로운 루트 뷰 컨트롤러로 설정합니다.
+            view.window?.rootViewController = tabBarController
+            view.window?.makeKeyAndVisible()
+        }
+    }
+
     
 
 }

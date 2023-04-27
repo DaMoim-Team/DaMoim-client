@@ -218,11 +218,13 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
             let routeContainer = try container.nestedContainer(keyedBy: RouteKeys.self, forKey: .route)
-            let traoptimalContainer = try routeContainer.nestedContainer(keyedBy: TraoptimalKeys.self, forKey: .traoptimal)
+            var traoptimalArrayContainer = try routeContainer.nestedUnkeyedContainer(forKey: .traoptimal)
+            let traoptimalContainer = try traoptimalArrayContainer.nestedContainer(keyedBy: TraoptimalKeys.self)
             let path = try traoptimalContainer.decode([[Double]].self, forKey: .path)
-            
+
             coordinates = path.map { CLLocationCoordinate2D(latitude: $0[1], longitude: $0[0]) }
         }
+
         
         func encode(to encoder: Encoder) throws {
                 var container = encoder.container(keyedBy: CodingKeys.self)

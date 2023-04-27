@@ -141,20 +141,8 @@
                     <view key="view" contentMode="scaleToFill" id="fdb-XL-goZ">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Where To Go??" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yc3-Qi-Ts3">
-                                <rect key="frame" x="138.66666666666666" y="415.66666666666669" width="116" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="l00-IL-sa0"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="yc3-Qi-Ts3" firstAttribute="centerX" secondItem="fdb-XL-goZ" secondAttribute="centerX" id="7oC-Fy-Pe1"/>
-                            <constraint firstItem="yc3-Qi-Ts3" firstAttribute="centerY" secondItem="fdb-XL-goZ" secondAttribute="centerY" id="9Ll-Vq-EnF"/>
-                        </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="where" image="questionmark" catalog="system" id="tdq-1b-jbs"/>
                 </viewController>
@@ -517,6 +505,7 @@
                 <tabBarController storyboardIdentifier="TabBarController" automaticallyAdjustsScrollViewInsets="NO" id="Ig8-aC-hPP" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="YKJ-u1-jNQ">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>

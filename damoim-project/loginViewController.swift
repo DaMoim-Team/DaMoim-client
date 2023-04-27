@@ -85,7 +85,7 @@ class loginViewController: UIViewController {
         }
     }
     
-    func navigateToTabBarController() {
+    func navigateToTabBarController() {//탭바 전환용
         let storyboard = UIStoryboard(name: "Main", bundle: nil) // "Main"은 스토리보드의 이름입니다.
         if let tabBarController = storyboard.instantiateViewController(withIdentifier: "TabBarController") as? UITabBarController {
             // 애니메이션과 함께 뷰 컨트롤러 전환 (옵션)

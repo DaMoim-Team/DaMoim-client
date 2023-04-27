@@ -9,6 +9,8 @@ import NMapsMap
 import CoreLocation
 import Foundation
 
+//initddddddd
+
 class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate {
     
     var naverMapView: NMFNaverMapView!

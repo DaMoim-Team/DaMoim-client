@@ -241,7 +241,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 }
 
 extension whereToGoViewController {
-    func locationManager(_ locationManager: NMFLocationManager, didUpdate location: CLLocation) {
+    @nonobjc func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        
         let currentLatLng = NMGLatLng(lat: location.coordinate.latitude, lng: location.coordinate.longitude)
             
         // 현재 위치로 지도를 이동합니다.

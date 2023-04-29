@@ -9,9 +9,8 @@ import NMapsMap
 import CoreLocation
 import Foundation
 
-//initddddddd
 
-class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate {
+class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate, NMFMapViewDelegate {
     
     var naverMapView: NMFNaverMapView!
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
@@ -27,7 +26,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -88,6 +86,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         goBackToPathButton.addTarget(self, action: #selector(moveToInitialPath), for: .touchUpInside)
         
         
+        
         //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
         fetchOptimalRouteCoordinates { coordinates, error in
             guard let coordinates = coordinates, error == nil else {
@@ -107,10 +106,20 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                         }
                     }
                 }
+                self.createMarkers(coordinates: coordinates)
             }
         }
         
     }
+    //기본 마커
+    func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+        for (index, coordinate) in coordinates.enumerated() {
+            let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
+            marker.captionText = index == 0 ? "출발" : "\(index)"
+            marker.mapView = self.naverMapView.mapView
+        }
+    }
+    
     
     func moveMapTo(coordinate: NMGLatLng) {
         let cameraUpdate = NMFCameraUpdate(scrollTo: coordinate)
@@ -132,6 +141,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
         moveMapTo(coordinate: initialLocation)
     }
+    
    
     //서버에서 최적 경로 좌표를 가져오는 함수
     //JSON 데이터를 가져와서 해당 좌표를 배열로 반환
@@ -195,11 +205,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             } catch {
                 completion(nil, error)
             }
-            
-            
         }
-        
-        
         task.resume()
     }
 
@@ -264,10 +270,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 try traoptimalContainer.encode(path, forKey: .path)
             }
     }
-
-
-
-                                 
                                  
 }
 

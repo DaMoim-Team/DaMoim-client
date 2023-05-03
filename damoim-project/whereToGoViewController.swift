@@ -19,7 +19,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     // 경로로 돌아가는 버튼 추가
     let goBackToPathButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("경로로 돌아가기", for: .normal)
+        button.setImage(UIImage(named: "bugiIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -27,11 +27,21 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     // 햄버거 버튼을 프로퍼티로 추가
     private lazy var hamburgerButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "list.dash"), for: .normal)
+        button.setImage(UIImage(named: "hamburgerIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(hamburgerButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    //경로를 표시하는 버튼
+    private lazy var routeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("경로 표시", for: .normal)
+        button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     
     //사이드메뉴
     private lazy var sideMenuView: UIView = {
@@ -59,7 +69,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         // 오토레이아웃을 사용하여 버튼을 위치시키세요.
         NSLayoutConstraint.activate([
-            hamburgerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            hamburgerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             hamburgerButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
         ])
 
@@ -101,6 +111,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         blackOverlayView.addGestureRecognizer(tapGesture)
 
         naverMapView.mapView.touchDelegate = self
+        
+        // 버튼 추가
+        view.addSubview(routeButton)
+        
+        // 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            routeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            routeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -155,28 +174,28 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         
         
-        //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-        fetchOptimalRouteCoordinates { coordinates, error in
-            guard let coordinates = coordinates, error == nil else {
-                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
-                return
-            }
-
-            DispatchQueue.main.async {
-                for i in 0..<(coordinates.count - 1) {
-                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
-                        DispatchQueue.main.async {
-                            if let polylineOverlay = polylineOverlay {
-                                polylineOverlay.mapView = self.naverMapView.mapView
-                            } else {
-                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
-                            }
-                        }
-                    }
-                }
-                self.createMarkers(coordinates: coordinates)
-            }
-        }
+//        //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
+//        fetchOptimalRouteCoordinates { coordinates, error in
+//            guard let coordinates = coordinates, error == nil else {
+//                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+//                return
+//            }
+//
+//            DispatchQueue.main.async {
+//                for i in 0..<(coordinates.count - 1) {
+//                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
+//                        DispatchQueue.main.async {
+//                            if let polylineOverlay = polylineOverlay {
+//                                polylineOverlay.mapView = self.naverMapView.mapView
+//                            } else {
+//                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+//                            }
+//                        }
+//                    }
+//                }
+//                self.createMarkers(coordinates: coordinates)
+//            }
+//        }
         
         
     }
@@ -185,6 +204,10 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         for (index, coordinate) in coordinates.enumerated() {
             let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
             marker.captionText = index == 0 ? "출발" : "\(index)"
+            
+            // 마커의 색상을 변경
+            marker.iconTintColor = UIColor.red
+            
             marker.mapView = self.naverMapView.mapView
         }
     }
@@ -457,6 +480,33 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             view.window?.makeKeyAndVisible()
         }
     }
+    
+    @objc private func routeButtonTapped() {
+        // 경로와 관련된 코드를 여기에 추가하세요
+        //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
+        fetchOptimalRouteCoordinates { coordinates, error in
+            guard let coordinates = coordinates, error == nil else {
+                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+
+            DispatchQueue.main.async {
+                for i in 0..<(coordinates.count - 1) {
+                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
+                        DispatchQueue.main.async {
+                            if let polylineOverlay = polylineOverlay {
+                                polylineOverlay.mapView = self.naverMapView.mapView
+                            } else {
+                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                            }
+                        }
+                    }
+                }
+                self.createMarkers(coordinates: coordinates)
+            }
+        }
+    }
+
 
 }
 

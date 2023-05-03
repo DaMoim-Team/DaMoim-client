@@ -24,10 +24,21 @@ class loginViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         if let user = Auth.auth().currentUser{
-            guard let mainViewController = self.storyboard?.instantiateViewController(identifier: "mainViewControllerID") as? mainViewController else { return }
+            guard let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController else { return }
             navigateToSecondNavigationController()
-            navigateToTabBarController()
-            self.present(mainViewController, animated: true, completion: nil)
+            //navigateToTabBarController()
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromRight
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            
+            if let window = view.window {
+                window.layer.add(transition, forKey: kCATransition)
+                window.rootViewController = secondNavController
+                window.makeKeyAndVisible()
+            }
+            //self.present(whereToGoViewController, animated: true, completion: nil)
         }
     }
     
@@ -37,9 +48,9 @@ class loginViewController: UIViewController {
         let email: String = emailTextField.text!.description
         let password: String = passwordTextField.text!.description
         
-        guard let mainViewController = self.storyboard?.instantiateViewController(withIdentifier: "mainViewControllerID") as? mainViewController else { return }
-        mainViewController.modalTransitionStyle = .coverVertical
-        mainViewController.modalPresentationStyle = .fullScreen
+        guard let whereToGoViewController = self.storyboard?.instantiateViewController(withIdentifier: "whereToGoViewControllerID") as? whereToGoViewController else { return }
+        whereToGoViewController.modalTransitionStyle = .coverVertical
+        whereToGoViewController.modalPresentationStyle = .fullScreen
         
         
         Auth.auth().signIn(withEmail: email, password: password) {authResult, error in
@@ -50,8 +61,8 @@ class loginViewController: UIViewController {
             if authResult != nil{
                 print("로그인성공")
                 self.navigateToSecondNavigationController()
-                self.navigateToTabBarController()
-                self.present(mainViewController, animated: true, completion: nil)
+                //self.navigateToTabBarController()
+                //self.present(whereToGoViewController, animated: true, completion: nil)
                 
             } else{
                 print("로그인실패")
@@ -82,6 +93,7 @@ class loginViewController: UIViewController {
     func navigateToSecondNavigationController() {
         if let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController {
             secondNavController.modalPresentationStyle = .fullScreen
+            self.present(secondNavController, animated: true, completion: nil)
         }
     }
     

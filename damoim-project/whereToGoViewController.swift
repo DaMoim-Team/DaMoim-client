@@ -555,6 +555,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     private var polylineOverlays: [NMFPolylineOverlay] = []
     private var markers: [NMFMarker] = []
+
     
     @objc private func routeButtonTapped() {
         
@@ -571,6 +572,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
                                 polylineOverlay.mapView = self.naverMapView.mapView
+                                self.polylineOverlays.append(polylineOverlay)
                             } else {
                                 print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
                             }

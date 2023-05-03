@@ -36,11 +36,23 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     //경로를 표시하는 버튼
     private lazy var routeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("경로 표시", for: .normal)
+        //button.setTitle("경로 표시", for: .normal)
+        button.setImage(UIImage(named: "wayIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    //x버튼
+    private lazy var closeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("X", for: .normal)
+        button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        return button
+    }()
+
 
     
     //사이드메뉴
@@ -112,14 +124,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         naverMapView.mapView.touchDelegate = self
         
-        // 버튼 추가
-        view.addSubview(routeButton)
-        
-        // 버튼 제약 조건 설정
-        NSLayoutConstraint.activate([
-            routeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            routeButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
-        ])
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -172,6 +176,26 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // 경로로 돌아가는 버튼에 touchUpInside 이벤트 추가
         goBackToPathButton.addTarget(self, action: #selector(moveToInitialPath), for: .touchUpInside)
         
+        // 버튼 추가
+        view.addSubview(routeButton)
+        
+        // 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            routeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
+            routeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        ])
+        
+        // Close 버튼 추가
+        view.addSubview(closeButton)
+        
+        // Close 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            //closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            closeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
+            closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        ])
+
+        
         
         
 //        //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
@@ -206,7 +230,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             marker.captionText = index == 0 ? "출발" : "\(index)"
             
             // 마커의 색상을 변경
-            marker.iconTintColor = UIColor.red
+            //marker.iconTintColor = UIColor.red
             
             marker.mapView = self.naverMapView.mapView
         }
@@ -481,18 +505,19 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
     }
     
+    
     @objc private func routeButtonTapped() {
-        // 경로와 관련된 코드를 여기에 추가하세요
-        //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-        fetchOptimalRouteCoordinates { coordinates, error in
-            guard let coordinates = coordinates, error == nil else {
-                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
-                return
-            }
+            // 경로와 관련된 코드를 여기에 추가하세요
+            //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
+            fetchOptimalRouteCoordinates { coordinates, error in
+                guard let coordinates = coordinates, error == nil else {
+                    print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+                    return
+                }
 
-            DispatchQueue.main.async {
-                for i in 0..<(coordinates.count - 1) {
-                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
+                DispatchQueue.main.async {
+                    for i in 0..<(coordinates.count - 1) {
+                        self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
                                 polylineOverlay.mapView = self.naverMapView.mapView
@@ -505,7 +530,36 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 self.createMarkers(coordinates: coordinates)
             }
         }
+        
+        // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+        routeButton.isHidden = true
+        closeButton.isHidden = false
     }
+    
+    @objc private func closeButtonTapped() {
+        // 경로 지우기
+        //clearPath()
+
+        // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
+        routeButton.isHidden = false
+        closeButton.isHidden = true
+    }
+    
+//    private func clearPath() {
+//        // 경로 지우기
+//        naverMapView.mapView.mapObjects.forEach { object in
+//            if let polylineOverlay = object as? NMFPolylineOverlay {
+//                polylineOverlay.mapView = nil
+//            }
+//        }
+//
+//        // 마커 지우기
+//        naverMapView.mapView.mapObjects.forEach { object in
+//            if let marker = object as? NMFMarker {
+//                marker.mapView = nil
+//            }
+//        }
+//    }
 
 
 }

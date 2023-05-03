@@ -101,6 +101,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         blackOverlayView.addGestureRecognizer(tapGesture)
 
         naverMapView.mapView.touchDelegate = self
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -156,15 +157,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         
         //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-        fetchOptimalRouteCoordinates { coordinates, error in
-            guard let coordinates = coordinates, error == nil else {
-                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+        fetchOptimalRouteCoordinates(minimumCount: 3) { filteredCoordinates, error in
+            guard let filteredCoordinates = filteredCoordinates, error == nil else {
+                print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
                 return
             }
 
             DispatchQueue.main.async {
-                for i in 0..<(coordinates.count - 1) {
-                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
+                for i in 0..<(filteredCoordinates.count - 1) {
+                    self.requestDirection(start: filteredCoordinates[i], end: filteredCoordinates[i + 1]) { polylineOverlay, error in
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
                                 polylineOverlay.mapView = self.naverMapView.mapView
@@ -174,10 +175,19 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                         }
                     }
                 }
-                self.createMarkers(coordinates: coordinates)
+                self.createMarkers(coordinates: filteredCoordinates)
             }
         }
         
+        fetchLocations { locations, error in
+            guard let locations = locations, error == nil else {
+                print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+            DispatchQueue.main.async {
+                self.createHeatmap(with: locations)
+            }
+        }
         
     }
     //기본 마커
@@ -214,7 +224,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
    
     //서버에서 최적 경로 좌표를 가져오는 함수
     //JSON 데이터를 가져와서 해당 좌표를 배열로 반환
-    func fetchOptimalRouteCoordinates(completion: @escaping ([CLLocationCoordinate2D]?, Error?) -> Void) {
+    //최적 경로 데이터를 가져오는 함수
+    func fetchOptimalRouteCoordinates(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, Error?) -> Void) {
         guard let url = URL(string: "http://52.79.138.34:1105/data") else {
             completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
@@ -228,8 +239,37 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
-                let coordinates = decodedData.optimalRoute.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-                completion(coordinates, nil)
+                //count 값 필터링 수행
+                let filteredCoordinatesAndCounts = decodedData.optimalRoute.filter { $0.count >= minimumCount }
+                let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+                completion(filteredCoordinates, nil)
+            } catch {
+                completion(nil, error)
+            }
+        }
+        
+        task.resume()
+    }
+    
+    // 서버에서 최적 경로 좌표와 장소 정보를 가져오는 함수
+    // 히트맵에 사용될 데이터를 가져오는 함수
+    func fetchLocations(completion: @escaping ([Location]?, Error?) -> Void) {
+        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
+            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                completion(nil, error)
+                return
+            }
+            
+            do {
+                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
+                //let coordinates = decodedData.optimalRoute.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+                let locations = decodedData.locations
+                completion(locations, nil)
             
             } catch {
                 completion(nil, error)
@@ -238,6 +278,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         task.resume()
     }
+
     
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
     func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPath?, Error?) -> Void) {
@@ -277,6 +318,41 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
         task.resume()
     }
+    
+    
+    //히트맵
+    func createHeatmap(with locations: [Location]) {
+        for location in locations {
+            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count))
+            circleOverlay.fillColor = calculateColor(from: location.count)
+            circleOverlay.mapView = naverMapView.mapView
+        }
+    }
+    func calculateRadius(from count: Int) -> Double {
+        // count 값에 따라 원하는 반지름 값을 반환합니다.
+        let baseRadius = 15.0
+            
+        if count >= 3 {
+            return baseRadius * 1.5
+        } else {
+            return baseRadius
+        }
+    }
+
+    func calculateColor(from count: Int) -> UIColor {
+        let color1 = UIColor.blue
+        let color2 = UIColor.red
+        let progress = CGFloat(count)/10.0
+        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
+        
+        // count 값에 따라 원하는 색상 값을 반환합니다.
+        if count >= 3 {
+            return UIColor.red.withAlphaComponent(0.5)
+        } else {
+            return UIColor.blue.withAlphaComponent(0.5)
+        }
+    }
+    
 
     
     //구조체 정의
@@ -302,6 +378,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     struct RouteStep: Codable {
         let latitude: Double
         let longitude: Double
+        let count: Int
     }
     
     struct DirectionResponse: Codable {
@@ -416,13 +493,10 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
 
 
-
-
-
-
     @objc private func blackOverlayViewTapped() {
         // 블랙 오버레이 뷰를 터치하면 사이드 메뉴를 숨깁니다.
         hideSideMenu()
+        
     }
 
     private func hideSideMenu() {
@@ -471,5 +545,17 @@ extension whereToGoViewController {
         
         // 필요한 경우 다른 작업을 수행합니다. 예를 들어, 현재 위치에 마커를 추가하거나,
         // 현재 위치와 관련된 정보를 사용자 인터페이스에 표시합니다.
+    }
+}
+
+extension UIColor {
+    static func interpolate(from: UIColor, to: UIColor, progress: CGFloat) -> UIColor {
+        let fromComponents = from.cgColor.components!
+        let toComponents = to.cgColor.components!
+        let r = (toComponents[0] - fromComponents[0]) * progress + fromComponents[0]
+        let g = (toComponents[1] - fromComponents[1]) * progress + fromComponents[1]
+        let b = (toComponents[2] - fromComponents[2]) * progress + fromComponents[2]
+        let a = (toComponents[3] - fromComponents[3]) * progress + fromComponents[3]
+        return UIColor(red: r, green: g, blue: b, alpha: a)
     }
 }

@@ -8,8 +8,10 @@ import UIKit
 import NMapsMap
 import CoreLocation
 import Foundation
+import Firebase
+import FirebaseAuth
 
-class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate {
+class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate, NMFMapViewTouchDelegate {
     
     var naverMapView: NMFNaverMapView!
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
@@ -21,9 +23,84 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    // 햄버거 버튼을 프로퍼티로 추가
+    private lazy var hamburgerButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "list.dash"), for: .normal)
+        button.addTarget(self, action: #selector(hamburgerButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    //사이드메뉴
+    private lazy var sideMenuView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    private let blackOverlayView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        return view
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // 네이버 지도 설정
+        naverMapView = NMFNaverMapView(frame: view.frame)
+        view.addSubview(naverMapView)
+
+        // 햄버거 버튼을 뷰에 추가
+        view.addSubview(hamburgerButton)
+
+        // 오토레이아웃을 사용하여 버튼을 위치시키세요.
+        NSLayoutConstraint.activate([
+            hamburgerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            hamburgerButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
+        ])
+
+        // 햄버거 버튼을 상위 계층으로 이동
+        view.bringSubviewToFront(hamburgerButton)
+        
+        // 사이드 메뉴 뷰를 뷰 계층에 추가
+        view.addSubview(sideMenuView)
+        sideMenuView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        sideMenuView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        sideMenuView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        sideMenuView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.75).isActive = true
+        
+        // 사이드 메뉴를 초기에 숨김
+        sideMenuView.transform = CGAffineTransform(translationX: -view.bounds.width * 0.75, y: 0)
+        
+        // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
+        let menuItem1 = createMenuButton(menuItem: .idSettings)
+        let menuItem2 = createMenuButton(menuItem: .howTo)
+        let menuItem3 = createMenuButton(menuItem: .yetToDecide)
+
+        sideMenuView.addSubview(menuItem1)
+        sideMenuView.addSubview(menuItem2)
+        sideMenuView.addSubview(menuItem3)
+
+        
+        // 메뉴 아이템 버튼 레이아웃 설정
+        menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem1.topAnchor.constraint(equalTo: sideMenuView.topAnchor, constant: 100).isActive = true
+        
+        menuItem2.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem2.topAnchor.constraint(equalTo: menuItem1.bottomAnchor, constant: 20).isActive = true
+
+        menuItem3.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem3.topAnchor.constraint(equalTo: menuItem2.bottomAnchor, constant: 20).isActive = true
+        
+        // 블랙 오버레이 뷰에 탭 제스처 추가
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blackOverlayViewTapped))
+        blackOverlayView.addGestureRecognizer(tapGesture)
+
+        naverMapView.mapView.touchDelegate = self
     }
     
     
@@ -31,14 +108,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         super.viewWillAppear(animated)
         //locationManager = NMFLocationManager.sharedInstance()
         //locationManager.add(self) // 자신을 NMFLocationManager의 위치 업데이트 수신자로 추가합니다.
-        locationManager = CLLocationManager()
-        locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
-        
-        naverMapView = NMFNaverMapView(frame: view.frame)
-        view.addSubview(naverMapView)
-        
         let mapView = naverMapView.mapView
         
         let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
@@ -46,20 +115,18 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))
         
-        // 경로 좌표 예시
-        //let pathCoordinates = [
-        //    NMGLatLng(lat: 37.5666102, lng: 126.9783881), // 서울시청
-        //    NMGLatLng(lat: 37.565721, lng: 126.976897), // 경로1
-        //    NMGLatLng(lat: 37.564711, lng: 126.977013) // 경로2
-        //]
         
-        //drawPathOnMap(pathCoordinates: pathCoordinates)
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        
         
         // 현재 위치 버튼 추가
         let locationButton = NMFLocationButton()
         locationButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(locationButton)
-
+        
         // 위치 버튼 제약 조건 설정
         NSLayoutConstraint.activate([
             locationButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
@@ -69,11 +136,13 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // 현재 위치 버튼의 mapView 속성을 설정하세요.
         locationButton.mapView = naverMapView.mapView
         
+        locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
+        
         // 위치 추적 모드를 지정합니다.
-        naverMapView.mapView.positionMode = .direction
+        //naverMapView.mapView.positionMode = .direction
         
         // 위치 기능 활성화
-        naverMapView.positionMode = .direction
+        //naverMapView.positionMode = .direction
         
         // 경로로 돌아가는 버튼을 추가하고 제약 조건 설정
         view.addSubview(goBackToPathButton)
@@ -109,6 +178,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 }
             }
         }
+        
         
     }
     
@@ -236,10 +306,124 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
     }
 
+    @objc func locationButtonTapped() {
+        naverMapView.mapView.positionMode = .direction
+    }
+    
+    @objc private func hamburgerButtonTapped() {
+        let isMenuHidden = sideMenuView.transform.tx < 0
+        let translationX: CGFloat = isMenuHidden ? view.bounds.width * 0.75 : -view.bounds.width * 0.75
+        UIView.animate(withDuration: 0.3) {
+            self.sideMenuView.transform = self.sideMenuView.transform.translatedBy(x: translationX, y: 0)
+        }
+    }
+    
+    enum MenuItem: String {
+        case idSettings = "계정정보"
+        case howTo = "도움말"
+        case yetToDecide = "로그아웃"
+
+        var viewController: UIViewController? {
+            switch self {
+            case .idSettings:
+                return idSettingsViewController()
+            case .howTo:
+                return howtoViewController()
+            // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
+            case .yetToDecide:
+                return nil
+            }
+        }
+    }
 
 
-                                 
-                                 
+    private func createMenuButton(menuItem: MenuItem) -> UIButton {
+        let button = UIButton(type: .system)
+        button.setTitle(menuItem.rawValue, for: .normal)
+        button.tag = menuItem.hashValue
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(menuItemTapped), for: .touchUpInside)
+        return button
+    }
+    
+
+    @objc private func menuItemTapped(sender: UIButton) {
+        if let title = sender.title(for: .normal) {
+            print("\(title) 메뉴 아이템이 선택되었습니다.")
+
+            switch title {
+            case "계정정보":
+                guard let idSettingsViewController = self.storyboard?.instantiateViewController(withIdentifier: "idSettingsViewControllerID") as? idSettingsViewController else { return }
+                //idSettingsViewController.modalPresentationStyle = .fullScreen
+                //present(idSettingsViewController, animated: true, completion: nil)
+                self.navigationController?.pushViewController(idSettingsViewController, animated: true)
+
+            case "도움말":
+                guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
+                //howtoViewController.modalPresentationStyle = .fullScreen
+                //present(howtoViewController, animated: true, completion: nil)
+                self.navigationController?.pushViewController(howtoViewController, animated: true)
+                
+            case "로그아웃":
+                do{
+                    try Auth.auth().signOut()
+                } catch let signOutError as NSError {
+                    print("Error signing out: %@", signOutError)
+                }
+                navigateToLoginViewController()
+                self.dismiss(animated: true, completion: nil)
+
+            default:
+                print("해당 메뉴에 대한 뷰 컨트롤러가 아직 구현되지 않았습니다.")
+            }
+        }
+
+        hideSideMenu()
+    }
+
+
+
+
+
+
+    @objc private func blackOverlayViewTapped() {
+        // 블랙 오버레이 뷰를 터치하면 사이드 메뉴를 숨깁니다.
+        hideSideMenu()
+    }
+
+    private func hideSideMenu() {
+        UIView.animate(withDuration: 0.3, animations: {
+            let translationX: CGFloat = -self.view.bounds.width * 0.75
+            self.sideMenuView.transform = CGAffineTransform(translationX: translationX, y: 0)
+            self.blackOverlayView.alpha = 0
+        }) { _ in
+            self.blackOverlayView.removeFromSuperview()
+        }
+    }
+
+
+    func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
+        hideSideMenu()
+    }
+    
+    func navigateToLoginViewController() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil) // "Main"은 스토리보드의 이름입니다.
+        if let navigationController = storyboard.instantiateViewController(withIdentifier: "firstNavControllerID") as? UINavigationController,
+           let loginViewController = navigationController.viewControllers.first as? loginViewController {
+            // 애니메이션과 함께 뷰 컨트롤러 전환 (옵션)
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromLeft
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            view.window!.layer.add(transition, forKey: kCATransition)
+
+            // 로그인 뷰 컨트롤러를 새로운 루트 뷰 컨트롤러로 설정합니다.
+            view.window?.rootViewController = navigationController
+            view.window?.makeKeyAndVisible()
+        }
+    }
+
 }
 
 extension whereToGoViewController {

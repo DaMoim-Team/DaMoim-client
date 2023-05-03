@@ -224,17 +224,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
     }
     //기본 마커
-    func createMarkers(coordinates: [CLLocationCoordinate2D]) {
-        for (index, coordinate) in coordinates.enumerated() {
+    private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+        coordinates.forEach { coordinate in
             let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
-            marker.captionText = index == 0 ? "출발" : "\(index)"
-            
-            // 마커의 색상을 변경
-            //marker.iconTintColor = UIColor.red
-            
-            marker.mapView = self.naverMapView.mapView
+            marker.iconImage = NMF_MARKER_IMAGE_GREEN
+            marker.mapView = naverMapView.mapView
+            markers.append(marker)
         }
     }
+
     
     
     func moveMapTo(coordinate: NMGLatLng) {
@@ -287,7 +285,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
-    func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPath?, Error?) -> Void) {
+    func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPolylineOverlay?, Error?) -> Void) {
         let directionAPI = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
         let clientId = "hag6m0rapi"
         let clientSecret = "gAdjj4m7csASJFgaTg9aLetetBf4DNWZZpcBWBpY"
@@ -312,18 +310,20 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
             do {
                 let decodedData = try JSONDecoder().decode(DirectionResponse.self, from: data)
-                let path = NMFPath(points: decodedData.coordinates.map { NMGLatLng(lat: $0.latitude, lng: $0.longitude) })
-                path?.color = .systemBlue
-                path?.width = 10
-                path?.outlineWidth = 2
-                path?.outlineColor = .white
-                completion(path, nil)
+                let coordinates = decodedData.coordinates.map { NMGLatLng(lat: $0.latitude, lng: $0.longitude) }
+                let polylineOverlay = NMFPolylineOverlay(coordinates)
+                polylineOverlay?.color = .systemBlue
+                polylineOverlay?.width = 10
+                //polylineOverlay?.outlineWidth = 2
+                //polylineOverlay?.outlineColor = .white
+                completion(polylineOverlay, nil)
             } catch {
                 completion(nil, error)
             }
         }
         task.resume()
     }
+
 
     
     //구조체 정의
@@ -505,60 +505,82 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
     }
     
+    private var polylineOverlays: [NMFPolylineOverlay] = []
+    private var markers: [NMFMarker] = []
     
     @objc private func routeButtonTapped() {
-            // 경로와 관련된 코드를 여기에 추가하세요
-            //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-            fetchOptimalRouteCoordinates { coordinates, error in
-                guard let coordinates = coordinates, error == nil else {
-                    print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
-                    return
-                }
+        // 서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
+        fetchOptimalRouteCoordinates { coordinates, error in
+            guard let coordinates = coordinates, error == nil else {
+                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+                return
+            }
 
-                DispatchQueue.main.async {
-                    for i in 0..<(coordinates.count - 1) {
-                        self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
+            DispatchQueue.main.async {
+                for i in 0..<(coordinates.count - 1) {
+                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
                                 polylineOverlay.mapView = self.naverMapView.mapView
+                                self.polylineOverlays.append(polylineOverlay)
                             } else {
                                 print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
                             }
                         }
                     }
                 }
+
                 self.createMarkers(coordinates: coordinates)
+                self.markers.append(contentsOf: self.markers)
             }
         }
-        
+
         // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
         routeButton.isHidden = true
         closeButton.isHidden = false
     }
+
     
     @objc private func closeButtonTapped() {
         // 경로 지우기
-        //clearPath()
+        polylineOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        polylineOverlays.removeAll()
+
+        // 마커 지우기
+        markers.forEach { marker in
+            marker.mapView = nil
+        }
+        markers.removeAll()
 
         // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
         routeButton.isHidden = false
         closeButton.isHidden = true
     }
-    
+
+//
 //    private func clearPath() {
-//        // 경로 지우기
-//        naverMapView.mapView.mapObjects.forEach { object in
-//            if let polylineOverlay = object as? NMFPolylineOverlay {
-//                polylineOverlay.mapView = nil
-//            }
+//        // 기존 오버레이들을 모두 지도에서 제거
+//        // 이전에 추가된 polyline 오버레이를 삭제
+//        for polylineOverlay in self.polylineOverlays {
+//            polylineOverlay.mapView = nil
+//        }
+//        self.polylineOverlays.removeAll()
+//        // 마커 지우기
+////        naverMapView.mapView.mapObjects.forEach { object in
+////            if let marker = object as? NMFMarker {
+////                marker.mapView = nil
+////            }
+////        }
+//
+//        // 기존 오버레이들을 모두 지도에서 제거
+//        for marker in markers {
+//            marker.mapView = nil
 //        }
 //
-//        // 마커 지우기
-//        naverMapView.mapView.mapObjects.forEach { object in
-//            if let marker = object as? NMFMarker {
-//                marker.mapView = nil
-//            }
-//        }
+//        // 배열 비우기
+//        self.markers.removeAll()
 //    }
 
 

@@ -19,7 +19,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     // 경로로 돌아가는 버튼 추가
     let goBackToPathButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("경로로 돌아가기", for: .normal)
+        button.setImage(UIImage(named: "bugiIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -27,11 +27,33 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     // 햄버거 버튼을 프로퍼티로 추가
     private lazy var hamburgerButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "list.dash"), for: .normal)
+        button.setImage(UIImage(named: "hamburgerIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(hamburgerButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
+    //경로를 표시하는 버튼
+    private lazy var routeButton: UIButton = {
+        let button = UIButton(type: .system)
+        //button.setTitle("경로 표시", for: .normal)
+        button.setImage(UIImage(named: "wayIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    //x버튼
+    private lazy var closeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("X", for: .normal)
+        button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
+        return button
+    }()
+
+
     
     //사이드메뉴
     private lazy var sideMenuView: UIView = {
@@ -59,7 +81,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         // 오토레이아웃을 사용하여 버튼을 위치시키세요.
         NSLayoutConstraint.activate([
-            hamburgerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            hamburgerButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0),
             hamburgerButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16)
         ])
 
@@ -154,30 +176,25 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // 경로로 돌아가는 버튼에 touchUpInside 이벤트 추가
         goBackToPathButton.addTarget(self, action: #selector(moveToInitialPath), for: .touchUpInside)
         
+        // 버튼 추가
+        view.addSubview(routeButton)
         
+        // 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            routeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
+            routeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        ])
         
-        //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-        fetchOptimalRouteCoordinates(minimumCount: 3) { filteredCoordinates, error in
-            guard let filteredCoordinates = filteredCoordinates, error == nil else {
-                print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
-                return
-            }
+        // Close 버튼 추가
+        view.addSubview(closeButton)
+        
+        // Close 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            //closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            closeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
+            closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        ])
 
-            DispatchQueue.main.async {
-                for i in 0..<(filteredCoordinates.count - 1) {
-                    self.requestDirection(start: filteredCoordinates[i], end: filteredCoordinates[i + 1]) { polylineOverlay, error in
-                        DispatchQueue.main.async {
-                            if let polylineOverlay = polylineOverlay {
-                                polylineOverlay.mapView = self.naverMapView.mapView
-                            } else {
-                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
-                            }
-                        }
-                    }
-                }
-                self.createMarkers(coordinates: filteredCoordinates)
-            }
-        }
         
         fetchLocations { locations, error in
             guard let locations = locations, error == nil else {
@@ -191,13 +208,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
     }
     //기본 마커
-    func createMarkers(coordinates: [CLLocationCoordinate2D]) {
-        for (index, coordinate) in coordinates.enumerated() {
+    private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+        coordinates.forEach { coordinate in
             let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
-            marker.captionText = index == 0 ? "출발" : "\(index)"
-            marker.mapView = self.naverMapView.mapView
+            marker.iconImage = NMF_MARKER_IMAGE_GREEN
+            marker.mapView = naverMapView.mapView
+            markers.append(marker)
         }
     }
+
     
     
     func moveMapTo(coordinate: NMGLatLng) {
@@ -281,7 +300,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
     
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
-    func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPath?, Error?) -> Void) {
+    func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPolylineOverlay?, Error?) -> Void) {
         let directionAPI = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
         let clientId = "hag6m0rapi"
         let clientSecret = "gAdjj4m7csASJFgaTg9aLetetBf4DNWZZpcBWBpY"
@@ -306,12 +325,13 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
             do {
                 let decodedData = try JSONDecoder().decode(DirectionResponse.self, from: data)
-                let path = NMFPath(points: decodedData.coordinates.map { NMGLatLng(lat: $0.latitude, lng: $0.longitude) })
-                path?.color = .systemBlue
-                path?.width = 10
-                path?.outlineWidth = 2
-                path?.outlineColor = .white
-                completion(path, nil)
+                let coordinates = decodedData.coordinates.map { NMGLatLng(lat: $0.latitude, lng: $0.longitude) }
+                let polylineOverlay = NMFPolylineOverlay(coordinates)
+                polylineOverlay?.color = .systemBlue
+                polylineOverlay?.width = 10
+                //polylineOverlay?.outlineWidth = 2
+                //polylineOverlay?.outlineColor = .white
+                completion(polylineOverlay, nil)
             } catch {
                 completion(nil, error)
             }
@@ -353,6 +373,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
     }
     
+
 
     
     //구조체 정의
@@ -531,6 +552,85 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             view.window?.makeKeyAndVisible()
         }
     }
+    
+    private var polylineOverlays: [NMFPolylineOverlay] = []
+    private var markers: [NMFMarker] = []
+    
+    @objc private func routeButtonTapped() {
+        
+         //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
+        fetchOptimalRouteCoordinates(minimumCount: 3) { filteredCoordinates, error in
+            guard let filteredCoordinates = filteredCoordinates, error == nil else {
+                print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+
+            DispatchQueue.main.async {
+                for i in 0..<(filteredCoordinates.count - 1) {
+                    self.requestDirection(start: filteredCoordinates[i], end: filteredCoordinates[i + 1]) { polylineOverlay, error in
+                        DispatchQueue.main.async {
+                            if let polylineOverlay = polylineOverlay {
+                                polylineOverlay.mapView = self.naverMapView.mapView
+                            } else {
+                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                            }
+                        }
+                    }
+                }
+                self.createMarkers(coordinates: filteredCoordinates)
+                self.markers.append(contentsOf: self.markers)
+            }
+        }
+
+
+        // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+        routeButton.isHidden = true
+        closeButton.isHidden = false
+    }
+
+    
+    @objc private func closeButtonTapped() {
+        // 경로 지우기
+        polylineOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        polylineOverlays.removeAll()
+
+        // 마커 지우기
+        markers.forEach { marker in
+            marker.mapView = nil
+        }
+        markers.removeAll()
+
+        // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
+        routeButton.isHidden = false
+        closeButton.isHidden = true
+    }
+
+//
+//    private func clearPath() {
+//        // 기존 오버레이들을 모두 지도에서 제거
+//        // 이전에 추가된 polyline 오버레이를 삭제
+//        for polylineOverlay in self.polylineOverlays {
+//            polylineOverlay.mapView = nil
+//        }
+//        self.polylineOverlays.removeAll()
+//        // 마커 지우기
+////        naverMapView.mapView.mapObjects.forEach { object in
+////            if let marker = object as? NMFMarker {
+////                marker.mapView = nil
+////            }
+////        }
+//
+//        // 기존 오버레이들을 모두 지도에서 제거
+//        for marker in markers {
+//            marker.mapView = nil
+//        }
+//
+//        // 배열 비우기
+//        self.markers.removeAll()
+//    }
+
 
 }
 

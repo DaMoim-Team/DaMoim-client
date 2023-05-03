@@ -11,8 +11,8 @@ import Foundation
 import Firebase
 import FirebaseAuth
 
-class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate, NMFMapViewTouchDelegate {
-    
+class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate, NMFMapViewDelegate, NMFMapViewTouchDelegate {
+
     var naverMapView: NMFNaverMapView!
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
     
@@ -103,7 +103,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         naverMapView.mapView.touchDelegate = self
     }
     
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         //locationManager = NMFLocationManager.sharedInstance()
@@ -154,33 +153,42 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // 경로로 돌아가는 버튼에 touchUpInside 이벤트 추가
         goBackToPathButton.addTarget(self, action: #selector(moveToInitialPath), for: .touchUpInside)
         
+        
+        
         //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-        fetchOptimalRouteCoordinates { optimalRouteCoordinates, error in
-            guard let optimalRouteCoordinates = optimalRouteCoordinates, error == nil else {
+        fetchOptimalRouteCoordinates { coordinates, error in
+            guard let coordinates = coordinates, error == nil else {
                 print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
                 return
             }
-            
+
             DispatchQueue.main.async {
-                for i in 0..<(optimalRouteCoordinates.count - 1) {
-                    let start = optimalRouteCoordinates[i]
-                    let end = optimalRouteCoordinates[i + 1]
-                    
-                    self.requestDirection(start: start, end: end) { polylineOverlay, error in
+                for i in 0..<(coordinates.count - 1) {
+                    self.requestDirection(start: coordinates[i], end: coordinates[i + 1]) { polylineOverlay, error in
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
-                                polylineOverlay.mapView = mapView
+                                polylineOverlay.mapView = self.naverMapView.mapView
                             } else {
                                 print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
                             }
                         }
                     }
                 }
+                self.createMarkers(coordinates: coordinates)
             }
         }
         
         
     }
+    //기본 마커
+    func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+        for (index, coordinate) in coordinates.enumerated() {
+            let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
+            marker.captionText = index == 0 ? "출발" : "\(index)"
+            marker.mapView = self.naverMapView.mapView
+        }
+    }
+    
     
     func moveMapTo(coordinate: NMGLatLng) {
         let cameraUpdate = NMFCameraUpdate(scrollTo: coordinate)
@@ -202,10 +210,12 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
         moveMapTo(coordinate: initialLocation)
     }
+    
    
-    //서버에서 최적 경로 좌표 요청하는 함수
+    //서버에서 최적 경로 좌표를 가져오는 함수
+    //JSON 데이터를 가져와서 해당 좌표를 배열로 반환
     func fetchOptimalRouteCoordinates(completion: @escaping ([CLLocationCoordinate2D]?, Error?) -> Void) {
-        guard let url = URL(string: "http://52.79.138.34:1105/optimal_route") else {
+        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
             completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
         }
@@ -217,9 +227,10 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
             
             do {
-                let decodedData = try JSONDecoder().decode([[String: Double]].self, from: data)
-                let coordinates = decodedData.map { CLLocationCoordinate2D(latitude: $0["latitude"]!, longitude: $0["longitude"]!) }
+                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
+                let coordinates = decodedData.optimalRoute.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
                 completion(coordinates, nil)
+            
             } catch {
                 completion(nil, error)
             }
@@ -228,6 +239,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         task.resume()
     }
     
+    //네이버지도 방향api를 사용해 경로를 가져오는 함수
     func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPath?, Error?) -> Void) {
         let directionAPI = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
         let clientId = "hag6m0rapi"
@@ -262,14 +274,36 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             } catch {
                 completion(nil, error)
             }
-            
-            
         }
-        
-        
         task.resume()
     }
 
+    
+    //구조체 정의
+    //서버에서 보내주는 전체 데이터를 매핑
+    struct ResponseData: Codable {
+        let locations: [Location]
+        let optimalRoute: [RouteStep]
+        
+        enum CodingKeys: String, CodingKey {
+            case locations
+            case optimalRoute = "optimal_route"
+        }
+    }
+    
+    //locations 배열의 요소를 매핑
+    struct Location: Codable {
+        let count: Int
+        let id: Int
+        let latitude: Double
+        let longitude: Double
+    }
+    //optimal_route 배열의 요소를 매핑
+    struct RouteStep: Codable {
+        let latitude: Double
+        let longitude: Double
+    }
+    
     struct DirectionResponse: Codable {
         let coordinates: [CLLocationCoordinate2D]
         
@@ -305,7 +339,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 try traoptimalContainer.encode(path, forKey: .path)
             }
     }
-
+    
     @objc func locationButtonTapped() {
         naverMapView.mapView.positionMode = .direction
     }

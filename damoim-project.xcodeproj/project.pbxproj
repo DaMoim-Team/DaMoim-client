@@ -12,7 +12,7 @@
 		E04B409929EE933D00B4BEE1 /* idSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */; };
 		E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409A29EE935000B4BEE1 /* howtoViewController.swift */; };
 		E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063367A29EFD6C400490C59 /* whereToGoViewController.swift */; };
-		E092922A29E734300044A3A5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E092922929E734300044A3A5 /* GoogleService-Info.plist */; };
+		E071112F29FA601D00783185 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E071112E29FA601D00783185 /* GoogleService-Info.plist */; };
 		E094422429E7A90A000C6240 /* mainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E094422329E7A90A000C6240 /* mainViewController.swift */; };
 		E094422629E7BEEE000C6240 /* registerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E094422529E7BEEE000C6240 /* registerViewController.swift */; };
 		E09497FE29E69A4100807A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09497FD29E69A4100807A53 /* AppDelegate.swift */; };
@@ -31,7 +31,7 @@
 		E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = idSettingsViewController.swift; sourceTree = "<group>"; };
 		E04B409A29EE935000B4BEE1 /* howtoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = howtoViewController.swift; sourceTree = "<group>"; };
 		E063367A29EFD6C400490C59 /* whereToGoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = whereToGoViewController.swift; sourceTree = "<group>"; };
-		E092922929E734300044A3A5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E071112E29FA601D00783185 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E094422329E7A90A000C6240 /* mainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mainViewController.swift; sourceTree = "<group>"; };
 		E094422529E7BEEE000C6240 /* registerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerViewController.swift; sourceTree = "<group>"; };
 		E09497FA29E69A4100807A53 /* damoim-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "damoim-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,7 +102,7 @@
 				E094980629E69A4200807A53 /* Assets.xcassets */,
 				E094980829E69A4200807A53 /* LaunchScreen.storyboard */,
 				E094980B29E69A4200807A53 /* Info.plist */,
-				E092922929E734300044A3A5 /* GoogleService-Info.plist */,
+				E071112E29FA601D00783185 /* GoogleService-Info.plist */,
 				E094422329E7A90A000C6240 /* mainViewController.swift */,
 				E04B409629EE252D00B4BEE1 /* settingsViewController.swift */,
 				E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */,
@@ -177,7 +177,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */,
-				E092922A29E734300044A3A5 /* GoogleService-Info.plist in Resources */,
+				E071112F29FA601D00783185 /* GoogleService-Info.plist in Resources */,
 				E094980729E69A4200807A53 /* Assets.xcassets in Resources */,
 				E094980529E69A4100807A53 /* Main.storyboard in Resources */,
 			);

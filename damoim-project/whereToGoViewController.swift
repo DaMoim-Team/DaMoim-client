@@ -68,6 +68,14 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         return view
     }()
+    
+    //새로고침
+    private let refreshButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("새로고침", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -194,6 +202,14 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             closeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
             closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+        
+        // 새로고침 버튼 추가 및 설정
+        view.addSubview(refreshButton)
+        NSLayoutConstraint.activate([
+            refreshButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            refreshButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+        ])
+        refreshButton.addTarget(self, action: #selector(refreshButtonTapped), for: .touchUpInside)
 
         
         fetchLocations { locations, error in
@@ -206,6 +222,17 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
         }
         
+        fetchOptimalRouteCoordinates(minimumCount: 3) { filteredCoordinates, error in
+            guard let filteredCoordinates = filteredCoordinates, error == nil else {
+                print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+            DispatchQueue.main.async {
+                self.totalRouteSegments = filteredCoordinates.count - 1
+            }
+        }
+
+        
     }
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
@@ -214,6 +241,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             marker.iconImage = NMF_MARKER_IMAGE_GREEN
             marker.mapView = naverMapView.mapView
             markers.append(marker)
+            
+            closeButton.isHidden = false
         }
     }
 
@@ -262,6 +291,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 let filteredCoordinatesAndCounts = decodedData.optimalRoute.filter { $0.count >= minimumCount }
                 let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
                 completion(filteredCoordinates, nil)
+                self.optimalRouteCoordinates = filteredCoordinates
             } catch {
                 completion(nil, error)
             }
@@ -339,15 +369,24 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         task.resume()
     }
     
+    private var circleOverlays: [NMFCircleOverlay] = []
     
     //히트맵
     func createHeatmap(with locations: [Location]) {
+        circleOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        circleOverlays.removeAll()
+        
         for location in locations {
             let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count))
             circleOverlay.fillColor = calculateColor(from: location.count)
             circleOverlay.mapView = naverMapView.mapView
+            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
         }
     }
+
+    
     func calculateRadius(from count: Int) -> Double {
         // count 값에 따라 원하는 반지름 값을 반환합니다.
         let baseRadius = 15.0
@@ -555,39 +594,47 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     private var polylineOverlays: [NMFPolylineOverlay] = []
     private var markers: [NMFMarker] = []
+    private var totalRouteSegments = 0
+    private var completedRouteSegments = 0
+    var optimalRouteCoordinates: [CLLocationCoordinate2D] = []
 
     
     @objc private func routeButtonTapped() {
         
-         //서버의 최적 경로 좌표를 사용하여 경로를 지도에 표시
-        fetchOptimalRouteCoordinates(minimumCount: 3) { filteredCoordinates, error in
-            guard let filteredCoordinates = filteredCoordinates, error == nil else {
-                print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
-                return
-            }
+        //히트맵 숨기기
+        circleOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        
+        // 미리 가져온 경로 좌표를 사용하여 경로를 지도에 표시
+        DispatchQueue.main.async {
+            self.completedRouteSegments = 0
+            for i in 0..<(self.optimalRouteCoordinates.count - 1) {
+                self.requestDirection(start: self.optimalRouteCoordinates[i], end: self.optimalRouteCoordinates[i + 1]) { polylineOverlay, error in
+                    DispatchQueue.main.async {
+                        if let polylineOverlay = polylineOverlay {
+                            polylineOverlay.mapView = self.naverMapView.mapView
+                            self.polylineOverlays.append(polylineOverlay)
+                        } else {
+                            print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                        }
 
-            DispatchQueue.main.async {
-                for i in 0..<(filteredCoordinates.count - 1) {
-                    self.requestDirection(start: filteredCoordinates[i], end: filteredCoordinates[i + 1]) { polylineOverlay, error in
-                        DispatchQueue.main.async {
-                            if let polylineOverlay = polylineOverlay {
-                                polylineOverlay.mapView = self.naverMapView.mapView
-                                self.polylineOverlays.append(polylineOverlay)
-                            } else {
-                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
-                            }
+                        self.completedRouteSegments += 1
+
+                        if self.completedRouteSegments == self.totalRouteSegments {
+                            self.createMarkers(coordinates: self.optimalRouteCoordinates)
+                            self.markers.append(contentsOf: self.markers)
+                            // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+                            self.routeButton.isHidden = true
+                            //self.closeButton.isHidden = false
                         }
                     }
                 }
-                self.createMarkers(coordinates: filteredCoordinates)
-                self.markers.append(contentsOf: self.markers)
             }
         }
-
-
         // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
-        routeButton.isHidden = true
-        closeButton.isHidden = false
+        //routeButton.isHidden = true
+        //closeButton.isHidden = false
     }
 
     
@@ -603,35 +650,79 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             marker.mapView = nil
         }
         markers.removeAll()
+        
+        // 히트맵 다시 표시
+        circleOverlays.forEach { overlay in
+            overlay.mapView = naverMapView.mapView
+        }
+        
 
         // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
         routeButton.isHidden = false
         closeButton.isHidden = true
     }
+    
+    @objc private func refreshButtonTapped() {
+        
+        var fetchedLocations: [Location] = []
+        fetchedLocations.removeAll()
+        //polylineOverlays.removeAll()
+        //markers.removeAll()
+        //totalRouteSegments = 0
+        //completedRouteSegments = 0
+        //optimalRouteCoordinates.removeAll()
+        
+        // 기존 히트맵 지우기
+        circleOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        circleOverlays.removeAll()
 
-//
-//    private func clearPath() {
-//        // 기존 오버레이들을 모두 지도에서 제거
-//        // 이전에 추가된 polyline 오버레이를 삭제
-//        for polylineOverlay in self.polylineOverlays {
-//            polylineOverlay.mapView = nil
-//        }
-//        self.polylineOverlays.removeAll()
-//        // 마커 지우기
-////        naverMapView.mapView.mapObjects.forEach { object in
-////            if let marker = object as? NMFMarker {
-////                marker.mapView = nil
-////            }
-////        }
-//
-//        // 기존 오버레이들을 모두 지도에서 제거
-//        for marker in markers {
-//            marker.mapView = nil
-//        }
-//
-//        // 배열 비우기
-//        self.markers.removeAll()
-//    }
+        // 기존 경로 지우기
+        polylineOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        polylineOverlays.removeAll()
+
+        // 기존 마커 지우기
+        markers.forEach { marker in
+            marker.mapView = nil
+        }
+        markers.removeAll()
+
+        // 데이터베이스에서 최신 데이터를 가져옵니다.
+        fetchLocations { locations, error in
+            guard let locations = locations, error == nil else {
+                print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+            fetchedLocations = locations
+        }
+        fetchOptimalRouteCoordinates(minimumCount: 3) { fetchedCoordinates, error in
+            guard let fetchedCoordinates = fetchedCoordinates, error == nil else {
+                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+
+            DispatchQueue.main.async {
+                // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.
+                // 이 경우, 닫기 버튼을 누른 것처럼 작동하게 합니다.
+                if self.routeButton.isHidden == true {
+                    self.closeButtonTapped()
+                }
+                
+                if self.routeButton.isHidden == false {
+                    //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
+                    
+                    // 새 히트맵을 생성하고 표시합니다.
+                    self.createHeatmap(with: fetchedLocations)
+                }
+                
+            }
+        }
+    }
+
+
 
 
 }

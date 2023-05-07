@@ -13,6 +13,7 @@
 		E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409A29EE935000B4BEE1 /* howtoViewController.swift */; };
 		E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063367A29EFD6C400490C59 /* whereToGoViewController.swift */; };
 		E08F53522A022BF000C6778D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E08F53512A022BEF00C6778D /* GoogleService-Info.plist */; };
+		E0921F8C2A0786EE001DADF1 /* countViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0921F8B2A0786EE001DADF1 /* countViewController.swift */; };
 		E094422429E7A90A000C6240 /* mainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E094422329E7A90A000C6240 /* mainViewController.swift */; };
 		E094422629E7BEEE000C6240 /* registerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E094422529E7BEEE000C6240 /* registerViewController.swift */; };
 		E09497FE29E69A4100807A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09497FD29E69A4100807A53 /* AppDelegate.swift */; };
@@ -32,6 +33,7 @@
 		E04B409A29EE935000B4BEE1 /* howtoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = howtoViewController.swift; sourceTree = "<group>"; };
 		E063367A29EFD6C400490C59 /* whereToGoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = whereToGoViewController.swift; sourceTree = "<group>"; };
 		E08F53512A022BEF00C6778D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E0921F8B2A0786EE001DADF1 /* countViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = countViewController.swift; sourceTree = "<group>"; };
 		E094422329E7A90A000C6240 /* mainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mainViewController.swift; sourceTree = "<group>"; };
 		E094422529E7BEEE000C6240 /* registerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerViewController.swift; sourceTree = "<group>"; };
 		E09497FA29E69A4100807A53 /* damoim-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "damoim-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -108,6 +110,7 @@
 				E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */,
 				E04B409A29EE935000B4BEE1 /* howtoViewController.swift */,
 				E063367A29EFD6C400490C59 /* whereToGoViewController.swift */,
+				E0921F8B2A0786EE001DADF1 /* countViewController.swift */,
 			);
 			path = "damoim-project";
 			sourceTree = "<group>";
@@ -232,6 +235,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0921F8C2A0786EE001DADF1 /* countViewController.swift in Sources */,
 				E094980229E69A4100807A53 /* loginViewController.swift in Sources */,
 				E09497FE29E69A4100807A53 /* AppDelegate.swift in Sources */,
 				E094980029E69A4100807A53 /* SceneDelegate.swift in Sources */,

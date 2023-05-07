@@ -15,6 +15,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
     var naverMapView: NMFNaverMapView!
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
+    var minCount: Int = 3
     
     // 경로로 돌아가는 버튼 추가
     let goBackToPathButton: UIButton = {
@@ -80,6 +81,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //UserDefaults의 minCount값 불러오기
+        minCount = UserDefaults.standard.integer(forKey: "minCount") == 0 ? 3 : UserDefaults.standard.integer(forKey: "minCount")
+        
         // 네이버 지도 설정
         naverMapView = NMFNaverMapView(frame: view.frame)
         view.addSubview(naverMapView)
@@ -109,11 +113,13 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
         let menuItem1 = createMenuButton(menuItem: .idSettings)
         let menuItem2 = createMenuButton(menuItem: .howTo)
-        let menuItem3 = createMenuButton(menuItem: .yetToDecide)
+        let menuItem3 = createMenuButton(menuItem: .count)
+        let menuItem4 = createMenuButton(menuItem: .logout)
 
         sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem2)
         sideMenuView.addSubview(menuItem3)
+        sideMenuView.addSubview(menuItem4)
 
         
         // 메뉴 아이템 버튼 레이아웃 설정
@@ -125,6 +131,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         menuItem3.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem3.topAnchor.constraint(equalTo: menuItem2.bottomAnchor, constant: 20).isActive = true
+        
+        menuItem4.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem4.topAnchor.constraint(equalTo: menuItem3.bottomAnchor, constant: 20).isActive = true
         
         // 블랙 오버레이 뷰에 탭 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blackOverlayViewTapped))
@@ -222,7 +231,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
         }
         
-        fetchOptimalRouteCoordinates(minimumCount: 3) { filteredCoordinates, error in
+        fetchOptimalRouteCoordinates(minimumCount: minCount) { filteredCoordinates, error in
             guard let filteredCoordinates = filteredCoordinates, error == nil else {
                 print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
                 return
@@ -285,6 +294,11 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 return
             }
             
+            // JSON 데이터를 문자열로 변환하고 출력합니다.
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print(jsonString)
+            }
+        
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
                 //count 값 필터링 수행
@@ -313,6 +327,10 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 completion(nil, error)
                 return
             }
+            // JSON 데이터를 문자열로 변환하고 출력합니다.
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//                print(jsonString)
+//            }
             
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
@@ -371,6 +389,18 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     private var circleOverlays: [NMFCircleOverlay] = []
     
+    private var circleLabels: [NMFMarker] = []
+    
+    private func labelToImage(_ label: UILabel) -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, UIScreen.main.scale)
+        defer { UIGraphicsEndImageContext() }
+        if let context = UIGraphicsGetCurrentContext() {
+            label.layer.render(in: context)
+            return UIGraphicsGetImageFromCurrentImageContext()
+        }
+        return nil
+    }
+    
     //히트맵
     func createHeatmap(with locations: [Location]) {
         circleOverlays.forEach { overlay in
@@ -383,6 +413,26 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             circleOverlay.fillColor = calculateColor(from: location.count)
             circleOverlay.mapView = naverMapView.mapView
             circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
+            
+            // 레이블 생성
+            let label = UILabel()
+            label.text = "\(location.count)"
+            label.textAlignment = .center
+            label.textColor = .white
+            label.font = UIFont.systemFont(ofSize: 16)
+            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
+            label.layer.cornerRadius = circleOverlay.radius
+            label.layer.masksToBounds = true
+            label.isUserInteractionEnabled = false
+
+            // 지도 위에 레이블 추가
+            if let labelTextImage = labelToImage(label) {
+                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
+                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
+                labelMarker.iconTintColor = .clear
+                labelMarker.mapView = naverMapView.mapView
+                circleLabels.append(labelMarker)
+            }
         }
     }
 
@@ -391,7 +441,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // count 값에 따라 원하는 반지름 값을 반환합니다.
         let baseRadius = 15.0
             
-        if count >= 3 {
+        if count >= minCount {
             return baseRadius * 1.5
         } else {
             return baseRadius
@@ -405,7 +455,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
         
         // count 값에 따라 원하는 색상 값을 반환합니다.
-        if count >= 3 {
+        if count >= minCount {
             return UIColor.red.withAlphaComponent(0.5)
         } else {
             return UIColor.blue.withAlphaComponent(0.5)
@@ -492,7 +542,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     enum MenuItem: String {
         case idSettings = "계정정보"
         case howTo = "도움말"
-        case yetToDecide = "로그아웃"
+        case count = "경로추천설정"
+        case logout = "로그아웃"
 
         var viewController: UIViewController? {
             switch self {
@@ -501,7 +552,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             case .howTo:
                 return howtoViewController()
             // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
-            case .yetToDecide:
+            case .count:
+                return countViewController()
+            case .logout:
                 return nil
             }
         }
@@ -534,6 +587,12 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 //howtoViewController.modalPresentationStyle = .fullScreen
                 //present(howtoViewController, animated: true, completion: nil)
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
+                
+            case "경로추천설정":
+                guard let countViewController = self.storyboard?.instantiateViewController(withIdentifier: "countViewControllerID") as? countViewController else { return }
+                //idSettingsViewController.modalPresentationStyle = .fullScreen
+                //present(idSettingsViewController, animated: true, completion: nil)
+                self.navigationController?.pushViewController(countViewController, animated: true)
                 
             case "로그아웃":
                 do{
@@ -606,29 +665,43 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             overlay.mapView = nil
         }
         
+        // 레이블 숨기기
+        circleLabels.forEach { label in
+            label.mapView = nil
+        }
+
+        
         // 미리 가져온 경로 좌표를 사용하여 경로를 지도에 표시
         DispatchQueue.main.async {
             self.completedRouteSegments = 0
-            for i in 0..<(self.optimalRouteCoordinates.count - 1) {
-                self.requestDirection(start: self.optimalRouteCoordinates[i], end: self.optimalRouteCoordinates[i + 1]) { polylineOverlay, error in
-                    DispatchQueue.main.async {
-                        if let polylineOverlay = polylineOverlay {
-                            polylineOverlay.mapView = self.naverMapView.mapView
-                            self.polylineOverlays.append(polylineOverlay)
-                        } else {
-                            print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
-                        }
-
-                        self.completedRouteSegments += 1
-
-                        if self.completedRouteSegments == self.totalRouteSegments {
-                            self.createMarkers(coordinates: self.optimalRouteCoordinates)
-                            self.markers.append(contentsOf: self.markers)
-                            // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
-                            self.routeButton.isHidden = true
-                            //self.closeButton.isHidden = false
+            if self.optimalRouteCoordinates.count > 1 {
+                for i in 0..<(self.optimalRouteCoordinates.count - 1) {
+                    self.requestDirection(start: self.optimalRouteCoordinates[i], end: self.optimalRouteCoordinates[i + 1]) { polylineOverlay, error in
+                        DispatchQueue.main.async {
+                            if let polylineOverlay = polylineOverlay {
+                                polylineOverlay.mapView = self.naverMapView.mapView
+                                self.polylineOverlays.append(polylineOverlay)
+                            } else {
+                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                            }
+                            
+                            self.completedRouteSegments += 1
+                            
+                            if self.completedRouteSegments == self.totalRouteSegments {
+                                self.createMarkers(coordinates: self.optimalRouteCoordinates)
+                                self.markers.append(contentsOf: self.markers)
+                                // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+                                self.routeButton.isHidden = true
+                                //self.closeButton.isHidden = false
+                            }
                         }
                     }
+                }
+            } else {
+                DispatchQueue.main.async {
+                    // 여기에 버튼 상태를 변경하는 코드를 작성하세요.
+                    self.closeButton.isHidden = false
+                    self.routeButton.isHidden = true
                 }
             }
         }
@@ -656,6 +729,12 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             overlay.mapView = naverMapView.mapView
         }
         
+        // 레이블 다시 표시
+        circleLabels.forEach { label in
+            label.mapView = naverMapView.mapView
+        }
+
+        
 
         // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
         routeButton.isHidden = false
@@ -677,6 +756,12 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             overlay.mapView = nil
         }
         circleOverlays.removeAll()
+        
+        // 레이블 숨기기
+        circleLabels.forEach { label in
+            label.mapView = nil
+        }
+        circleLabels.removeAll()
 
         // 기존 경로 지우기
         polylineOverlays.forEach { overlay in
@@ -698,7 +783,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
             fetchedLocations = locations
         }
-        fetchOptimalRouteCoordinates(minimumCount: 3) { fetchedCoordinates, error in
+        fetchOptimalRouteCoordinates(minimumCount: minCount) { fetchedCoordinates, error in
             guard let fetchedCoordinates = fetchedCoordinates, error == nil else {
                 print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
                 return
@@ -721,9 +806,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
         }
     }
+    
+    // whereToGoViewController.swift
 
-
-
+    func presentCountViewController() {
+        let countVC = countViewController()
+        countVC.minCount = minCount
+        countVC.delegate = self
+        navigationController?.pushViewController(countVC, animated: true)
+    }
 
 }
 
@@ -751,4 +842,15 @@ extension UIColor {
         let a = (toComponents[3] - fromComponents[3]) * progress + fromComponents[3]
         return UIColor(red: r, green: g, blue: b, alpha: a)
     }
+}
+
+extension whereToGoViewController: CountViewControllerDelegate {
+    func updateMinimumCount(_ count: Int) {
+        self.minCount = count
+    }
+}
+
+
+protocol CountViewControllerDelegate: AnyObject {
+    func updateMinimumCount(_ count: Int)
 }

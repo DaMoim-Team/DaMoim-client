@@ -221,15 +221,26 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         refreshButton.addTarget(self, action: #selector(refreshButtonTapped), for: .touchUpInside)
 
         
-        fetchLocations { locations, error in
+        
+        //함수 호출하여 히트맵 만들기
+        fetchData(minimumCount: minCount) { heatmapCoordinates, locations, error in
             guard let locations = locations, error == nil else {
-                print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
+                print("Error fetching heatmap coordinates:", error?.localizedDescription ?? "unknown error")
                 return
             }
             DispatchQueue.main.async {
                 self.createHeatmap(with: locations)
             }
         }
+//        fetchData(minimumCount: minCount, completion: <#T##([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void#>) { locations, error in
+//            guard let locations = locations, error == nil else {
+//                print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
+//                return
+//            }
+//            DispatchQueue.main.async {
+//                self.createHeatmap(with: locations)
+//            }
+//        }
         
         fetchOptimalRouteCoordinates(minimumCount: minCount) { filteredCoordinates, error in
             guard let filteredCoordinates = filteredCoordinates, error == nil else {
@@ -277,7 +288,49 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
         moveMapTo(coordinate: initialLocation)
     }
-    
+   
+    //서버에서 JSON 데이터 가져오는 함수
+    func fetchData(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void) {
+        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
+            completion(nil, nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+            guard let data = data, error == nil else {
+                completion(nil, nil, error)
+                return
+            }
+            
+            // JSON 데이터를 문자열로 변환하고 출력합니다.
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print(jsonString)
+            }
+            
+            do {
+                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
+                let locations = self.fetchLocations(from: decodedData)
+                completion(nil, locations, nil)
+            } catch {
+                completion(nil, nil, error)
+            }
+        }
+        
+        task.resume()
+    }
+
+    func fetchLocations(from responseData: ResponseData) -> [Location] {
+        let filteredLocations = responseData.optimalRoute.filter { $0.count > 0 }
+        return filteredLocations
+    }
+
+
+    func fetchOptimalRouteCoordinates(from responseData: ResponseData, minimumCount: Int) -> [CLLocationCoordinate2D] {
+        let filteredCoordinatesAndCounts = responseData.optimalRoute.filter { $0.count >= minimumCount }
+        let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+        return filteredCoordinates
+    }
+
    
     //서버에서 최적 경로 좌표를 가져오는 함수
     //JSON 데이터를 가져와서 해당 좌표를 배열로 반환
@@ -287,18 +340,18 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
         }
-        
+
         let task = URLSession.shared.dataTask(with: url) { data, response, error in
             guard let data = data, error == nil else {
                 completion(nil, error)
                 return
             }
-            
+
             // JSON 데이터를 문자열로 변환하고 출력합니다.
             if let jsonString = String(data: data, encoding: .utf8) {
                 print(jsonString)
             }
-        
+
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
                 //count 값 필터링 수행
@@ -310,41 +363,41 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 completion(nil, error)
             }
         }
-        
+
         task.resume()
     }
     
     // 서버에서 최적 경로 좌표와 장소 정보를 가져오는 함수
     // 히트맵에 사용될 데이터를 가져오는 함수
-    func fetchLocations(completion: @escaping ([Location]?, Error?) -> Void) {
-        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
-            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
-            return
-        }
-        
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(nil, error)
-                return
-            }
-            // JSON 데이터를 문자열로 변환하고 출력합니다.
-//            if let jsonString = String(data: data, encoding: .utf8) {
-//                print(jsonString)
+//    func fetchLocations(completion: @escaping ([Location]?, Error?) -> Void) {
+//        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
+//            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
+//            return
+//        }
+//
+//        let task = URLSession.shared.dataTask(with: url) { data, response, error in
+//            guard let data = data, error == nil else {
+//                completion(nil, error)
+//                return
 //            }
-            
-            do {
-                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
-                //let coordinates = decodedData.optimalRoute.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-                let locations = decodedData.locations
-                completion(locations, nil)
-            
-            } catch {
-                completion(nil, error)
-            }
-        }
-        
-        task.resume()
-    }
+//            // JSON 데이터를 문자열로 변환하고 출력합니다.
+////            if let jsonString = String(data: data, encoding: .utf8) {
+////                print(jsonString)
+////            }
+//
+//            do {
+//                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
+//                //let coordinates = decodedData.optimalRoute.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+//                let locations = decodedData.locations
+//                completion(locations, nil)
+//
+//            } catch {
+//                completion(nil, error)
+//            }
+//        }
+//
+//        task.resume()
+//    }
 
     
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
@@ -468,27 +521,20 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     //구조체 정의
     //서버에서 보내주는 전체 데이터를 매핑
     struct ResponseData: Codable {
-        let locations: [Location]
-        let optimalRoute: [RouteStep]
+        let optimalRoute: [Location]
         
         enum CodingKeys: String, CodingKey {
-            case locations
             case optimalRoute = "optimal_route"
         }
     }
     
-    //locations 배열의 요소를 매핑
+    //optimal_route 배열의 요소를 매핑
     struct Location: Codable {
         let count: Int
-        let id: Int
+        let count_reset: Int
         let latitude: Double
         let longitude: Double
-    }
-    //optimal_route 배열의 요소를 매핑
-    struct RouteStep: Codable {
-        let latitude: Double
-        let longitude: Double
-        let count: Int
+        let topic_id: String
     }
     
     struct DirectionResponse: Codable {
@@ -776,7 +822,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         markers.removeAll()
 
         // 데이터베이스에서 최신 데이터를 가져옵니다.
-        fetchLocations { locations, error in
+        fetchData(minimumCount: minCount) { heatmapCoordinates, locations, error in
             guard let locations = locations, error == nil else {
                 print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
                 return

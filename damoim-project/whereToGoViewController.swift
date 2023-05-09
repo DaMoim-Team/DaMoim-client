@@ -297,7 +297,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
                 let locations = self.fetchLocations(from: decodedData)
-                let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: 0)
+                let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: self.minCount)
                 completion(optimalroute, locations, nil)
             } catch {
                 completion(nil, nil, error)
@@ -634,7 +634,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             label.mapView = nil
         }
 
-        
+
         // 미리 가져온 경로 좌표를 사용하여 경로를 지도에 표시
         DispatchQueue.main.async {
             self.totalRouteSegments = self.optimalroute.count - 1

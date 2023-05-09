@@ -365,6 +365,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
 
         task.resume()
+        print("fetchOptimalRouteCoordinates called")
+
     }
     
     // 서버에서 최적 경로 좌표와 장소 정보를 가져오는 함수

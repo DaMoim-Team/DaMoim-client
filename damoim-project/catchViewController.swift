@@ -309,13 +309,13 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
 
     func fetchLocations(from responseData: ResponseData) -> [Location] {
-        let filteredLocations = responseData.optimalRoute.filter { $0.count > 0 }
+        let filteredLocations = responseData.optimalRoute.filter { $0.count_catch > 0 }
         return filteredLocations
     }
 
 
     func fetchOptimalRouteCoordinates(from responseData: ResponseData, minimumCount: Int) -> [CLLocationCoordinate2D] {
-        let filteredCoordinatesAndCounts = responseData.optimalRoute.filter { $0.count >= minimumCount }
+        let filteredCoordinatesAndCounts = responseData.optimalRoute.filter { $0.count_catch >= minimumCount }
         let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         return filteredCoordinates
     }
@@ -382,14 +382,14 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         circleOverlays.removeAll()
         
         for location in locations {
-            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count))
-            circleOverlay.fillColor = calculateColor(from: location.count)
+            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
+            circleOverlay.fillColor = calculateColor(from: location.count_catch)
             circleOverlay.mapView = naverMapView.mapView
             circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
             
             // 레이블 생성
             let label = UILabel()
-            label.text = "\(location.count)"
+            label.text = "\(location.count_catch)"
             label.textAlignment = .center
             label.textColor = .white
             label.font = UIFont.systemFont(ofSize: 16)
@@ -410,25 +410,25 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
 
     
-    func calculateRadius(from count: Int) -> Double {
+    func calculateRadius(from count_catch: Int) -> Double {
         // count 값에 따라 원하는 반지름 값을 반환합니다.
         let baseRadius = 15.0
             
-        if count >= minCount {
+        if count_catch >= minCount {
             return baseRadius * 1.5
         } else {
             return baseRadius
         }
     }
 
-    func calculateColor(from count: Int) -> UIColor {
+    func calculateColor(from count_catch: Int) -> UIColor {
         let color1 = UIColor.blue
         let color2 = UIColor.red
-        let progress = CGFloat(count)/10.0
+        let progress = CGFloat(count_catch)/10.0
         let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
         
         // count 값에 따라 원하는 색상 값을 반환합니다.
-        if count >= minCount {
+        if count_catch >= minCount {
             return UIColor.red.withAlphaComponent(0.5)
         } else {
             return UIColor.blue.withAlphaComponent(0.5)
@@ -450,7 +450,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     
     //optimal_route 배열의 요소를 매핑
     struct Location: Codable {
-        let count: Int
+        let count_catch: Int
         let count_reset: Int
         let latitude: Double
         let longitude: Double

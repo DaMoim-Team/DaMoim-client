@@ -318,8 +318,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         return filteredCoordinates
     }
-
- 
+  
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
     func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPolylineOverlay?, Error?) -> Void) {
         let directionAPI = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"

@@ -4,6 +4,7 @@
 //
 //  Created by hansung on 2023/04/13.
 //
+// 안쓰는코드. 나중에 삭제.
 
 import UIKit
 import FirebaseAuth

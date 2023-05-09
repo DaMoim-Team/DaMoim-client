@@ -6,7 +6,10 @@
 //
 
 import UIKit
+import Firebase
 import FirebaseAuth
+import FirebaseDatabase
+import FirebaseFirestore
 
 
 class loginViewController: UIViewController {
@@ -24,20 +27,39 @@ class loginViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         if let user = Auth.auth().currentUser{
-            guard let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController else { return }
-            navigateToSecondNavigationController()
-            //navigateToTabBarController()
-            let transition = CATransition()
-            transition.duration = 0.5
-            transition.type = CATransitionType.push
-            transition.subtype = CATransitionSubtype.fromRight
-            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
             
-            if let window = view.window {
-                window.layer.add(transition, forKey: kCATransition)
-                window.rootViewController = secondNavController
-                window.makeKeyAndVisible()
+            Firestore.firestore().collection("users").document(user.email ?? "No Email").getDocument { (document, error) in
+                if let error = error {
+                    print("Error getting user data: \(error)")
+                } else {
+                    if let document = document, document.exists {
+                        if let jobNum = document.get("job") as? Int {
+                            if jobNum == 0 {
+                                self.navigateToSecondNavigationController()
+                            } else if jobNum == 1 {
+                                self.navigateToThirdNavigationController()
+                            }
+                        }
+                    }
+                }
             }
+            
+//            guard let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController else { return }
+//            navigateToSecondNavigationController()
+            //navigateToTabBarController()
+            
+            
+//            let transition = CATransition()
+//            transition.duration = 0.5
+//            transition.type = CATransitionType.push
+//            transition.subtype = CATransitionSubtype.fromRight
+//            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+//
+//            if let window = view.window {
+//                window.layer.add(transition, forKey: kCATransition)
+//                window.rootViewController = secondNavController
+//                window.makeKeyAndVisible()
+//            }
             //self.present(whereToGoViewController, animated: true, completion: nil)
         }
     }
@@ -60,7 +82,24 @@ class loginViewController: UIViewController {
             
             if authResult != nil{
                 print("로그인성공")
-                self.navigateToSecondNavigationController()
+                if let user = Auth.auth().currentUser{
+                    Firestore.firestore().collection("users").document(user.email ?? "No Email").getDocument { (document, error) in
+                        if let error = error {
+                            print("Error getting user data: \(error)")
+                        } else {
+                            if let document = document, document.exists {
+                                if let jobNum = document.get("job") as? Int {
+                                    if jobNum == 0 {
+                                        self.navigateToSecondNavigationController()
+                                    } else if jobNum == 1 {
+                                        self.navigateToThirdNavigationController()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //self.navigateToSecondNavigationController()
                 //self.navigateToTabBarController()
                 //self.present(whereToGoViewController, animated: true, completion: nil)
                 
@@ -93,9 +132,43 @@ class loginViewController: UIViewController {
     func navigateToSecondNavigationController() {
         if let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController {
             secondNavController.modalPresentationStyle = .fullScreen
+            
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromRight
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+
+            if let window = view.window {
+                window.layer.add(transition, forKey: kCATransition)
+                window.rootViewController = secondNavController
+                window.makeKeyAndVisible()
+            }
+            
             self.present(secondNavController, animated: true, completion: nil)
         }
     }
+    
+    func navigateToThirdNavigationController() {
+        if let thirdNavController = self.storyboard?.instantiateViewController(withIdentifier: "thirdNavControllerID") as? UINavigationController {
+            thirdNavController.modalPresentationStyle = .fullScreen
+            
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromRight
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+
+            if let window = view.window {
+                window.layer.add(transition, forKey: kCATransition)
+                window.rootViewController = thirdNavController
+                window.makeKeyAndVisible()
+            }
+            
+            self.present(thirdNavController, animated: true, completion: nil)
+        }
+    }
+
     
     func navigateToTabBarController() {//탭바 전환용
         let storyboard = UIStoryboard(name: "Main", bundle: nil) // "Main"은 스토리보드의 이름입니다.

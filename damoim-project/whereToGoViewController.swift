@@ -17,6 +17,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
     var minCount: Int = 3
     
+    var optimalroute: [CLLocationCoordinate2D] = []
+    
     // 경로로 돌아가는 버튼 추가
     let goBackToPathButton: UIButton = {
         let button = UIButton(type: .system)
@@ -141,6 +143,24 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         naverMapView.mapView.touchDelegate = self
         
+        //처음 실행 시 서버에서 데이터 받아오고 히트맵 표시
+        fetchData(minimumCount: minCount) { optimalroute, locations, error in
+            guard let optimalroute = optimalroute, let locations = locations, error == nil else {
+                print("Error fetching data:", error?.localizedDescription ?? "unknown error")
+                return
+            }
+
+            DispatchQueue.main.async {
+                // 새로 가져온 optimalroute를 전역 변수에 할당합니다.
+                self.optimalroute = optimalroute
+                // 새로 가져온 locations를 전역 변수에 할당합니다.
+                self.fetchedLocations = locations
+                
+                self.createHeatmap(with: self.fetchedLocations)
+                
+            }
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -221,38 +241,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         refreshButton.addTarget(self, action: #selector(refreshButtonTapped), for: .touchUpInside)
 
         
-        
-        //함수 호출하여 히트맵 만들기
-        fetchData(minimumCount: minCount) { heatmapCoordinates, locations, error in
-            guard let locations = locations, error == nil else {
-                print("Error fetching heatmap coordinates:", error?.localizedDescription ?? "unknown error")
-                return
-            }
-            DispatchQueue.main.async {
-                self.createHeatmap(with: locations)
-            }
-        }
-//        fetchData(minimumCount: minCount, completion: <#T##([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void#>) { locations, error in
-//            guard let locations = locations, error == nil else {
-//                print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
-//                return
-//            }
-//            DispatchQueue.main.async {
-//                self.createHeatmap(with: locations)
-//            }
-//        }
-        
-        fetchOptimalRouteCoordinates(minimumCount: minCount) { filteredCoordinates, error in
-            guard let filteredCoordinates = filteredCoordinates, error == nil else {
-                print("Error fetching optimal route coordinatesAndCounts:", error?.localizedDescription ?? "unknown error")
-                return
-            }
-            DispatchQueue.main.async {
-                self.totalRouteSegments = filteredCoordinates.count - 1
-            }
-        }
-
-        
     }
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
@@ -266,8 +254,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
     }
 
-    
-    
+
     func moveMapTo(coordinate: NMGLatLng) {
         let cameraUpdate = NMFCameraUpdate(scrollTo: coordinate)
         cameraUpdate.animation = .easeIn
@@ -310,7 +297,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
                 let locations = self.fetchLocations(from: decodedData)
-                completion(nil, locations, nil)
+                let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: 0)
+                completion(optimalroute, locations, nil)
             } catch {
                 completion(nil, nil, error)
             }
@@ -331,75 +319,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         return filteredCoordinates
     }
 
-   
-    //서버에서 최적 경로 좌표를 가져오는 함수
-    //JSON 데이터를 가져와서 해당 좌표를 배열로 반환
-    //최적 경로 데이터를 가져오는 함수
-    func fetchOptimalRouteCoordinates(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, Error?) -> Void) {
-        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
-            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
-            return
-        }
-
-        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-            guard let data = data, error == nil else {
-                completion(nil, error)
-                return
-            }
-
-            // JSON 데이터를 문자열로 변환하고 출력합니다.
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print(jsonString)
-            }
-
-            do {
-                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
-                //count 값 필터링 수행
-                let filteredCoordinatesAndCounts = decodedData.optimalRoute.filter { $0.count >= minimumCount }
-                let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-                completion(filteredCoordinates, nil)
-                self.optimalRouteCoordinates = filteredCoordinates
-            } catch {
-                completion(nil, error)
-            }
-        }
-
-        task.resume()
-    }
-    
-    // 서버에서 최적 경로 좌표와 장소 정보를 가져오는 함수
-    // 히트맵에 사용될 데이터를 가져오는 함수
-//    func fetchLocations(completion: @escaping ([Location]?, Error?) -> Void) {
-//        guard let url = URL(string: "http://52.79.138.34:1105/data") else {
-//            completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
-//            return
-//        }
-//
-//        let task = URLSession.shared.dataTask(with: url) { data, response, error in
-//            guard let data = data, error == nil else {
-//                completion(nil, error)
-//                return
-//            }
-//            // JSON 데이터를 문자열로 변환하고 출력합니다.
-////            if let jsonString = String(data: data, encoding: .utf8) {
-////                print(jsonString)
-////            }
-//
-//            do {
-//                let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
-//                //let coordinates = decodedData.optimalRoute.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-//                let locations = decodedData.locations
-//                completion(locations, nil)
-//
-//            } catch {
-//                completion(nil, error)
-//            }
-//        }
-//
-//        task.resume()
-//    }
-
-    
+ 
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
     func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPolylineOverlay?, Error?) -> Void) {
         let directionAPI = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
@@ -701,8 +621,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     private var markers: [NMFMarker] = []
     private var totalRouteSegments = 0
     private var completedRouteSegments = 0
-    var optimalRouteCoordinates: [CLLocationCoordinate2D] = []
-
+    var fetchedLocations: [Location] = []
     
     @objc private func routeButtonTapped() {
         
@@ -719,10 +638,11 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         // 미리 가져온 경로 좌표를 사용하여 경로를 지도에 표시
         DispatchQueue.main.async {
+            self.totalRouteSegments = self.optimalroute.count - 1
             self.completedRouteSegments = 0
-            if self.optimalRouteCoordinates.count > 1 {
-                for i in 0..<(self.optimalRouteCoordinates.count - 1) {
-                    self.requestDirection(start: self.optimalRouteCoordinates[i], end: self.optimalRouteCoordinates[i + 1]) { polylineOverlay, error in
+            if self.optimalroute.count > 1 {
+                for i in 0..<(self.optimalroute.count - 1) {
+                    self.requestDirection(start: self.optimalroute[i], end: self.optimalroute[i + 1]) { polylineOverlay, error in
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
                                 polylineOverlay.mapView = self.naverMapView.mapView
@@ -734,26 +654,19 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                             self.completedRouteSegments += 1
                             
                             if self.completedRouteSegments == self.totalRouteSegments {
-                                self.createMarkers(coordinates: self.optimalRouteCoordinates)
+                                self.createMarkers(coordinates: self.optimalroute)
                                 self.markers.append(contentsOf: self.markers)
-                                // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
-                                self.routeButton.isHidden = true
-                                //self.closeButton.isHidden = false
+                                
                             }
                         }
                     }
                 }
-            } else {
-                DispatchQueue.main.async {
-                    // 여기에 버튼 상태를 변경하는 코드를 작성하세요.
-                    self.closeButton.isHidden = false
-                    self.routeButton.isHidden = true
-                }
             }
+            
+            // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+            self.routeButton.isHidden = true
+            self.closeButton.isHidden = false
         }
-        // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
-        //routeButton.isHidden = true
-        //closeButton.isHidden = false
     }
 
     
@@ -789,7 +702,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     @objc private func refreshButtonTapped() {
         
-        var fetchedLocations: [Location] = []
         fetchedLocations.removeAll()
         //polylineOverlays.removeAll()
         //markers.removeAll()
@@ -821,32 +733,30 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
         markers.removeAll()
 
-        // 데이터베이스에서 최신 데이터를 가져옵니다.
-        fetchData(minimumCount: minCount) { heatmapCoordinates, locations, error in
-            guard let locations = locations, error == nil else {
-                print("Error fetching locations:", error?.localizedDescription ?? "unknown error")
-                return
-            }
-            fetchedLocations = locations
-        }
-        fetchOptimalRouteCoordinates(minimumCount: minCount) { fetchedCoordinates, error in
-            guard let fetchedCoordinates = fetchedCoordinates, error == nil else {
-                print("Error fetching optimal route coordinates:", error?.localizedDescription ?? "unknown error")
+        
+        fetchData(minimumCount: minCount) { optimalroute, locations, error in
+            guard let optimalroute = optimalroute, let locations = locations, error == nil else {
+                print("Error fetching data:", error?.localizedDescription ?? "unknown error")
                 return
             }
 
             DispatchQueue.main.async {
+                // 새로 가져온 optimalroute를 전역 변수에 할당합니다.
+                self.optimalroute = optimalroute
+                // 새로 가져온 locations를 전역 변수에 할당합니다.
+                self.fetchedLocations = locations
+                
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.
                 // 이 경우, 닫기 버튼을 누른 것처럼 작동하게 합니다.
                 if self.routeButton.isHidden == true {
                     self.closeButtonTapped()
                 }
-                
+                       
                 if self.routeButton.isHidden == false {
                     //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
                     
                     // 새 히트맵을 생성하고 표시합니다.
-                    self.createHeatmap(with: fetchedLocations)
+                    self.createHeatmap(with: self.fetchedLocations)
                 }
                 
             }

@@ -116,12 +116,14 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let menuItem1 = createMenuButton(menuItem: .idSettings)
         let menuItem2 = createMenuButton(menuItem: .howTo)
         let menuItem3 = createMenuButton(menuItem: .count)
-        let menuItem4 = createMenuButton(menuItem: .logout)
+        let menuItem4 = createMenuButton(menuItem: .cleaning)
+        let menuItem5 = createMenuButton(menuItem: .logout)
 
         sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem2)
         sideMenuView.addSubview(menuItem3)
         sideMenuView.addSubview(menuItem4)
+        sideMenuView.addSubview(menuItem5)
 
         
         // 메뉴 아이템 버튼 레이아웃 설정
@@ -136,6 +138,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         menuItem4.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem4.topAnchor.constraint(equalTo: menuItem3.bottomAnchor, constant: 20).isActive = true
+        
+        menuItem5.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem5.topAnchor.constraint(equalTo: menuItem4.bottomAnchor, constant: 20).isActive = true
         
         // 블랙 오버레이 뷰에 탭 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blackOverlayViewTapped))
@@ -508,6 +513,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         case idSettings = "계정정보"
         case howTo = "도움말"
         case count = "경로추천설정"
+        case cleaning = "담배검출초기화"
         case logout = "로그아웃"
 
         var viewController: UIViewController? {
@@ -519,6 +525,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
             case .count:
                 return countViewController()
+            case .cleaning:
+                return cleanViewController()
             case .logout:
                 return nil
             }
@@ -543,21 +551,23 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             switch title {
             case "계정정보":
                 guard let idSettingsViewController = self.storyboard?.instantiateViewController(withIdentifier: "idSettingsViewControllerID") as? idSettingsViewController else { return }
-                //idSettingsViewController.modalPresentationStyle = .fullScreen
-                //present(idSettingsViewController, animated: true, completion: nil)
+    
                 self.navigationController?.pushViewController(idSettingsViewController, animated: true)
 
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
-                //howtoViewController.modalPresentationStyle = .fullScreen
-                //present(howtoViewController, animated: true, completion: nil)
+                
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
                 
             case "경로추천설정":
                 guard let countViewController = self.storyboard?.instantiateViewController(withIdentifier: "countViewControllerID") as? countViewController else { return }
-                //idSettingsViewController.modalPresentationStyle = .fullScreen
-                //present(idSettingsViewController, animated: true, completion: nil)
+                
                 self.navigationController?.pushViewController(countViewController, animated: true)
+                
+            case "담배검출초기화":
+                guard let cleanViewController = self.storyboard?.instantiateViewController(withIdentifier: "cleanViewControllerID") as? cleanViewController else { return }
+                
+                self.navigationController?.pushViewController(cleanViewController, animated: true)
                 
             case "로그아웃":
                 do{

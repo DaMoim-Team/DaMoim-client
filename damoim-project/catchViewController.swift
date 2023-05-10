@@ -167,23 +167,28 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
 //        let menuItem1 = createMenuButton(menuItem: .idSettings)
         let menuItem1 = createMenuButton(menuItem: .howTo)
-        let menuItem2 = createMenuButton(menuItem: .graph)
-        let menuItem3 = createMenuButton(menuItem: .logout)
+        let menuItem2 = createMenuButton(menuItem: .count)
+        let menuItem3 = createMenuButton(menuItem: .graph)
+        let menuItem4 = createMenuButton(menuItem: .logout)
 
 //        sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem2)
         sideMenuView.addSubview(menuItem3)
+        sideMenuView.addSubview(menuItem4)
 
         
         menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem1.topAnchor.constraint(equalTo: accountInfoView.bottomAnchor, constant: 20).isActive = true
-
+        
         menuItem2.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem2.topAnchor.constraint(equalTo: menuItem1.bottomAnchor, constant: 20).isActive = true
-        
+
         menuItem3.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem3.topAnchor.constraint(equalTo: menuItem2.bottomAnchor, constant: 20).isActive = true
+        
+        menuItem4.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem4.topAnchor.constraint(equalTo: menuItem3.bottomAnchor, constant: 20).isActive = true
         
         // 블랙 오버레이 뷰에 탭 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blackOverlayViewTapped))
@@ -564,6 +569,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     
     enum MenuItem: String {
         case howTo = "도움말"
+        case count = "경로추천설정"
         case graph = "담배검출그래프"
         case logout = "로그아웃"
 
@@ -571,7 +577,8 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             switch self {
             case .howTo:
                 return howtoViewController()
-            // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
+            case .count:
+                return countViewController()
             case .graph:
                 return graphViewController()
             case .logout:
@@ -599,6 +606,10 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
+            case "경로추천설정":
+                guard let countViewController = self.storyboard?.instantiateViewController(withIdentifier: "countViewControllerID") as? countViewController else { return }
+                
+                self.navigationController?.pushViewController(countViewController, animated: true)
             case "담배검출그래프":
                 guard let graphViewController = self.storyboard?.instantiateViewController(withIdentifier: "graphViewControllerID") as? graphViewController else { return }
                 self.navigationController?.pushViewController(graphViewController, animated: true)

@@ -83,6 +83,9 @@ class countViewController: UIViewController{
         if let whereToGoVC = navigationController?.viewControllers.first as? whereToGoViewController {
             whereToGoVC.minCount = Int(slider.value)
         }
+        if let catchVC = navigationController?.viewControllers.first as? catchViewController {
+            catchVC.minCount = Int(slider.value)
+        }
         UserDefaults.standard.set(minCount, forKey: "minCount")
         
         self.minCount = Int(slider.value)

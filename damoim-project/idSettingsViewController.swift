@@ -23,8 +23,6 @@ class idSettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
-        
         if let user = Auth.auth().currentUser {
             let userEmail = user.email ?? "No Email"
             

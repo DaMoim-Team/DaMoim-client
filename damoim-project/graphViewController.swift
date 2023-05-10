@@ -10,11 +10,12 @@ import Charts
 
 class graphViewController: UIViewController {
     
-    let ranges = ["9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h", "18h", "19h", "20h", "21h"]
-    let counts = [6, 8, 26, 30, 8, 10, 7, 16, 27, 12, 17, 13, 21]
-    let specificValues = ["1번", "2번", "3번", "4번", "5번", "6번", "7번", "8번", "9번", "10번", "11번", "12번", "13번"]
+    let ranges = ["9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h"]
+    let counts = [6, 8, 26, 30, 8, 10, 7, 16, 27]
+    let specificValues = ["1번", "2번", "3번", "4번", "5번", "6번", "7번", "8번", "9번"]
     
 
+    @IBOutlet weak var explainLabel: UILabel!
     @IBOutlet weak var barChartView: BarChartView!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var topicText: UILabel!
@@ -94,18 +95,10 @@ class graphViewController: UIViewController {
             case 18:
                 topicText.text = specificValues[9]
                 countText.text = ": 검출수 \(counts[9])회"
-            case 19:
-                topicText.text = specificValues[10]
-                countText.text = ": 검출수 \(counts[10])회"
-            case 20:
-                topicText.text = specificValues[11]
-                countText.text = ": 검출수 \(counts[11])회"
-            case 21:
-                topicText.text = specificValues[12]
-                countText.text = ": 검출수 \(counts[12])회"
             default:
-                topicText.text = "검출 시간이 아닙니다."
-                countText.text = "..."
+                topicText.text = " "
+                countText.text = " "
+                explainLabel.text = "검출 시간이 아닙니다"
             }
         }
     }

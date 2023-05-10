@@ -11,6 +11,7 @@ import CoreLocation
 import Foundation
 import Firebase
 import FirebaseAuth
+import FirebaseFirestore
 
 class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocationManagerDelegate, NMFMapViewDelegate, NMFMapViewTouchDelegate {
 
@@ -105,30 +106,88 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         // 사이드 메뉴를 초기에 숨김
         sideMenuView.transform = CGAffineTransform(translationX: -view.bounds.width * 0.75, y: 0)
         
-        // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
-        let menuItem1 = createMenuButton(menuItem: .idSettings)
-        let menuItem2 = createMenuButton(menuItem: .howTo)
-        let menuItem3 = createMenuButton(menuItem: .count)
-        let menuItem4 = createMenuButton(menuItem: .logout)
+        // 계정 정보를 포함할 서브뷰 생성
+        let accountInfoView = UIView()
+        accountInfoView.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.1)
 
+        accountInfoView.translatesAutoresizingMaskIntoConstraints = false
+        sideMenuView.addSubview(accountInfoView)
+
+        accountInfoView.leadingAnchor.constraint(equalTo: sideMenuView.leadingAnchor).isActive = true
+        accountInfoView.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor).isActive = true
+        accountInfoView.topAnchor.constraint(equalTo: sideMenuView.topAnchor).isActive = true
+        // 적당한 높이로 설정. 필요에 따라 조정 가능
+        accountInfoView.heightAnchor.constraint(equalToConstant: 180).isActive = true
+
+
+
+        // 계정 정보 레이블 생성 및 sideMenuView에 추가
+        let nameText = UILabel()
+        nameText.textAlignment = .left
+        nameText.text = "Loading..."
+        nameText.textColor = .black
+        nameText.font = UIFont.boldSystemFont(ofSize: 25)
+        nameText.translatesAutoresizingMaskIntoConstraints = false
+        accountInfoView.addSubview(nameText)
+
+        nameText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
+        nameText.topAnchor.constraint(equalTo: accountInfoView.topAnchor, constant: 100).isActive = true
+        
+        let emailText = UILabel()
+        emailText.textAlignment = .left
+        emailText.text = "Loading..."
+        emailText.textColor = .black
+        emailText.font = UIFont.systemFont(ofSize: 13)
+        emailText.translatesAutoresizingMaskIntoConstraints = false
+        accountInfoView.addSubview(emailText)
+
+        emailText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
+        emailText.topAnchor.constraint(equalTo: nameText.bottomAnchor, constant: 16).isActive = true
+        
+        if let user = Auth.auth().currentUser {
+            let userEmail = user.email ?? "No Email"
+            
+            Firestore.firestore().collection("users").document(userEmail).getDocument{ (document, error) in
+                if let error = error{
+                    print("Error getting user data \(error)")
+                } else{
+                    if let document = document, document.exists{
+                        let userName = document.get("name") as? String ?? "No Name"
+                        let jobNum = document.get("job") as? Int
+                        nameText.text = "단속반 " + userName + " 님"
+                        emailText.text = userEmail
+                    }
+                }
+            }
+        } else {
+            nameText.text = "No User"
+            emailText.text = "No User"
+        }
+        
+        // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
+//        let menuItem1 = createMenuButton(menuItem: .idSettings)
+        let menuItem1 = createMenuButton(menuItem: .howTo)
+        let menuItem2 = createMenuButton(menuItem: .count)
+        let menuItem3 = createMenuButton(menuItem: .logout)
+
+//        sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem2)
         sideMenuView.addSubview(menuItem3)
-        sideMenuView.addSubview(menuItem4)
 
         
         // 메뉴 아이템 버튼 레이아웃 설정
-        menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
-        menuItem1.topAnchor.constraint(equalTo: sideMenuView.topAnchor, constant: 100).isActive = true
+//        menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+//        menuItem1.topAnchor.constraint(equalTo: sideMenuView.topAnchor, constant: 100).isActive = true
         
+        menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
+        menuItem1.topAnchor.constraint(equalTo: accountInfoView.bottomAnchor, constant: 20).isActive = true
+
         menuItem2.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem2.topAnchor.constraint(equalTo: menuItem1.bottomAnchor, constant: 20).isActive = true
-
+        
         menuItem3.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem3.topAnchor.constraint(equalTo: menuItem2.bottomAnchor, constant: 20).isActive = true
-        
-        menuItem4.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
-        menuItem4.topAnchor.constraint(equalTo: menuItem3.bottomAnchor, constant: 20).isActive = true
         
         // 블랙 오버레이 뷰에 탭 제스처 추가
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(blackOverlayViewTapped))

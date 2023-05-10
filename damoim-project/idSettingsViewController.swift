@@ -4,6 +4,8 @@
 //
 //  Created by hansung on 2023/04/18.
 //
+// 안쓰는코드. 나중에 삭제.
+
 
 import UIKit
 import Firebase

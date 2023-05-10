@@ -14,4 +14,5 @@ target 'damoim-project' do
   pod 'Firebase/Storage'
   pod 'Firebase/Firestore'
   pod 'SideMenu'
+  pod 'Charts'
 end

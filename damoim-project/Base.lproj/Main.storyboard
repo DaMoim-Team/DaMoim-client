@@ -188,9 +188,56 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="graph" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ6-Rq-fkf">
-                                <rect key="frame" x="174" y="415.66666666666669" width="45" height="21"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0nU-9G-mtF" customClass="BarChartView" customModule="Charts">
+                                <rect key="frame" x="5" y="150" width="383" height="400"/>
+                                <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="400" id="n1A-uP-a0k"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="담배 검출 그래프" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7zo-xJ-dPp">
+                                <rect key="frame" x="20" y="79" width="124" height="23"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="시간대별로 최고 흡연 장소 및 흡연 검출수를 나타냅니다." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hr6-iB-Wke">
+                                <rect key="frame" x="20" y="112" width="353" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="현재시각 : " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aF1-j3-Bsp">
+                                <rect key="frame" x="20" y="570" width="80.333333333333329" height="23"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="niY-JD-JAK">
+                                <rect key="frame" x="110.33333333333331" y="570" width="75" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="어제 이시간, 가장 많이 검출된 장소는..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ziJ-Kt-9FV">
+                                <rect key="frame" x="20" y="613" width="261" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N번" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tPk-af-NnM">
+                                <rect key="frame" x="20" y="634" width="45" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="176-qM-Nu5"/>
+                                    <constraint firstAttribute="width" constant="45" id="wa8-r2-63y"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=": 검출수 n회" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iGe-pi-9xH">
+                                <rect key="frame" x="73" y="649" width="78" height="19.333333333333371"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="16"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -198,14 +245,36 @@
                         <viewLayoutGuide key="safeArea" id="xXI-3u-8fJ"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="HQ6-Rq-fkf" firstAttribute="centerY" secondItem="odU-cU-SMU" secondAttribute="centerY" id="7f8-iC-bfY"/>
-                            <constraint firstItem="HQ6-Rq-fkf" firstAttribute="centerX" secondItem="odU-cU-SMU" secondAttribute="centerX" id="f6p-rk-V87"/>
+                            <constraint firstItem="7zo-xJ-dPp" firstAttribute="leading" secondItem="xXI-3u-8fJ" secondAttribute="leading" constant="20" id="9S9-lh-RgN"/>
+                            <constraint firstItem="hr6-iB-Wke" firstAttribute="leading" secondItem="xXI-3u-8fJ" secondAttribute="leading" constant="20" id="B96-ZJ-YhE"/>
+                            <constraint firstItem="iGe-pi-9xH" firstAttribute="top" secondItem="ziJ-Kt-9FV" secondAttribute="bottom" constant="15" id="BAe-s1-kjV"/>
+                            <constraint firstAttribute="trailing" secondItem="hr6-iB-Wke" secondAttribute="trailing" constant="20" id="FcA-ve-Vhl"/>
+                            <constraint firstItem="aF1-j3-Bsp" firstAttribute="top" secondItem="0nU-9G-mtF" secondAttribute="bottom" constant="20" id="GLn-81-nw9"/>
+                            <constraint firstItem="0nU-9G-mtF" firstAttribute="top" secondItem="hr6-iB-Wke" secondAttribute="bottom" constant="20" id="LTa-Cg-v9k"/>
+                            <constraint firstItem="ziJ-Kt-9FV" firstAttribute="top" secondItem="aF1-j3-Bsp" secondAttribute="bottom" constant="20" id="Mgf-xX-ubi"/>
+                            <constraint firstItem="tPk-af-NnM" firstAttribute="leading" secondItem="xXI-3u-8fJ" secondAttribute="leading" constant="20" id="Yza-gY-lLW"/>
+                            <constraint firstItem="ziJ-Kt-9FV" firstAttribute="leading" secondItem="xXI-3u-8fJ" secondAttribute="leading" constant="20" id="d5T-Ua-fhM"/>
+                            <constraint firstItem="0nU-9G-mtF" firstAttribute="leading" secondItem="xXI-3u-8fJ" secondAttribute="leading" constant="5" id="h2D-2N-TqW"/>
+                            <constraint firstItem="7zo-xJ-dPp" firstAttribute="top" secondItem="xXI-3u-8fJ" secondAttribute="top" constant="20" id="jAY-Fv-pt9"/>
+                            <constraint firstItem="niY-JD-JAK" firstAttribute="top" secondItem="0nU-9G-mtF" secondAttribute="bottom" constant="20" id="jJF-BW-rRt"/>
+                            <constraint firstItem="hr6-iB-Wke" firstAttribute="top" secondItem="7zo-xJ-dPp" secondAttribute="bottom" constant="10" id="m3X-Yc-ySV"/>
+                            <constraint firstItem="niY-JD-JAK" firstAttribute="leading" secondItem="aF1-j3-Bsp" secondAttribute="trailing" constant="10" id="nZj-L5-Yww"/>
+                            <constraint firstItem="aF1-j3-Bsp" firstAttribute="leading" secondItem="xXI-3u-8fJ" secondAttribute="leading" constant="20" id="nmU-ZM-KGK"/>
+                            <constraint firstItem="tPk-af-NnM" firstAttribute="top" secondItem="ziJ-Kt-9FV" secondAttribute="bottom" id="p8q-Hq-PIb"/>
+                            <constraint firstItem="xXI-3u-8fJ" firstAttribute="trailing" secondItem="0nU-9G-mtF" secondAttribute="trailing" constant="5" id="qMB-K4-3gk"/>
+                            <constraint firstItem="iGe-pi-9xH" firstAttribute="leading" secondItem="tPk-af-NnM" secondAttribute="trailing" constant="8" symbolic="YES" id="v1v-TG-Wwe"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="barChartView" destination="0nU-9G-mtF" id="ia0-R5-CWT"/>
+                        <outlet property="countText" destination="iGe-pi-9xH" id="2Mn-l5-nTk"/>
+                        <outlet property="timeLabel" destination="niY-JD-JAK" id="gVS-8o-cPS"/>
+                        <outlet property="topicText" destination="tPk-af-NnM" id="ZN2-mh-aDW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gjc-0M-eO3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3310" y="665"/>
+            <point key="canvasLocation" x="3309.1603053435115" y="664.78873239436621"/>
         </scene>
         <!--Howto View Controller-->
         <scene sceneID="V4V-FU-Zdr">
@@ -379,7 +448,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zHm-4r-YZV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4060" y="-661"/>
+            <point key="canvasLocation" x="4054" y="665"/>
         </scene>
         <!--settings-->
         <scene sceneID="aIz-dy-S08">
@@ -494,7 +563,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AMC-iB-8wu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3342.7480916030531" y="-661.26760563380287"/>
+            <point key="canvasLocation" x="4025" y="-1477"/>
         </scene>
         <!--FirstNavigationController-->
         <scene sceneID="lyl-aB-bbA">
@@ -737,6 +806,9 @@
         </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray6Color">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

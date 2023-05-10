@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Foundation
 
 class cleanViewController: UIViewController {
     
@@ -34,8 +35,45 @@ class cleanViewController: UIViewController {
         Topic4.isOn = true
     }
     
-    
     @IBAction func CleanUpButton(_ sender: UIButton) {
+        //선택된 토픽들 selectedTopics에 담기
+        var selectedTopics: [String] = []
         
+        if Topic1.isOn {
+            selectedTopics.append("topic_1")
+        }
+        if Topic2.isOn {
+            selectedTopics.append("topic_2")
+        }
+        if Topic3.isOn {
+            selectedTopics.append("topic_3")
+        }
+        if Topic4.isOn {
+            selectedTopics.append("topic_4")
+        }
+        print(selectedTopics)
+        sendSelectedTopicsToServer(topics: selectedTopics)
+    }
+    
+    //서버로 전송
+    func sendSelectedTopicsToServer(topics: [String]){
+        let url = URL(string: "http://52.79.138.34:1105/update_topics")
+            var request = URLRequest(url: url!)
+            request.httpMethod = "POST"
+            request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+
+            let postBody = ["selectedTopics": topics]
+            request.httpBody = try? JSONSerialization.data(withJSONObject: postBody)
+
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    print("Error:", error ?? "Unknown error")
+                    return
+                }
+                if let responseString = String(data: data, encoding: .utf8) {
+                    print("Response string: \(responseString)")
+                }
+            }
+            task.resume()
     }
 }

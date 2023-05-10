@@ -12,7 +12,6 @@
 		E04B409929EE933D00B4BEE1 /* idSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */; };
 		E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409A29EE935000B4BEE1 /* howtoViewController.swift */; };
 		E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063367A29EFD6C400490C59 /* whereToGoViewController.swift */; };
-		E08F53522A022BF000C6778D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E08F53512A022BEF00C6778D /* GoogleService-Info.plist */; };
 		E0921F8C2A0786EE001DADF1 /* countViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0921F8B2A0786EE001DADF1 /* countViewController.swift */; };
 		E092393E2A0A1F2300E3E28F /* catchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E092393D2A0A1F2300E3E28F /* catchViewController.swift */; };
 		E09239402A0A290500E3E28F /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E092393F2A0A290500E3E28F /* UIColorExtension.swift */; };
@@ -25,6 +24,7 @@
 		E094980529E69A4100807A53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980329E69A4100807A53 /* Main.storyboard */; };
 		E094980729E69A4200807A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E094980629E69A4200807A53 /* Assets.xcassets */; };
 		E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980829E69A4200807A53 /* LaunchScreen.storyboard */; };
+		E0FE36E02A0A9CBF00628E9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FE36DF2A0A9CBF00628E9F /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,7 +35,6 @@
 		E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = idSettingsViewController.swift; sourceTree = "<group>"; };
 		E04B409A29EE935000B4BEE1 /* howtoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = howtoViewController.swift; sourceTree = "<group>"; };
 		E063367A29EFD6C400490C59 /* whereToGoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = whereToGoViewController.swift; sourceTree = "<group>"; };
-		E08F53512A022BEF00C6778D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E0921F8B2A0786EE001DADF1 /* countViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = countViewController.swift; sourceTree = "<group>"; };
 		E092393D2A0A1F2300E3E28F /* catchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = catchViewController.swift; sourceTree = "<group>"; };
 		E092393F2A0A290500E3E28F /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
@@ -50,6 +49,7 @@
 		E094980629E69A4200807A53 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E094980929E69A4200807A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E094980B29E69A4200807A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E0FE36DF2A0A9CBF00628E9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,8 +110,8 @@
 				E094980629E69A4200807A53 /* Assets.xcassets */,
 				E094980829E69A4200807A53 /* LaunchScreen.storyboard */,
 				E094980B29E69A4200807A53 /* Info.plist */,
-				E08F53512A022BEF00C6778D /* GoogleService-Info.plist */,
 				E094422329E7A90A000C6240 /* mainViewController.swift */,
+				E0FE36DF2A0A9CBF00628E9F /* GoogleService-Info.plist */,
 				E04B409629EE252D00B4BEE1 /* settingsViewController.swift */,
 				E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */,
 				E04B409A29EE935000B4BEE1 /* howtoViewController.swift */,
@@ -189,7 +189,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */,
-				E08F53522A022BF000C6778D /* GoogleService-Info.plist in Resources */,
+				E0FE36E02A0A9CBF00628E9F /* GoogleService-Info.plist in Resources */,
 				E094980729E69A4200807A53 /* Assets.xcassets in Resources */,
 				E094980529E69A4100807A53 /* Main.storyboard in Resources */,
 			);

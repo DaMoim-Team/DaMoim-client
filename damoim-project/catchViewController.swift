@@ -451,7 +451,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     //optimal_route 배열의 요소를 매핑
     struct Location: Codable {
         let count_catch: Int
-        let count_reset: Int
+        let count_cleanup: Int
         let latitude: Double
         let longitude: Double
         let topic_id: String

@@ -77,6 +77,8 @@ class countViewController: UIViewController{
 
     }
     
+    // 뷰가 꺼지고
+    // if let 부분에서 값이 전달 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
@@ -90,7 +92,7 @@ class countViewController: UIViewController{
         
         self.minCount = Int(slider.value)
     }
-    
+
     // 슬라이더 값 변경 시 호출되는 함수
     @objc func sliderValueChanged(_ sender: UISlider) {
         minCount = Int(sender.value)

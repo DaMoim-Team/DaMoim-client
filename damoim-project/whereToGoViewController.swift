@@ -254,7 +254,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         // 현재 위치 버튼의 mapView 속성을 설정하세요.
         locationButton.mapView = naverMapView.mapView
-        
         locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
         
         // 위치 추적 모드를 지정합니다.
@@ -895,7 +894,6 @@ extension whereToGoViewController: CountViewControllerDelegate {
         self.minCount = count
     }
 }
-
 
 protocol CountViewControllerDelegate: AnyObject {
     func updateMinimumCount(_ count_cleanup: Int)

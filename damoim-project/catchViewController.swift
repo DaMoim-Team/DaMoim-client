@@ -20,14 +20,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     
     var optimalroute: [CLLocationCoordinate2D] = []
     
-    // 경로로 돌아가는 버튼 추가
-    let goBackToPathButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "bugiIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
     // 햄버거 버튼을 프로퍼티로 추가
     private lazy var hamburgerButton: UIButton = {
         let button = UIButton(type: .system)
@@ -50,7 +42,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     //x버튼
     private lazy var closeButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("X", for: .normal)
+        button.setImage(UIImage(named: "xIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isHidden = true
@@ -76,7 +68,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     //새로고침
     private let refreshButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle("새로고침", for: .normal)
+        button.setImage(UIImage(named: "refreshIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -198,29 +190,13 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         
         locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
         
-        // 위치 추적 모드를 지정합니다.
-        //naverMapView.mapView.positionMode = .direction
-        
-        // 위치 기능 활성화
-        //naverMapView.positionMode = .direction
-        
-        // 경로로 돌아가는 버튼을 추가하고 제약 조건 설정
-        view.addSubview(goBackToPathButton)
-        NSLayoutConstraint.activate([
-        goBackToPathButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            goBackToPathButton.bottomAnchor.constraint(equalTo: locationButton.topAnchor, constant: -16)
-        ])
-                
-        // 경로로 돌아가는 버튼에 touchUpInside 이벤트 추가
-        goBackToPathButton.addTarget(self, action: #selector(moveToInitialPath), for: .touchUpInside)
-        
         // 버튼 추가
         view.addSubview(routeButton)
         
         // 버튼 제약 조건 설정
         NSLayoutConstraint.activate([
-            routeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
-            routeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            routeButton.bottomAnchor.constraint(equalTo: locationButton.topAnchor, constant: -16),
+            routeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13)
         ])
         
         // Close 버튼 추가
@@ -229,17 +205,20 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         // Close 버튼 제약 조건 설정
         NSLayoutConstraint.activate([
             //closeButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            closeButton.bottomAnchor.constraint(equalTo: goBackToPathButton.topAnchor, constant: -16),
+            closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             closeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
         
         // 새로고침 버튼 추가 및 설정
         view.addSubview(refreshButton)
         NSLayoutConstraint.activate([
-            refreshButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            refreshButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+            refreshButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            refreshButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
         refreshButton.addTarget(self, action: #selector(refreshButtonTapped), for: .touchUpInside)
+        
+        //사이드메뉴 상위계층 이동
+        view.bringSubviewToFront(sideMenuView)
 
         
     }

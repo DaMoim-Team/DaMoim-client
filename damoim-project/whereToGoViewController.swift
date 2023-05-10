@@ -305,17 +305,40 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         
     }
+    
     //기본 마커
-    private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
-        coordinates.forEach { coordinate in
-            let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
-            marker.iconImage = NMF_MARKER_IMAGE_GREEN
-            marker.mapView = naverMapView.mapView
-            markers.append(marker)
-            
-            closeButton.isHidden = false
+        private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+
+            var count = 1 // 경로 순서를 나타내는 변수
+            coordinates.forEach { coordinate in
+                let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
+                marker.iconImage = createMarkerIconWithNumber(count)
+                marker.mapView = naverMapView.mapView
+                markers.append(marker)
+
+                count += 1 // 경로 순서를 증가
+                closeButton.isHidden = false
+
+            }
         }
-    }
+        
+        // 마커에 경로 순위를 표시
+        func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+            label.backgroundColor = .green
+            label.textAlignment = .center
+            label.textColor = .black
+            label.font = UIFont.boldSystemFont(ofSize: 14)
+            label.text = "\(number)"
+            label.layer.cornerRadius = label.bounds.width / 2
+            label.layer.masksToBounds = true
+
+            UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
+            defer { UIGraphicsEndImageContext() }
+            label.layer.render(in: UIGraphicsGetCurrentContext()!)
+            let image = UIGraphicsGetImageFromCurrentImageContext()!
+            return NMFOverlayImage(image: image)
+        }
 
 
     func moveMapTo(coordinate: NMGLatLng) {

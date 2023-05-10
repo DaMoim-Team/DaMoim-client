@@ -180,6 +180,33 @@
             </objects>
             <point key="canvasLocation" x="2571.7557251908397" y="388.73239436619718"/>
         </scene>
+        <!--Graph View Controller-->
+        <scene sceneID="hEV-dH-5WC">
+            <objects>
+                <viewController storyboardIdentifier="graphViewControllerID" id="UAY-YP-Wsk" customClass="graphViewController" customModule="damoim_project" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="odU-cU-SMU">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="graph" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HQ6-Rq-fkf">
+                                <rect key="frame" x="174" y="415.66666666666669" width="45" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="xXI-3u-8fJ"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="HQ6-Rq-fkf" firstAttribute="centerY" secondItem="odU-cU-SMU" secondAttribute="centerY" id="7f8-iC-bfY"/>
+                            <constraint firstItem="HQ6-Rq-fkf" firstAttribute="centerX" secondItem="odU-cU-SMU" secondAttribute="centerX" id="f6p-rk-V87"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gjc-0M-eO3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3310" y="665"/>
+        </scene>
         <!--Howto View Controller-->
         <scene sceneID="V4V-FU-Zdr">
             <objects>

@@ -161,7 +161,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                     if let document = document, document.exists{
                         let userName = document.get("name") as? String ?? "No Name"
                         let jobNum = document.get("job") as? Int
-                        nameText.text = "청소미화원 " + userName + " 님"
+                        nameText.text = "미화원 " + userName + " 님"
                         emailText.text = userEmail
                     }
                 }

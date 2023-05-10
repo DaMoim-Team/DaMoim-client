@@ -25,6 +25,7 @@
 		E094980729E69A4200807A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E094980629E69A4200807A53 /* Assets.xcassets */; };
 		E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980829E69A4200807A53 /* LaunchScreen.storyboard */; };
 		E095C5E82A0B652E002C1EC1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E095C5E72A0B652E002C1EC1 /* GoogleService-Info.plist */; };
+		E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E095C5E92A0B778F002C1EC1 /* graphViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		E094980929E69A4200807A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E094980B29E69A4200807A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E095C5E72A0B652E002C1EC1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E095C5E92A0B778F002C1EC1 /* graphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 				E092393D2A0A1F2300E3E28F /* catchViewController.swift */,
 				E092393F2A0A290500E3E28F /* UIColorExtension.swift */,
 				E09239412A0A2E3400E3E28F /* cleanViewController.swift */,
+				E095C5E92A0B778F002C1EC1 /* graphViewController.swift */,
 			);
 			path = "damoim-project";
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */,
 				E094422429E7A90A000C6240 /* mainViewController.swift in Sources */,
 				E04B409929EE933D00B4BEE1 /* idSettingsViewController.swift in Sources */,
+				E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */,
 				E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */,
 				E04B409729EE252D00B4BEE1 /* settingsViewController.swift in Sources */,
 				E092393E2A0A1F2300E3E28F /* catchViewController.swift in Sources */,

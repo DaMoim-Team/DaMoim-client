@@ -167,7 +167,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
 //        let menuItem1 = createMenuButton(menuItem: .idSettings)
         let menuItem1 = createMenuButton(menuItem: .howTo)
-        let menuItem2 = createMenuButton(menuItem: .count)
+        let menuItem2 = createMenuButton(menuItem: .graph)
         let menuItem3 = createMenuButton(menuItem: .logout)
 
 //        sideMenuView.addSubview(menuItem1)
@@ -175,10 +175,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         sideMenuView.addSubview(menuItem2)
         sideMenuView.addSubview(menuItem3)
 
-        
-        // 메뉴 아이템 버튼 레이아웃 설정
-//        menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
-//        menuItem1.topAnchor.constraint(equalTo: sideMenuView.topAnchor, constant: 100).isActive = true
         
         menuItem1.centerXAnchor.constraint(equalTo: sideMenuView.centerXAnchor).isActive = true
         menuItem1.topAnchor.constraint(equalTo: accountInfoView.bottomAnchor, constant: 20).isActive = true
@@ -544,20 +540,17 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
     
     enum MenuItem: String {
-        case idSettings = "계정정보"
         case howTo = "도움말"
-        case count = "단속반UI3"
+        case graph = "담배검출그래프"
         case logout = "로그아웃"
 
         var viewController: UIViewController? {
             switch self {
-            case .idSettings:
-                return idSettingsViewController()
             case .howTo:
                 return howtoViewController()
             // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
-            case .count:
-                return nil
+            case .graph:
+                return graphViewController()
             case .logout:
                 return nil
             }
@@ -580,18 +573,12 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             print("\(title) 메뉴 아이템이 선택되었습니다.")
 
             switch title {
-            case "계정정보":
-                guard let idSettingsViewController = self.storyboard?.instantiateViewController(withIdentifier: "idSettingsViewControllerID") as? idSettingsViewController else { return }
-                //idSettingsViewController.modalPresentationStyle = .fullScreen
-                //present(idSettingsViewController, animated: true, completion: nil)
-                self.navigationController?.pushViewController(idSettingsViewController, animated: true)
-
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
-                //howtoViewController.modalPresentationStyle = .fullScreen
-                //present(howtoViewController, animated: true, completion: nil)
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
-                
+            case "담배검출그래프":
+                guard let graphViewController = self.storyboard?.instantiateViewController(withIdentifier: "graphViewControllerID") as? graphViewController else { return }
+                self.navigationController?.pushViewController(graphViewController, animated: true)
             case "로그아웃":
                 do{
                     try Auth.auth().signOut()

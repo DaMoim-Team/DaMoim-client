@@ -322,6 +322,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
         
         // 마커에 경로 순위를 표시
+        // 출발지 수정 
         func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
             let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
             label.backgroundColor = .green

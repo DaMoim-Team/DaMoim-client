@@ -1,0 +1,19 @@
+version: "Apple Swift version 5.8 (swiftlang-5.8.0.124.2 clang-1403.0.22.11.100)"
+options: "2374daa995bbae3c5e4bcb535cbe1b13e592316e9ded70b4ddf75d834306da19"
+build_start_time: [1683794994, 57716000]
+build_end_time: [1683795004, 807223000]
+inputs:
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/Deprecations.swift": [1683725015, 186245057]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/Extensions.swift": [1683725015, 186314098]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/Initializable.swift": [1683725015, 186377390]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/Print.swift": [1683725015, 186432182]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/Protected.swift": [1683725015, 186489390]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuAnimationController.swift": [1683725015, 186568473]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuInteractionController.swift": [1683725015, 186631265]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuManager.swift": [1683725015, 186701807]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuNavigationController.swift": [1683725015, 186822890]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuPresentationController.swift": [1683725015, 186911932]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuPresentationStyle.swift": [1683725015, 186980599]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuPushCoordinator.swift": [1683725015, 187048890]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/SideMenuTransitionController.swift": [1683725015, 187112057]
+  "/Users/kyungmin/CapstoneIOS/DaMoim-client2/Pods/SideMenu/Pod/Classes/UITableViewVibrantCell.swift": [1683725015, 187177890]

@@ -18,6 +18,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
     var minCount: Int = 3
     
+    var locations: [Location] = []
     var optimalroute: [CLLocationCoordinate2D] = []
     
 //    // 경로로 돌아가는 버튼 추가
@@ -54,6 +55,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         button.addTarget(self, action: #selector(closeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.isHidden = true
+        return button
+    }()
+    
+    //검출 수 기준 경로 버튼
+    private lazy var routeCountButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "bugiIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(routeCountButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
@@ -216,6 +226,12 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 // 새로 가져온 locations를 전역 변수에 할당합니다.
                 self.fetchedLocations = locations
                 
+                self.locations = locations.sorted(by: {$0.count_cleanup > $1.count_cleanup })
+                // 정렬된 locations 배열 출력
+                for location in self.locations {
+                    print("sorted count_cleanup: \(location.count_cleanup), latitude: \(location.latitude), longitude: \(location.longitude)")
+                }
+                
                 self.createHeatmap(with: self.fetchedLocations)
                 
             }
@@ -298,6 +314,16 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             refreshButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
         refreshButton.addTarget(self, action: #selector(refreshButtonTapped), for: .touchUpInside)
+        
+        
+        // 검출 수 경로 버튼 추가
+        view.addSubview(routeCountButton)
+        
+        // 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            routeCountButton.bottomAnchor.constraint(equalTo: routeButton.topAnchor, constant: -16),
+            routeCountButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13)
+        ])
         
         //사이드메뉴 상위계층 이동
         view.bringSubviewToFront(sideMenuView)
@@ -475,8 +501,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             let label = UILabel()
             label.text = "\(location.count_cleanup)"
             label.textAlignment = .center
-            label.textColor = .white
-            label.font = UIFont.systemFont(ofSize: 16)
+            label.textColor = .black
+            label.font = UIFont.systemFont(ofSize: 25)
             label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
             label.layer.cornerRadius = circleOverlay.radius
             label.layer.masksToBounds = true
@@ -497,7 +523,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     // minCount = 3 으로 되어있음
     func calculateRadius(from count_cleanup: Int) -> Double {
         // count 값에 따라 원하는 반지름 값을 반환합니다.
-        let baseRadius = 15.0
+        let baseRadius = 30.0
             
         if count_cleanup >= minCount {
             return baseRadius * 1.5
@@ -509,8 +535,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     // 앱 시작후 히트맵 색깔 수정, 검출 수 조정과 관계없이 히트맵이 검출 수에 의해 색으로 구분되어 표시됌
     func calculateColor(from count_cleanup: Int) -> UIColor {
-        let color1 = UIColor.blue
-        let color2 = UIColor.orange
+        let color1 = UIColor.green
+        let color2 = UIColor.systemYellow
         let color3 = UIColor.red
 //        let progress = CGFloat(count_cleanup)/10.0
 //        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
@@ -605,7 +631,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         case idSettings = "계정정보"
         case howTo = "도움말"
         case count = "경로추천설정"
-        case cleaning = "담배검출초기화"
+        case cleaning = "흡연자검출초기화"
         case logout = "로그아웃"
 
         var viewController: UIViewController? {
@@ -656,7 +682,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 
                 self.navigationController?.pushViewController(countViewController, animated: true)
                 
-            case "담배검출초기화":
+            case "흡연자검출초기화":
                 guard let cleanViewController = self.storyboard?.instantiateViewController(withIdentifier: "cleanViewControllerID") as? cleanViewController else { return }
                 
                 self.navigationController?.pushViewController(cleanViewController, animated: true)
@@ -766,7 +792,62 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             
             // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
             self.routeButton.isHidden = true
+            self.routeCountButton.isHidden = true
             self.closeButton.isHidden = false
+        }
+    }
+    
+    //count 기준으로 경로 안내
+    @objc private func routeCountButtonTapped() {
+        print("routeCountButtonTapped called")
+        
+        //히트맵 숨기기
+        circleOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        // 레이블 숨기기
+        circleLabels.forEach { label in
+            label.mapView = nil
+        }
+
+        DispatchQueue.main.async {
+            self.totalRouteSegments = self.locations.count - 1
+            self.completedRouteSegments = 0
+            if self.locations.count > 1 {
+                for i in 0..<(self.locations.count - 1) {
+                    let start = CLLocationCoordinate2D(latitude: self.locations[i].latitude, longitude: self.locations[i].longitude)
+                    let end = CLLocationCoordinate2D(latitude: self.locations[i + 1].latitude, longitude: self.locations[i + 1].longitude)
+                    self.requestDirection(start: start, end: end) { polylineOverlay, error in
+                        DispatchQueue.main.async {
+                            if let polylineOverlay = polylineOverlay {
+                                polylineOverlay.mapView = self.naverMapView.mapView
+                                self.polylineOverlays.append(polylineOverlay)
+                            } else {
+                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                            }
+                            
+                            self.completedRouteSegments += 1
+                            
+                            if self.completedRouteSegments == self.totalRouteSegments {
+                                //self.createMarkers(coordinates: self.optimalroute)
+                                //self.markers.append(contentsOf: self.markers)
+                                
+                                print("Finished drawing route")
+                            }
+                        }
+                    }
+                }
+            }else {
+                print("Not enough locations to draw")
+            }
+            // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+            self.routeButton.isHidden = true
+            self.routeCountButton.isHidden = true
+            self.closeButton.isHidden = false
+            
+            // 정렬된 locations의 좌표를 사용하여 마커 생성
+            let sortedCoordinates = self.locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+            self.createMarkers(coordinates: sortedCoordinates)
         }
     }
 
@@ -798,6 +879,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
         routeButton.isHidden = false
+        routeCountButton.isHidden = false
         closeButton.isHidden = true
     }
     
@@ -847,6 +929,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 // 새로 가져온 locations를 전역 변수에 할당합니다.
                 self.fetchedLocations = locations
                 
+                //내림차순으로 정렬
+                self.locations = locations.sorted(by: { $0.count_cleanup > $1.count_cleanup })
+                
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.
                 // 이 경우, 닫기 버튼을 누른 것처럼 작동하게 합니다.
                 if self.routeButton.isHidden == true {
@@ -854,6 +939,18 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 }
                        
                 if self.routeButton.isHidden == false {
+                    //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
+                    
+                    // 새 히트맵을 생성하고 표시합니다.
+                    self.createHeatmap(with: self.fetchedLocations)
+                }
+                
+                //~~~
+                if self.routeCountButton.isHidden == true {
+                    self.closeButtonTapped()
+                }
+                       
+                if self.routeCountButton.isHidden == false {
                     //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
                     
                     // 새 히트맵을 생성하고 표시합니다.

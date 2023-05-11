@@ -31,7 +31,7 @@ class countViewController: UIViewController{
         
         // 설명레이블
         explainLabel = UILabel()
-        explainLabel.text = "경로설정을 할 때 최소 검출 수를 조정할 수 있습니다. \n\n설정한 수 미만의 장소는 경로설정에서 제외됩니다."
+        explainLabel.text = "경로설정시 최소 검출 수를 조정할 수 있습니다. \n\n설정한 수 미만의 장소는 경로설정에서 제외됩니다."
         explainLabel.textColor = .black
         explainLabel.translatesAutoresizingMaskIntoConstraints = false
         explainLabel.font = UIFont.systemFont(ofSize: 15)

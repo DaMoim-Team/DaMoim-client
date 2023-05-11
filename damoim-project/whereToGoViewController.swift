@@ -42,7 +42,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     private lazy var routeButton: UIButton = {
         let button = UIButton(type: .system)
         //button.setTitle("경로 표시", for: .normal)
-        button.setImage(UIImage(named: "shortestRoute")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.setImage(UIImage(named: "shortestroute")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

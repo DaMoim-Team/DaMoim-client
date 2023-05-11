@@ -42,7 +42,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     private lazy var routeButton: UIButton = {
         let button = UIButton(type: .system)
         //button.setTitle("경로 표시", for: .normal)
-        button.setImage(UIImage(named: "wayIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.setImage(UIImage(named: "shortestRoute")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -61,7 +61,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     //검출 수 기준 경로 버튼
     private lazy var routeCountButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "bugiIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.setImage(UIImage(named: "countroute")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(routeCountButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button

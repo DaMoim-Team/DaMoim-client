@@ -470,14 +470,14 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         circleOverlays.removeAll()
         
         for location in locations {
-            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
-            circleOverlay.fillColor = calculateColor(from: location.count_catch)
+            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
+            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
             circleOverlay.mapView = naverMapView.mapView
             circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
             
             // 레이블 생성
             let label = UILabel()
-            label.text = "\(location.count_catch)"
+            label.text = "\(location.count_cleanup)"
             label.textAlignment = .center
             label.textColor = .black
             label.font = UIFont.systemFont(ofSize: 25)
@@ -498,29 +498,41 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
 
     
-    func calculateRadius(from count_catch: Int) -> Double {
+    // minCount = 3 으로 되어있음
+    func calculateRadius(from count_cleanup: Int) -> Double {
         // count 값에 따라 원하는 반지름 값을 반환합니다.
         let baseRadius = 30.0
             
-        if count_catch >= minCount {
+        if count_cleanup >= minCount {
             return baseRadius * 1.5
         } else {
             return baseRadius
         }
     }
 
-    func calculateColor(from count_catch: Int) -> UIColor {
-        let color1 = UIColor.blue
-        let color2 = UIColor.red
-        let progress = CGFloat(count_catch)/10.0
-        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
-        
-        // count 값에 따라 원하는 색상 값을 반환합니다.
-        if count_catch >= minCount {
-            return UIColor.red.withAlphaComponent(0.5)
-        } else {
-            return UIColor.blue.withAlphaComponent(0.5)
-        }
+    
+    // 앱 시작후 히트맵 색깔 수정, 검출 수 조정과 관계없이 히트맵이 검출 수에 의해 색으로 구분되어 표시됌
+    func calculateColor(from count_cleanup: Int) -> UIColor {
+        let color1 = UIColor.green
+        let color2 = UIColor.systemYellow
+        let color3 = UIColor.red
+//        let progress = CGFloat(count_cleanup)/10.0
+//        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
+//
+//        // count 값에 따라 원하는 색상 값을 반환합니다.
+//        if count_cleanup >= minCount {
+//            return UIColor.red.withAlphaComponent(0.5)
+//        } else {
+//            return UIColor.blue.withAlphaComponent(0.5)
+//        }
+        if count_cleanup <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
+                return color1.withAlphaComponent(0.5)
+            } else if count_cleanup > 6 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
+                return color2.withAlphaComponent(0.5)
+            } else {                                        // 그 이상 검출되면, 빨간색으로 표시
+                return color3.withAlphaComponent(0.5)
+            }
+
     }
     
 

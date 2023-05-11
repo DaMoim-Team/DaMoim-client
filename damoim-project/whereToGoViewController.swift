@@ -124,7 +124,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         accountInfoView.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor).isActive = true
         accountInfoView.topAnchor.constraint(equalTo: sideMenuView.topAnchor).isActive = true
         // 적당한 높이로 설정. 필요에 따라 조정 가능
-        accountInfoView.heightAnchor.constraint(equalToConstant: 180).isActive = true
+        accountInfoView.heightAnchor.constraint(equalToConstant: 150).isActive = true
 
 
 
@@ -140,16 +140,16 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         nameText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
         nameText.topAnchor.constraint(equalTo: accountInfoView.topAnchor, constant: 100).isActive = true
         
-        let emailText = UILabel()
-        emailText.textAlignment = .left
-        emailText.text = "Loading..."
-        emailText.textColor = .black
-        emailText.font = UIFont.systemFont(ofSize: 13)
-        emailText.translatesAutoresizingMaskIntoConstraints = false
-        accountInfoView.addSubview(emailText)
-
-        emailText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
-        emailText.topAnchor.constraint(equalTo: nameText.bottomAnchor, constant: 16).isActive = true
+//        let emailText = UILabel()
+//        emailText.textAlignment = .left
+//        emailText.text = "Loading..."
+//        emailText.textColor = .black
+//        emailText.font = UIFont.systemFont(ofSize: 13)
+//        emailText.translatesAutoresizingMaskIntoConstraints = false
+//        accountInfoView.addSubview(emailText)
+//
+//        emailText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
+//        emailText.topAnchor.constraint(equalTo: nameText.bottomAnchor, constant: 16).isActive = true
         
         if let user = Auth.auth().currentUser {
             let userEmail = user.email ?? "No Email"
@@ -162,13 +162,13 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                         let userName = document.get("name") as? String ?? "No Name"
                         let jobNum = document.get("job") as? Int
                         nameText.text = "미화원 " + userName + " 님"
-                        emailText.text = userEmail
+                        //emailText.text = userEmail
                     }
                 }
             }
         } else {
             nameText.text = "No User"
-            emailText.text = "No User"
+            //emailText.text = "No User"
         }
 
 

@@ -222,8 +222,8 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         //locationManager.add(self) // 자신을 NMFLocationManager의 위치 업데이트 수신자로 추가합니다.
         let mapView = naverMapView.mapView
         
-        let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
-        let initialZoomLevel: Double = 16
+        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
+        let initialZoomLevel: Double = 15
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))
         
@@ -335,7 +335,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
     
     @objc func moveToInitialPath() {
-        let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
+        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
         moveMapTo(coordinate: initialLocation)
     }
    

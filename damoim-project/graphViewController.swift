@@ -92,9 +92,9 @@ class graphViewController: UIViewController {
             case 17:
                 topicText.text = specificValues[8]
                 countText.text = ": 검출수 \(counts[8])회"
-            case 18:
-                topicText.text = specificValues[9]
-                countText.text = ": 검출수 \(counts[9])회"
+//            case 18:
+//                topicText.text = specificValues[9]
+//                countText.text = ": 검출수 \(counts[9])회"
             default:
                 topicText.text = " "
                 countText.text = " "

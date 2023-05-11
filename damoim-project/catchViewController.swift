@@ -131,7 +131,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         accountInfoView.heightAnchor.constraint(equalToConstant: 150).isActive = true
 
 
-
         // 계정 정보 레이블 생성 및 sideMenuView에 추가
         let nameText = UILabel()
         nameText.textAlignment = .left
@@ -143,17 +142,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
 
         nameText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
         nameText.topAnchor.constraint(equalTo: accountInfoView.topAnchor, constant: 100).isActive = true
-        
-//        let emailText = UILabel()
-//        emailText.textAlignment = .left
-//        emailText.text = "Loading..."
-//        emailText.textColor = .black
-//        emailText.font = UIFont.systemFont(ofSize: 13)
-//        emailText.translatesAutoresizingMaskIntoConstraints = false
-//        accountInfoView.addSubview(emailText)
-//
-//        emailText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
-//        emailText.topAnchor.constraint(equalTo: nameText.bottomAnchor, constant: 16).isActive = true
         
         if let user = Auth.auth().currentUser {
             let userEmail = user.email ?? "No Email"
@@ -310,38 +298,38 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
     
     //기본 마커
-        private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+    private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
 
-            var count = 1 // 경로 순서를 나타내는 변수
-            coordinates.forEach { coordinate in
-                let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
-                marker.iconImage = createMarkerIconWithNumber(count)
-                marker.mapView = naverMapView.mapView
-                markers.append(marker)
+        var count = 1 // 경로 순서를 나타내는 변수
+        coordinates.forEach { coordinate in
+            let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
+            marker.iconImage = createMarkerIconWithNumber(count)
+            marker.mapView = naverMapView.mapView
+            markers.append(marker)
 
-                count += 1 // 경로 순서를 증가
-                closeButton.isHidden = false
+            count += 1 // 경로 순서를 증가
+            closeButton.isHidden = false
 
-            }
         }
+    }
         
-        // 마커에 경로 순위를 표시
-        func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-            label.backgroundColor = .green
-            label.textAlignment = .center
-            label.textColor = .black
-            label.font = UIFont.boldSystemFont(ofSize: 14)
-            label.text = "\(number)"
-            label.layer.cornerRadius = label.bounds.width / 2
-            label.layer.masksToBounds = true
+    // 마커에 경로 순위를 표시
+    func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        label.backgroundColor = .green
+        label.textAlignment = .center
+        label.textColor = .black
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.text = "\(number)"
+        label.layer.cornerRadius = label.bounds.width / 2
+        label.layer.masksToBounds = true
 
-            UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
-            defer { UIGraphicsEndImageContext() }
-            label.layer.render(in: UIGraphicsGetCurrentContext()!)
-            let image = UIGraphicsGetImageFromCurrentImageContext()!
-            return NMFOverlayImage(image: image)
-        }
+        UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
+        defer { UIGraphicsEndImageContext() }
+        label.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        return NMFOverlayImage(image: image)
+    }
 
 
     func moveMapTo(coordinate: NMGLatLng) {

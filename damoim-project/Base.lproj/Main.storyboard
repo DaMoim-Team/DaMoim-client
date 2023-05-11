@@ -17,44 +17,59 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VdC-uo-Jye">
-                                <rect key="frame" x="30" y="464" width="333" height="35"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="로그인"/>
-                                <connections>
-                                    <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HvV-NM-D7L"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="바른 흡연" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ci8-oq-0id">
-                                <rect key="frame" x="141" y="208" width="111" height="36"/>
+                                <rect key="frame" x="141.33333333333334" y="248.66666666666663" width="110.33333333333334" height="36"/>
                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="30"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="아이디" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o9L-X1-5vQ">
-                                <rect key="frame" x="30" y="274" width="333" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="비밀번호" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xFL-vC-ZZx">
-                                <rect key="frame" x="30" y="369" width="59" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="아이디를 입력하세요." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="t3K-VV-0hW">
-                                <rect key="frame" x="30" y="305" width="333" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="비밀번호를 입력하세요." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="21J-vf-TNQ">
-                                <rect key="frame" x="30" y="400" width="333" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="ciZ-4p-8Or">
+                                <rect key="frame" x="30" y="314.66666666666669" width="333" height="223.00000000000006"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="아이디" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o9L-X1-5vQ">
+                                        <rect key="frame" x="0.0" y="0.0" width="44.333333333333336" height="20.333333333333332"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="아이디를 입력하세요." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="t3K-VV-0hW">
+                                        <rect key="frame" x="0.0" y="40.333333333333314" width="333" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="비밀번호" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xFL-vC-ZZx">
+                                        <rect key="frame" x="0.0" y="94.333333333333314" width="59" height="20.333333333333329"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="비밀번호를 입력하세요." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="21J-vf-TNQ">
+                                        <rect key="frame" x="0.0" y="134.66666666666663" width="333" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VdC-uo-Jye">
+                                        <rect key="frame" x="0.0" y="188.66666666666663" width="333" height="34.333333333333343"/>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="로그인"/>
+                                        <connections>
+                                            <action selector="loginAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="HvV-NM-D7L"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="t3K-VV-0hW" firstAttribute="leading" secondItem="ciZ-4p-8Or" secondAttribute="leading" id="7gY-YS-kHc"/>
+                                    <constraint firstItem="21J-vf-TNQ" firstAttribute="leading" secondItem="ciZ-4p-8Or" secondAttribute="leading" id="88A-q0-P01"/>
+                                    <constraint firstItem="VdC-uo-Jye" firstAttribute="leading" secondItem="ciZ-4p-8Or" secondAttribute="leading" id="Bdx-1t-yle"/>
+                                    <constraint firstAttribute="trailing" secondItem="VdC-uo-Jye" secondAttribute="trailing" id="BnM-cj-PG1"/>
+                                    <constraint firstItem="xFL-vC-ZZx" firstAttribute="leading" secondItem="ciZ-4p-8Or" secondAttribute="leading" id="Dz1-b7-Itt"/>
+                                    <constraint firstItem="o9L-X1-5vQ" firstAttribute="leading" secondItem="ciZ-4p-8Or" secondAttribute="leading" id="cOL-og-Se0"/>
+                                    <constraint firstAttribute="trailing" secondItem="21J-vf-TNQ" secondAttribute="trailing" id="kX6-k2-o2g"/>
+                                    <constraint firstAttribute="trailing" secondItem="t3K-VV-0hW" secondAttribute="trailing" id="nmk-S3-eq4"/>
+                                </constraints>
+                            </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2SN-Yo-Oz2">
-                                <rect key="frame" x="280" y="529" width="83" height="35"/>
+                                <rect key="frame" x="280" y="557.66666666666663" width="83" height="34.333333333333371"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" title="회원가입"/>
                                 <connections>
@@ -65,25 +80,13 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="21J-vf-TNQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="1WN-sR-xLE"/>
-                            <constraint firstItem="xFL-vC-ZZx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="2Ho-9Z-ojQ"/>
-                            <constraint firstItem="21J-vf-TNQ" firstAttribute="top" secondItem="xFL-vC-ZZx" secondAttribute="bottom" constant="10" id="2aB-zG-PWC"/>
-                            <constraint firstItem="xFL-vC-ZZx" firstAttribute="top" secondItem="t3K-VV-0hW" secondAttribute="bottom" constant="30" id="6s2-1b-ea4"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="2SN-Yo-Oz2" secondAttribute="trailing" constant="30" id="APK-4t-XM8"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="VdC-uo-Jye" secondAttribute="trailing" constant="30" id="HGF-mt-3bD"/>
-                            <constraint firstItem="o9L-X1-5vQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="JPl-08-aFJ"/>
-                            <constraint firstItem="o9L-X1-5vQ" firstAttribute="top" secondItem="Ci8-oq-0id" secondAttribute="bottom" constant="30" id="LuA-Ka-eWG"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="t3K-VV-0hW" secondAttribute="trailing" constant="30" id="MTL-Al-XV4"/>
-                            <constraint firstItem="t3K-VV-0hW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="OKW-mn-gRp"/>
-                            <constraint firstItem="VdC-uo-Jye" firstAttribute="top" secondItem="21J-vf-TNQ" secondAttribute="bottom" constant="30" id="Onv-DU-gtU"/>
-                            <constraint firstItem="t3K-VV-0hW" firstAttribute="top" secondItem="o9L-X1-5vQ" secondAttribute="bottom" constant="10" id="RfG-U3-jsV"/>
-                            <constraint firstItem="Ci8-oq-0id" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-200" id="btu-NL-TJX"/>
-                            <constraint firstItem="o9L-X1-5vQ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="cdD-az-m3P"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="21J-vf-TNQ" secondAttribute="trailing" constant="30" id="g24-iz-ZRa"/>
-                            <constraint firstItem="t3K-VV-0hW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="v4d-Lx-ev1"/>
-                            <constraint firstItem="Ci8-oq-0id" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="xZ1-me-z5Z"/>
-                            <constraint firstItem="VdC-uo-Jye" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="zCI-ku-8KL"/>
-                            <constraint firstItem="2SN-Yo-Oz2" firstAttribute="top" secondItem="VdC-uo-Jye" secondAttribute="bottom" constant="30" id="zeW-al-yo6"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="2SN-Yo-Oz2" secondAttribute="trailing" constant="30" id="9Ag-qg-CgM"/>
+                            <constraint firstItem="ciZ-4p-8Or" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="Q2r-XU-FkH"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="ciZ-4p-8Or" secondAttribute="trailing" constant="30" id="XIy-Pi-sRw"/>
+                            <constraint firstItem="ciZ-4p-8Or" firstAttribute="top" secondItem="Ci8-oq-0id" secondAttribute="bottom" constant="30" id="dHZ-yp-n2y"/>
+                            <constraint firstItem="2SN-Yo-Oz2" firstAttribute="top" secondItem="ciZ-4p-8Or" secondAttribute="bottom" constant="20" id="gdC-dI-JOd"/>
+                            <constraint firstItem="ciZ-4p-8Or" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="jSJ-bq-dLk"/>
+                            <constraint firstItem="Ci8-oq-0id" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ufY-BS-JcY"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="cDv-OS-Fpa"/>

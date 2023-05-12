@@ -21,6 +21,10 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     var locations: [Location] = []
     var optimalroute: [CLLocationCoordinate2D] = []
     
+    //출발지
+    var startLocation: Location?
+
+    
 //    // 경로로 돌아가는 버튼 추가
 //    let goBackToPathButton: UIButton = {
 //        let button = UIButton(type: .system)
@@ -221,22 +225,32 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
 
             DispatchQueue.main.async {
-                // 새로 가져온 optimalroute를 전역 변수에 할당합니다.
+                // 새로 가져온 optimalroute를 전역 변수에 할당
                 self.optimalroute = optimalroute
-                // 새로 가져온 locations를 전역 변수에 할당합니다.
+                // 새로 가져온 locations를 전역 변수에 할당
                 self.fetchedLocations = locations
                 
-                self.locations = locations.sorted(by: {$0.count_cleanup > $1.count_cleanup })
-                // 정렬된 locations 배열 출력
-                for location in self.locations {
+                //'start' 위치를 찾아서 전역 변수에 저장
+                if let startLocation = locations.first(where: { $0.topic_id == "start" }) {
+                    self.startLocation = startLocation
+            
+                    // 'start' 위치의 위도와 경도를 출력합니다.
+                    print("Start location latitude: \(startLocation.latitude), longitude: \(startLocation.longitude)")
+                }else {
+                    print("Start location not found in locations")
+                }
+                //출발지 제외하고 내림차순 정렬
+                self.fetchedLocations = self.fetchedLocations
+                    .filter { $0.topic_id != "start" }
+                    .sorted(by: {$0.count_cleanup > $1.count_cleanup })
+                // 정렬된 배열 출력
+                for location in self.fetchedLocations {
                     print("sorted count_cleanup: \(location.count_cleanup), latitude: \(location.latitude), longitude: \(location.longitude)")
                 }
                 
                 self.createHeatmap(with: self.fetchedLocations)
-                
             }
         }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -333,6 +347,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
+
         var count = 0 // 경로 순서를 나타내는 변수
 
         coordinates.forEach { coordinate in
@@ -346,7 +361,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 marker.captionHaloColor = UIColor.white  // 캡션 텍스트의 테두리 색상을 설정합니다.
                 marker.iconTintColor = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.0)
 
-                
             } else {
                 marker.iconImage = createMarkerIconWithNumber(count)
             }
@@ -420,7 +434,14 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
-                let locations = self.fetchLocations(from: decodedData)
+                
+                //출발지
+                guard let startLocation = self.fetchStartLocation(from: decodedData) else {
+                    completion(nil, nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find start location"]))
+                    return
+                }
+                
+                let locations = self.fetchLocations(from: decodedData, startLocation: startLocation)
                 let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: 0)
                 completion(optimalroute, locations, nil)
             } catch {
@@ -431,8 +452,19 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         task.resume()
     }
 
-    func fetchLocations(from responseData: ResponseData) -> [Location] {
-        let filteredLocations = responseData.optimalRoute.filter { $0.count_cleanup > 0 }
+    //출발지 위치 fetch
+    func fetchStartLocation(from responseData: ResponseData) -> Location? {
+        let startLocation = responseData.optimalRoute.first { $0.topic_id == "start" }
+        return startLocation
+    }
+
+
+    func fetchLocations(from responseData: ResponseData, startLocation: Location) -> [Location] {
+        var filteredLocations = responseData.optimalRoute.filter { $0.count_cleanup > 0 && $0.topic_id != "start" }
+        
+        //출발지 위치를 'filteredLocations'에 넣음
+        filteredLocations.insert(startLocation, at: 0)
+        
         return filteredLocations
     }
 
@@ -826,13 +858,14 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             label.mapView = nil
         }
 
+        //fetchedLocations: 출발 위치 제외
         DispatchQueue.main.async {
-            self.totalRouteSegments = self.locations.count - 1
+            self.totalRouteSegments = self.fetchedLocations.count
             self.completedRouteSegments = 0
-            if self.locations.count > 1 {
-                for i in 0..<(self.locations.count - 1) {
-                    let start = CLLocationCoordinate2D(latitude: self.locations[i].latitude, longitude: self.locations[i].longitude)
-                    let end = CLLocationCoordinate2D(latitude: self.locations[i + 1].latitude, longitude: self.locations[i + 1].longitude)
+            if let startLocation = self.startLocation {
+                var start = CLLocationCoordinate2D(latitude: startLocation.latitude, longitude: startLocation.longitude)
+                for i in 0..<(self.fetchedLocations.count) {
+                    let end = CLLocationCoordinate2D(latitude: self.fetchedLocations[i].latitude, longitude: self.fetchedLocations[i].longitude)
                     self.requestDirection(start: start, end: end) { polylineOverlay, error in
                         DispatchQueue.main.async {
                             if let polylineOverlay = polylineOverlay {
@@ -841,17 +874,16 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                             } else {
                                 print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
                             }
-                            
-                            self.completedRouteSegments += 1
-                            
-                            if self.completedRouteSegments == self.totalRouteSegments {
-                                //self.createMarkers(coordinates: self.optimalroute)
-                                //self.markers.append(contentsOf: self.markers)
                                 
+                            self.completedRouteSegments += 1
+                                
+                            if self.completedRouteSegments == self.totalRouteSegments {
+               
                                 print("Finished drawing route")
                             }
                         }
                     }
+                    start = end
                 }
             }else {
                 print("Not enough locations to draw")
@@ -862,8 +894,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             self.closeButton.isHidden = false
             
             // 정렬된 locations의 좌표를 사용하여 마커 생성
-            let sortedCoordinates = self.locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
-            self.createMarkers(coordinates: sortedCoordinates)
+            if let startLocation = self.startLocation {
+                let sortedCoordinates = [CLLocationCoordinate2D(latitude: startLocation.latitude, longitude: startLocation.longitude)]
+                       + self.fetchedLocations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+                self.createMarkers(coordinates: sortedCoordinates)
+            } else {
+                print("start location not set")
+                let sortedCoordinates = self.fetchedLocations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+                self.createMarkers(coordinates: sortedCoordinates)
+            }
         }
     }
 
@@ -943,7 +982,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 // 새로 가져온 optimalroute를 전역 변수에 할당합니다.
                 self.optimalroute = optimalroute
                 // 새로 가져온 locations를 전역 변수에 할당합니다.
-                self.fetchedLocations = locations
+                self.locations = locations
                 
                 //내림차순으로 정렬
                 self.locations = locations.sorted(by: { $0.count_cleanup > $1.count_cleanup })

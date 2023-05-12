@@ -24,8 +24,8 @@
 		E094980529E69A4100807A53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980329E69A4100807A53 /* Main.storyboard */; };
 		E094980729E69A4200807A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E094980629E69A4200807A53 /* Assets.xcassets */; };
 		E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980829E69A4200807A53 /* LaunchScreen.storyboard */; };
-		E095C5E82A0B652E002C1EC1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E095C5E72A0B652E002C1EC1 /* GoogleService-Info.plist */; };
 		E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E095C5E92A0B778F002C1EC1 /* graphViewController.swift */; };
+		E0FE36F32A0CD4B700628E9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,8 +50,8 @@
 		E094980629E69A4200807A53 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E094980929E69A4200807A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E094980B29E69A4200807A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E095C5E72A0B652E002C1EC1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E095C5E92A0B778F002C1EC1 /* graphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewController.swift; sourceTree = "<group>"; };
+		E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,11 +112,11 @@
 				E094980629E69A4200807A53 /* Assets.xcassets */,
 				E094980829E69A4200807A53 /* LaunchScreen.storyboard */,
 				E094980B29E69A4200807A53 /* Info.plist */,
-				E095C5E72A0B652E002C1EC1 /* GoogleService-Info.plist */,
 				E094422329E7A90A000C6240 /* mainViewController.swift */,
 				E04B409629EE252D00B4BEE1 /* settingsViewController.swift */,
 				E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */,
 				E04B409A29EE935000B4BEE1 /* howtoViewController.swift */,
+				E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */,
 				E063367A29EFD6C400490C59 /* whereToGoViewController.swift */,
 				E0921F8B2A0786EE001DADF1 /* countViewController.swift */,
 				E092393D2A0A1F2300E3E28F /* catchViewController.swift */,
@@ -192,7 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */,
-				E095C5E82A0B652E002C1EC1 /* GoogleService-Info.plist in Resources */,
+				E0FE36F32A0CD4B700628E9F /* GoogleService-Info.plist in Resources */,
 				E094980729E69A4200807A53 /* Assets.xcassets in Resources */,
 				E094980529E69A4100807A53 /* Main.storyboard in Resources */,
 			);

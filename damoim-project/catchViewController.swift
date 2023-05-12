@@ -223,10 +223,10 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 //출발지 제외하고 내림차순 정렬
                 self.fetchedLocations = self.fetchedLocations
                     .filter { $0.topic_id != "start" }
-                    .sorted(by: {$0.count_cleanup > $1.count_cleanup })
+                    .sorted(by: {$0.count_catch > $1.count_catch })
                 // 정렬된 배열 출력
                 for location in self.fetchedLocations {
-                    print("sorted count_cleanup: \(location.count_cleanup), latitude: \(location.latitude), longitude: \(location.longitude)")
+                    print("sorted count_catch: \(location.count_catch), latitude: \(location.latitude), longitude: \(location.longitude)")
                 }
                 
                 self.createHeatmap(with: self.fetchedLocations)
@@ -421,7 +421,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
 
     func fetchLocations(from responseData: ResponseData, startLocation: Location) -> [Location] {
-        var filteredLocations = responseData.optimalRoute.filter { $0.count_cleanup > 0 && $0.topic_id != "start" }
+        var filteredLocations = responseData.optimalRoute.filter { $0.count_catch > 0 && $0.topic_id != "start" }
         
         //출발지 위치를 'filteredLocations'에 넣음
         filteredLocations.insert(startLocation, at: 0)
@@ -498,14 +498,14 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         circleOverlays.removeAll()
         
         for location in locations {
-            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
-            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
+            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
+            circleOverlay.fillColor = calculateColor(from: location.count_catch)
             circleOverlay.mapView = naverMapView.mapView
             circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
             
             // 레이블 생성
             let label = UILabel()
-            label.text = "\(location.count_cleanup)"
+            label.text = "\(location.count_catch)"
             label.textAlignment = .center
             label.textColor = .black
             label.font = UIFont.systemFont(ofSize: 25)
@@ -527,14 +527,14 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
 
     
     // minCount = 3 으로 되어있음
-    func calculateRadius(from count_cleanup: Int) -> Double {
+    func calculateRadius(from count_catch: Int) -> Double {
            let smallRadius = 30.0
            let mediumRadius = 70.0
            let largeRadius = 100.0
 
-           if count_cleanup <= 5 {
+           if count_catch <= 5 {
                return smallRadius
-           } else if count_cleanup > 5 && count_cleanup <= 10 {
+           } else if count_catch > 5 && count_catch <= 10 {
                return mediumRadius
            } else {
                return largeRadius
@@ -543,11 +543,11 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
 
     
     // 앱 시작후 히트맵 색깔 수정, 검출 수 조정과 관계없이 히트맵이 검출 수에 의해 색으로 구분되어 표시됌
-    func calculateColor(from count_cleanup: Int) -> UIColor {
+    func calculateColor(from count_catch: Int) -> UIColor {
         let color1 = UIColor.green
         let color2 = UIColor.systemYellow
         let color3 = UIColor.red
-//        let progress = CGFloat(count_cleanup)/10.0
+//        let progress = CGFloat(count_catch)/10.0
 //        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
 //
 //        // count 값에 따라 원하는 색상 값을 반환합니다.
@@ -556,9 +556,9 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
 //        } else {
 //            return UIColor.blue.withAlphaComponent(0.5)
 //        }
-        if count_cleanup <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
+        if count_catch <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
                 return color1.withAlphaComponent(0.5)
-            } else if count_cleanup > 6 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
+            } else if count_catch > 6 && count_catch <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
                 return color2.withAlphaComponent(0.5)
             } else {                                        // 그 이상 검출되면, 빨간색으로 표시
                 return color3.withAlphaComponent(0.5)
@@ -930,6 +930,20 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 // 새로 가져온 locations를 전역 변수에 할당합니다.
                 self.fetchedLocations = locations
                 
+                //'start' 위치를 찾아서 전역 변수에 저장
+                if let startLocation = locations.first(where: { $0.topic_id == "start" }) {
+                    self.startLocation = startLocation
+            
+                    // 'start' 위치의 위도와 경도를 출력합니다.
+                    print("Start location latitude: \(startLocation.latitude), longitude: \(startLocation.longitude)")
+                }else {
+                    print("Start location not found in locations")
+                }
+                //출발지 제외하고 내림차순 정렬
+                self.fetchedLocations = self.fetchedLocations
+                    .filter { $0.topic_id != "start" }
+                    .sorted(by: {$0.count_catch > $1.count_catch })
+                
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.
                 // 이 경우, 닫기 버튼을 누른 것처럼 작동하게 합니다.
                 if self.routeButton.isHidden == true {
@@ -937,6 +951,15 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 }
                        
                 if self.routeButton.isHidden == false {
+                    //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
+                    
+                    // 새 히트맵을 생성하고 표시합니다.
+                    self.createHeatmap(with: self.fetchedLocations)
+                }
+                if self.routeCountButton.isHidden == true {
+                    self.closeButtonTapped()
+                }
+                if self.routeCountButton.isHidden == false {
                     //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
                     
                     // 새 히트맵을 생성하고 표시합니다.

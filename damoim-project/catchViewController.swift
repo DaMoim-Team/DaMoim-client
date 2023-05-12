@@ -19,6 +19,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
     var minCount: Int = 3
     
+    var locations: [Location] = []
     var optimalroute: [CLLocationCoordinate2D] = []
     
     // 햄버거 버튼을 프로퍼티로 추가
@@ -34,7 +35,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     private lazy var routeButton: UIButton = {
         let button = UIButton(type: .system)
         //button.setTitle("경로 표시", for: .normal)
-        button.setImage(UIImage(named: "wayIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.setImage(UIImage(named: "shortestroute")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -49,6 +50,16 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         button.isHidden = true
         return button
     }()
+    
+    //검출 수 기준 경로 버튼
+    private lazy var routeCountButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "countroute")?.withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(routeCountButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
 
 
     
@@ -117,8 +128,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         accountInfoView.trailingAnchor.constraint(equalTo: sideMenuView.trailingAnchor).isActive = true
         accountInfoView.topAnchor.constraint(equalTo: sideMenuView.topAnchor).isActive = true
         // 적당한 높이로 설정. 필요에 따라 조정 가능
-        accountInfoView.heightAnchor.constraint(equalToConstant: 180).isActive = true
-
+        accountInfoView.heightAnchor.constraint(equalToConstant: 150).isActive = true
 
 
         // 계정 정보 레이블 생성 및 sideMenuView에 추가
@@ -133,17 +143,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         nameText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
         nameText.topAnchor.constraint(equalTo: accountInfoView.topAnchor, constant: 100).isActive = true
         
-        let emailText = UILabel()
-        emailText.textAlignment = .left
-        emailText.text = "Loading..."
-        emailText.textColor = .black
-        emailText.font = UIFont.systemFont(ofSize: 13)
-        emailText.translatesAutoresizingMaskIntoConstraints = false
-        accountInfoView.addSubview(emailText)
-
-        emailText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
-        emailText.topAnchor.constraint(equalTo: nameText.bottomAnchor, constant: 16).isActive = true
-        
         if let user = Auth.auth().currentUser {
             let userEmail = user.email ?? "No Email"
             
@@ -155,13 +154,13 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                         let userName = document.get("name") as? String ?? "No Name"
                         let jobNum = document.get("job") as? Int
                         nameText.text = "단속반 " + userName + " 님"
-                        emailText.text = userEmail
+                        //emailText.text = userEmail
                     }
                 }
             }
         } else {
             nameText.text = "No User"
-            emailText.text = "No User"
+            //emailText.text = "No User"
         }
         
         // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
@@ -209,6 +208,12 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 // 새로 가져온 locations를 전역 변수에 할당합니다.
                 self.fetchedLocations = locations
                 
+                self.locations = locations.sorted(by: {$0.count_cleanup > $1.count_cleanup })
+                // 정렬된 locations 배열 출력
+                for location in self.locations {
+                    print("sorted count_cleanup: \(location.count_cleanup), latitude: \(location.latitude), longitude: \(location.longitude)")
+                }
+                
                 self.createHeatmap(with: self.fetchedLocations)
                 
             }
@@ -222,8 +227,8 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         //locationManager.add(self) // 자신을 NMFLocationManager의 위치 업데이트 수신자로 추가합니다.
         let mapView = naverMapView.mapView
         
-        let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
-        let initialZoomLevel: Double = 16
+        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
+        let initialZoomLevel: Double = 15
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))
         
@@ -259,6 +264,15 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             routeButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13)
         ])
         
+        // 검출 수 경로 버튼 추가
+        view.addSubview(routeCountButton)
+        
+        // 버튼 제약 조건 설정
+        NSLayoutConstraint.activate([
+            routeCountButton.bottomAnchor.constraint(equalTo: routeButton.topAnchor, constant: -16),
+            routeCountButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -13)
+        ])
+        
         // Close 버튼 추가
         view.addSubview(closeButton)
         
@@ -286,7 +300,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
 
-        var count = 0 // 경로 순서를 나타내는 변수
+      var count = 0 // 경로 순서를 나타내는 변수
 
         coordinates.forEach { coordinate in
             let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
@@ -312,7 +326,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         }
     }
         
-        // 마커에 경로 순위를 표시
+    // 마커에 경로 순위를 표시
     // 출발지 수정 
         func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
             let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
@@ -331,7 +345,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             return NMFOverlayImage(image: image)
         }
 
-
     func moveMapTo(coordinate: NMGLatLng) {
         let cameraUpdate = NMFCameraUpdate(scrollTo: coordinate)
         cameraUpdate.animation = .easeIn
@@ -349,7 +362,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     }
     
     @objc func moveToInitialPath() {
-        let initialLocation = NMGLatLng(lat: 37.5825638, lng: 127.0101949)
+        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
         moveMapTo(coordinate: initialLocation)
     }
    
@@ -458,17 +471,17 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         circleOverlays.removeAll()
         
         for location in locations {
-            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
-            circleOverlay.fillColor = calculateColor(from: location.count_catch)
+            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
+            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
             circleOverlay.mapView = naverMapView.mapView
             circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
             
             // 레이블 생성
             let label = UILabel()
-            label.text = "\(location.count_catch)"
+            label.text = "\(location.count_cleanup)"
             label.textAlignment = .center
-            label.textColor = .white
-            label.font = UIFont.systemFont(ofSize: 16)
+            label.textColor = .black
+            label.font = UIFont.systemFont(ofSize: 25)
             label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
             label.layer.cornerRadius = circleOverlay.radius
             label.layer.masksToBounds = true
@@ -501,18 +514,29 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
            }
     }
 
-    func calculateColor(from count_catch: Int) -> UIColor {
-        let color1 = UIColor.blue
-        let color2 = UIColor.red
-        let progress = CGFloat(count_catch)/10.0
-        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
-        
-        // count 값에 따라 원하는 색상 값을 반환합니다.
-        if count_catch >= minCount {
-            return UIColor.red.withAlphaComponent(0.5)
-        } else {
-            return UIColor.blue.withAlphaComponent(0.5)
-        }
+    
+    // 앱 시작후 히트맵 색깔 수정, 검출 수 조정과 관계없이 히트맵이 검출 수에 의해 색으로 구분되어 표시됌
+    func calculateColor(from count_cleanup: Int) -> UIColor {
+        let color1 = UIColor.green
+        let color2 = UIColor.systemYellow
+        let color3 = UIColor.red
+//        let progress = CGFloat(count_cleanup)/10.0
+//        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
+//
+//        // count 값에 따라 원하는 색상 값을 반환합니다.
+//        if count_cleanup >= minCount {
+//            return UIColor.red.withAlphaComponent(0.5)
+//        } else {
+//            return UIColor.blue.withAlphaComponent(0.5)
+//        }
+        if count_cleanup <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
+                return color1.withAlphaComponent(0.5)
+            } else if count_cleanup > 6 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
+                return color2.withAlphaComponent(0.5)
+            } else {                                        // 그 이상 검출되면, 빨간색으로 표시
+                return color3.withAlphaComponent(0.5)
+            }
+
     }
     
 
@@ -588,7 +612,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     enum MenuItem: String {
         case howTo = "도움말"
         case count = "경로추천설정"
-        case graph = "담배검출그래프"
+        case graph = "흡연자검출그래프"
         case logout = "로그아웃"
 
         var viewController: UIViewController? {
@@ -628,7 +652,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 guard let countViewController = self.storyboard?.instantiateViewController(withIdentifier: "countViewControllerID") as? countViewController else { return }
                 
                 self.navigationController?.pushViewController(countViewController, animated: true)
-            case "담배검출그래프":
+            case "흡연자검출그래프":
                 guard let graphViewController = self.storyboard?.instantiateViewController(withIdentifier: "graphViewControllerID") as? graphViewController else { return }
                 self.navigationController?.pushViewController(graphViewController, animated: true)
             case "로그아웃":
@@ -737,9 +761,63 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
             self.routeButton.isHidden = true
             self.closeButton.isHidden = false
+            self.routeCountButton.isHidden = true
         }
     }
 
+    //count 기준으로 경로 안내
+    @objc private func routeCountButtonTapped() {
+        print("routeCountButtonTapped called")
+        
+        //히트맵 숨기기
+        circleOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        // 레이블 숨기기
+        circleLabels.forEach { label in
+            label.mapView = nil
+        }
+
+        DispatchQueue.main.async {
+            self.totalRouteSegments = self.locations.count - 1
+            self.completedRouteSegments = 0
+            if self.locations.count > 1 {
+                for i in 0..<(self.locations.count - 1) {
+                    let start = CLLocationCoordinate2D(latitude: self.locations[i].latitude, longitude: self.locations[i].longitude)
+                    let end = CLLocationCoordinate2D(latitude: self.locations[i + 1].latitude, longitude: self.locations[i + 1].longitude)
+                    self.requestDirection(start: start, end: end) { polylineOverlay, error in
+                        DispatchQueue.main.async {
+                            if let polylineOverlay = polylineOverlay {
+                                polylineOverlay.mapView = self.naverMapView.mapView
+                                self.polylineOverlays.append(polylineOverlay)
+                            } else {
+                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                            }
+                            
+                            self.completedRouteSegments += 1
+                            
+                            if self.completedRouteSegments == self.totalRouteSegments {
+                                //self.createMarkers(coordinates: self.optimalroute)
+                                //self.markers.append(contentsOf: self.markers)
+                                
+                                print("Finished drawing route")
+                            }
+                        }
+                    }
+                }
+            }else {
+                print("Not enough locations to draw")
+            }
+            // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
+            self.routeButton.isHidden = true
+            self.routeCountButton.isHidden = true
+            self.closeButton.isHidden = false
+            
+            // 정렬된 locations의 좌표를 사용하여 마커 생성
+            let sortedCoordinates = self.locations.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+            self.createMarkers(coordinates: sortedCoordinates)
+        }
+    }
     
     @objc private func closeButtonTapped() {
         // 경로 지우기
@@ -769,6 +847,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         // 경로 표시 버튼 활성화 및 닫기 버튼 비활성화
         routeButton.isHidden = false
         closeButton.isHidden = true
+        routeCountButton.isHidden = false
     }
     
     @objc private func refreshButtonTapped() {

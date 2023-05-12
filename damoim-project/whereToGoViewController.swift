@@ -251,7 +251,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 self.createHeatmap(with: self.fetchedLocations)
             }
         }
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -348,17 +347,29 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
-        
-        var count = 1 // 경로 순서를 나타내는 변수
+
+        var count = 0 // 경로 순서를 나타내는 변수
+
         coordinates.forEach { coordinate in
             let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
-            marker.iconImage = createMarkerIconWithNumber(count)
+
+            // 첫 번째 마커인 경우 "START" 문자열을 사용하고, 그렇지 않은 경우 count를 사용합니다.
+            if count == 0 {
+                marker.captionText = "출발"
+                marker.captionTextSize = 18  // 캡션 텍스트의 크기를 설정합니다.
+                marker.captionColor = UIColor.red  // 캡션 텍스트의 색상을 설정합니다.
+                marker.captionHaloColor = UIColor.white  // 캡션 텍스트의 테두리 색상을 설정합니다.
+                marker.iconTintColor = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.0)
+       
+            } else {
+                marker.iconImage = createMarkerIconWithNumber(count)
+            }
+
             marker.mapView = naverMapView.mapView
             markers.append(marker)
 
             count += 1 // 경로 순서를 증가
             closeButton.isHidden = false
-
         }
     }
         
@@ -423,6 +434,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             do {
                 let decodedData = try JSONDecoder().decode(ResponseData.self, from: data)
                 
+                //출발지
                 guard let startLocation = self.fetchStartLocation(from: decodedData) else {
                     completion(nil, nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Could not find start location"]))
                     return
@@ -454,7 +466,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         return filteredLocations
     }
-
 
 
     func fetchOptimalRouteCoordinates(from responseData: ResponseData, minimumCount: Int) -> [CLLocationCoordinate2D] {

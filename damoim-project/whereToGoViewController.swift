@@ -347,7 +347,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
-
+        
         var count = 0 // 경로 순서를 나타내는 변수
 
         coordinates.forEach { coordinate in
@@ -441,6 +441,13 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                     return
                 }
                 
+                // optimalrouteWithoutStart 배열 생성
+                self.optimalrouteWithoutStart = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: minimumCount)
+                // 출발지 제거
+                if let startLocationIndex = self.optimalrouteWithoutStart.firstIndex(where: { $0.latitude == startLocation.latitude && $0.longitude == startLocation.longitude }) {
+                    self.optimalrouteWithoutStart.remove(at: startLocationIndex)
+                }
+                
                 let locations = self.fetchLocations(from: decodedData, startLocation: startLocation)
                 let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: 0)
                 completion(optimalroute, locations, nil)
@@ -470,7 +477,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
 
     func fetchOptimalRouteCoordinates(from responseData: ResponseData, minimumCount: Int) -> [CLLocationCoordinate2D] {
-        let filteredCoordinatesAndCounts = responseData.optimalRoute.filter { $0.count_cleanup >= minimumCount }
+        let filteredCoordinatesAndCounts = responseData.optimalRoute.filter { $0.count_cleanup >= minCount }
         let filteredCoordinates = filteredCoordinatesAndCounts.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         return filteredCoordinates
     }
@@ -797,6 +804,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     private var totalRouteSegments = 0
     private var completedRouteSegments = 0
     var fetchedLocations: [Location] = []
+    var optimalrouteWithoutStart: [CLLocationCoordinate2D] = []
     
     @objc private func routeButtonTapped() {
         
@@ -813,35 +821,49 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         // 미리 가져온 경로 좌표를 사용하여 경로를 지도에 표시
         DispatchQueue.main.async {
-            self.totalRouteSegments = self.optimalroute.count - 1
+            self.totalRouteSegments = self.optimalroute.count
             self.completedRouteSegments = 0
-            if self.optimalroute.count > 1 {
-                for i in 0..<(self.optimalroute.count - 1) {
-                    self.requestDirection(start: self.optimalroute[i], end: self.optimalroute[i + 1]) { polylineOverlay, error in
-                        DispatchQueue.main.async {
-                            if let polylineOverlay = polylineOverlay {
-                                polylineOverlay.mapView = self.naverMapView.mapView
-                                self.polylineOverlays.append(polylineOverlay)
-                            } else {
-                                print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
-                            }
-                            
-                            self.completedRouteSegments += 1
-                            
-                            if self.completedRouteSegments == self.totalRouteSegments {
-                                self.createMarkers(coordinates: self.optimalroute)
-                                self.markers.append(contentsOf: self.markers)
+            if let startLocation = self.startLocation {
+                var start = CLLocationCoordinate2D(latitude: startLocation.latitude, longitude: startLocation.longitude)
+                let optimalrouteWithoutStart = self.optimalroute.filter { !($0.latitude == start.latitude && $0.longitude == start.longitude) }
+                for i in 0..<(optimalrouteWithoutStart.count) {
+                    let end = CLLocationCoordinate2D(latitude: optimalrouteWithoutStart[i].latitude, longitude: optimalrouteWithoutStart[i].longitude)
+                        self.requestDirection(start: start, end: end) { polylineOverlay, error in
+                            DispatchQueue.main.async {
+                                if let polylineOverlay = polylineOverlay {
+                                    polylineOverlay.mapView = self.naverMapView.mapView
+                                    self.polylineOverlays.append(polylineOverlay)
+                                } else {
+                                    print("Error requesting direction:", error?.localizedDescription ?? "unknown error")
+                                }
                                 
+                                self.completedRouteSegments += 1
+                                
+                                if self.completedRouteSegments == self.totalRouteSegments {
+
+                                    print("Finished drawing route")
+                                }
                             }
                         }
+                    start = end
                     }
-                }
             }
             
             // 경로 표시 버튼 비활성화 및 닫기 버튼 활성화
             self.routeButton.isHidden = true
             self.routeCountButton.isHidden = true
             self.closeButton.isHidden = false
+            
+            // 정렬된 locations의 좌표를 사용하여 마커 생성
+            if let startLocation = self.startLocation {
+                let sortedCoordinates = [CLLocationCoordinate2D(latitude: startLocation.latitude, longitude: startLocation.longitude)]
+                + self.optimalrouteWithoutStart.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+                self.createMarkers(coordinates: sortedCoordinates)
+            } else {
+                print("start location not set")
+                let sortedCoordinates = self.optimalrouteWithoutStart.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
+                self.createMarkers(coordinates: sortedCoordinates)
+            }
         }
     }
     

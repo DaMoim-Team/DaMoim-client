@@ -42,7 +42,7 @@ class graphViewController: UIViewController {
         barChartView.leftAxis.labelFont = UIFont.systemFont(ofSize: 12)
         barChartView.leftAxis.labelTextColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.7)
         barChartView.backgroundColor = .white
-        barChartView.gridBackgroundColor = .clear
+        barChartView.gridBackgroundColor = .systemGroupedBackground
         barChartView.xAxis.drawGridLinesEnabled = false
         barChartView.leftAxis.drawGridLinesEnabled = false
         barChartView.rightAxis.drawGridLinesEnabled = false
@@ -106,27 +106,43 @@ class graphViewController: UIViewController {
     func setChart(dataPoints: [String], values: [Double]) {
         barChartView.noDataText = "You need to provide data for the chart."
 
-        var dataEntries: [BarChartDataEntry] = []
-
+        var dataSets: [BarChartDataSet] = []
+        
         for i in 0..<dataPoints.count {
             let dataEntry = BarChartDataEntry(x: Double(i), y: Double(values[i]), data: specificValues[i] as AnyObject)
-            dataEntries.append(dataEntry)
+            let chartDataSet = BarChartDataSet(entries: [dataEntry], label: "\(dataPoints[i])")
+            
+            // specific index you want to change color
+            let date = Date()
+            let calender = Calendar.current
+            let components = calender.dateComponents([.hour], from: date)
+            
+            chartDataSet.colors = [UIColor(hex: 0xA8DAFF, alpha: 0.5)]
+            if let hh = components.hour{
+                if hh >= 9 && hh <= 17{
+                    if i == hh - 9 {
+                        chartDataSet.setColor(UIColor.systemBlue) // Set the color you want here
+                    }
+                }
+            }
+            
+            chartDataSet.valueFormatter = MyValueFormatter(values: specificValues)
+            chartDataSet.valueFont = UIFont.systemFont(ofSize: 12)
+            chartDataSet.valueTextColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.7)
+            
+            dataSets.append(chartDataSet)
         }
         
-        let chartDataSet = BarChartDataSet(entries: dataEntries, label: "Bar Chart View")
-        chartDataSet.valueFormatter = MyValueFormatter(values: specificValues)
-        chartDataSet.valueFont = UIFont.systemFont(ofSize: 12)
-        chartDataSet.valueTextColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.7)
-
-        let chartData = BarChartData(dataSet: chartDataSet)
+        let chartData = BarChartData(dataSets: dataSets)
         barChartView.data = chartData
     }
+
     
     @objc func updateClock() {
         let now = Date()
         
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm:ss"
+        formatter.dateFormat = "HH시 mm분 ss초"
         
         let dateString = formatter.string(from: now)
         timeLabel.text = dateString
@@ -145,6 +161,14 @@ class MyValueFormatter: ValueFormatter {
 
 }
 
+extension UIColor {
+    convenience init(hex: Int, alpha: Double = 1.0) {
+        let red = Double((hex & 0xFF0000) >> 16) / 255.0
+        let green = Double((hex & 0x00FF00) >> 8) / 255.0
+        let blue = Double(hex & 0x0000FF) / 255.0
+        self.init(red: CGFloat(red), green: CGFloat(green), blue: CGFloat(blue), alpha: CGFloat(alpha))
+    }
+}
 
 
 

@@ -333,36 +333,49 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     //기본 마커
     private func createMarkers(coordinates: [CLLocationCoordinate2D]) {
-        
-        var count = 1 // 경로 순서를 나타내는 변수
+        var count = 0 // 경로 순서를 나타내는 변수
+
         coordinates.forEach { coordinate in
             let marker = NMFMarker(position: NMGLatLng(lat: coordinate.latitude, lng: coordinate.longitude))
-            marker.iconImage = createMarkerIconWithNumber(count)
+
+            // 첫 번째 마커인 경우 "START" 문자열을 사용하고, 그렇지 않은 경우 count를 사용합니다.
+            if count == 0 {
+                marker.captionText = "출발"
+                marker.captionTextSize = 18  // 캡션 텍스트의 크기를 설정합니다.
+                marker.captionColor = UIColor.red  // 캡션 텍스트의 색상을 설정합니다.
+                marker.captionHaloColor = UIColor.white  // 캡션 텍스트의 테두리 색상을 설정합니다.
+                marker.iconTintColor = UIColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 0.0)
+
+                
+            } else {
+                marker.iconImage = createMarkerIconWithNumber(count)
+            }
+
             marker.mapView = naverMapView.mapView
             markers.append(marker)
 
             count += 1 // 경로 순서를 증가
             closeButton.isHidden = false
-
         }
     }
         
-    // 마커에 경로 순위를 표시
-    func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        label.backgroundColor = .green
-        label.textAlignment = .center
-        label.textColor = .black
-        label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.text = "\(number)"
-        label.layer.cornerRadius = label.bounds.width / 2
-        label.layer.masksToBounds = true
+        // 마커에 경로 순위를 표시
+        // 출발지 수정 
+        func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+            label.backgroundColor = .green
+            label.textAlignment = .center
+            label.textColor = .black
+            label.font = UIFont.boldSystemFont(ofSize: 14)
+            label.text = "\(number)"
+            label.layer.cornerRadius = label.bounds.width / 2
+            label.layer.masksToBounds = true
 
-        UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
-        defer { UIGraphicsEndImageContext() }
-        label.layer.render(in: UIGraphicsGetCurrentContext()!)
-        let image = UIGraphicsGetImageFromCurrentImageContext()!
-        return NMFOverlayImage(image: image)
+            UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
+            defer { UIGraphicsEndImageContext() }
+            label.layer.render(in: UIGraphicsGetCurrentContext()!)
+            let image = UIGraphicsGetImageFromCurrentImageContext()!
+            return NMFOverlayImage(image: image)
         }
 
 
@@ -522,14 +535,17 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     // minCount = 3 으로 되어있음
     func calculateRadius(from count_cleanup: Int) -> Double {
-        // count 값에 따라 원하는 반지름 값을 반환합니다.
-        let baseRadius = 30.0
-            
-        if count_cleanup >= minCount {
-            return baseRadius * 1.5
-        } else {
-            return baseRadius
-        }
+           let smallRadius = 30.0
+           let mediumRadius = 70.0
+           let largeRadius = 100.0
+
+           if count_cleanup <= 5 {
+               return smallRadius
+           } else if count_cleanup > 5 && count_cleanup <= 10 {
+               return mediumRadius
+           } else {
+               return largeRadius
+           }
     }
 
     

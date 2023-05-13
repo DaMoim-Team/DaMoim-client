@@ -216,41 +216,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         blackOverlayView.addGestureRecognizer(tapGesture)
 
         naverMapView.mapView.touchDelegate = self
-        
-        //처음 실행 시 서버에서 데이터 받아오고 히트맵 표시
-        fetchData(minimumCount: minCount) { optimalroute, locations, error in
-            guard let optimalroute = optimalroute, let locations = locations, error == nil else {
-                print("Error fetching data:", error?.localizedDescription ?? "unknown error")
-                return
-            }
 
-            DispatchQueue.main.async {
-                // 새로 가져온 optimalroute를 전역 변수에 할당
-                self.optimalroute = optimalroute
-                // 새로 가져온 locations를 전역 변수에 할당
-                self.fetchedLocations = locations
-                
-                //'start' 위치를 찾아서 전역 변수에 저장
-                if let startLocation = locations.first(where: { $0.topic_id == "start" }) {
-                    self.startLocation = startLocation
-            
-                    // 'start' 위치의 위도와 경도를 출력합니다.
-                    print("Start location latitude: \(startLocation.latitude), longitude: \(startLocation.longitude)")
-                }else {
-                    print("Start location not found in locations")
-                }
-                //출발지 제외하고 내림차순 정렬
-                self.fetchedLocations = self.fetchedLocations
-                    .filter { $0.topic_id != "start" }
-                    .sorted(by: {$0.count_cleanup > $1.count_cleanup })
-                // 정렬된 배열 출력
-                for location in self.fetchedLocations {
-                    print("sorted count_cleanup: \(location.count_cleanup), latitude: \(location.latitude), longitude: \(location.longitude)")
-                }
-                
-                self.createHeatmap(with: self.fetchedLocations)
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -341,8 +307,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         
         //사이드메뉴 상위계층 이동
         view.bringSubviewToFront(sideMenuView)
-
-        
+        //화면 새로 고침
+        self.refreshButtonTapped()
     }
     
     //기본 마커
@@ -451,6 +417,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 let locations = self.fetchLocations(from: decodedData, startLocation: startLocation)
                 let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: 0)
                 completion(optimalroute, locations, nil)
+                
+                
+                
             } catch {
                 completion(nil, nil, error)
             }

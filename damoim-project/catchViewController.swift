@@ -197,41 +197,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         blackOverlayView.addGestureRecognizer(tapGesture)
 
         naverMapView.mapView.touchDelegate = self
-        
-        //처음 실행 시 서버에서 데이터 받아오고 히트맵 표시
-        fetchData(minimumCount: minCount) { optimalroute, locations, error in
-            guard let optimalroute = optimalroute, let locations = locations, error == nil else {
-                print("Error fetching data:", error?.localizedDescription ?? "unknown error")
-                return
-            }
-
-            DispatchQueue.main.async {
-                // 새로 가져온 optimalroute를 전역 변수에 할당
-                self.optimalroute = optimalroute
-                // 새로 가져온 locations를 전역 변수에 할당
-                self.fetchedLocations = locations
-                
-                //'start' 위치를 찾아서 전역 변수에 저장
-                if let startLocation = locations.first(where: { $0.topic_id == "start" }) {
-                    self.startLocation = startLocation
-            
-                    // 'start' 위치의 위도와 경도를 출력합니다.
-                    print("Start location latitude: \(startLocation.latitude), longitude: \(startLocation.longitude)")
-                }else {
-                    print("Start location not found in locations")
-                }
-                //출발지 제외하고 내림차순 정렬
-                self.fetchedLocations = self.fetchedLocations
-                    .filter { $0.topic_id != "start" }
-                    .sorted(by: {$0.count_catch > $1.count_catch })
-                // 정렬된 배열 출력
-                for location in self.fetchedLocations {
-                    print("sorted count_catch: \(location.count_catch), latitude: \(location.latitude), longitude: \(location.longitude)")
-                }
-                
-                self.createHeatmap(with: self.fetchedLocations)
-            }
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -306,8 +271,8 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         
         //사이드메뉴 상위계층 이동
         view.bringSubviewToFront(sideMenuView)
-
-        
+        //화면 새로 고침
+        self.refreshButtonTapped()
     }
     
     //기본 마커
@@ -414,6 +379,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 let locations = self.fetchLocations(from: decodedData, startLocation: startLocation)
                 let optimalroute = self.fetchOptimalRouteCoordinates(from: decodedData, minimumCount: 0)
                 completion(optimalroute, locations, nil)
+                
             } catch {
                 completion(nil, nil, error)
             }
@@ -421,6 +387,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         
         task.resume()
     }
+   
     //출발지 위치 fetch
     func fetchStartLocation(from responseData: ResponseData) -> Location? {
         let startLocation = responseData.optimalRoute.first { $0.topic_id == "start" }
@@ -938,7 +905,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         }
         markers.removeAll()
 
-        
+
         fetchData(minimumCount: minCount) { optimalroute, locations, error in
             guard let optimalroute = optimalroute, let locations = locations, error == nil else {
                 print("Error fetching data:", error?.localizedDescription ?? "unknown error")
@@ -950,11 +917,11 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 self.optimalroute = optimalroute
                 // 새로 가져온 locations를 전역 변수에 할당합니다.
                 self.fetchedLocations = locations
-                
+
                 //'start' 위치를 찾아서 전역 변수에 저장
                 if let startLocation = locations.first(where: { $0.topic_id == "start" }) {
                     self.startLocation = startLocation
-            
+
                     // 'start' 위치의 위도와 경도를 출력합니다.
                     print("Start location latitude: \(startLocation.latitude), longitude: \(startLocation.longitude)")
                 }else {
@@ -964,16 +931,16 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 self.fetchedLocations = self.fetchedLocations
                     .filter { $0.topic_id != "start" }
                     .sorted(by: {$0.count_catch > $1.count_catch })
-                
+
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.
                 // 이 경우, 닫기 버튼을 누른 것처럼 작동하게 합니다.
                 if self.routeButton.isHidden == true {
                     self.closeButtonTapped()
                 }
-                       
+
                 if self.routeButton.isHidden == false {
                     //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
-                    
+
                     // 새 히트맵을 생성하고 표시합니다.
                     self.createHeatmap(with: self.fetchedLocations)
                 }
@@ -982,11 +949,11 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 }
                 if self.routeCountButton.isHidden == false {
                     //경로설정버튼이 나와있다면 나와있는 히트맵을 지우고 히트맵을 다시 표시할것.
-                    
+
                     // 새 히트맵을 생성하고 표시합니다.
                     self.createHeatmap(with: self.fetchedLocations)
                 }
-                
+
             }
         }
     }

@@ -40,16 +40,16 @@ class cleanViewController: UIViewController {
         var selectedTopics: [String] = []
         
         if Topic1.isOn {
-            selectedTopics.append("topic_1")
+            selectedTopics.append("cctv_id")
         }
         if Topic2.isOn {
-            selectedTopics.append("topic_2")
+            selectedTopics.append("cctv_id")
         }
         if Topic3.isOn {
-            selectedTopics.append("topic_3")
+            selectedTopics.append("cctv_id")
         }
         if Topic4.isOn {
-            selectedTopics.append("topic_4")
+            selectedTopics.append("cctv_id")
         }
         print(selectedTopics)
         sendSelectedTopicsToServer(topics: selectedTopics)

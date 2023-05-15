@@ -176,7 +176,7 @@ extension UIColor {
 //
 //    let players = ["Ozil", "Ramsey", "Laca", "Auba", "Xhaka", "Torreira"]
 //    let goals = [6, 8, 26, 30, 8, 10]
-//    let specificValues = ["topic_1", "topic_2", "topic_3", "topic_4", "topic_5", "topic_6"]
+//    let specificValues = ["cctv_id", "cctv_id", "cctv_id", "cctv_id", "cctv_id", "cctv_id"]
 //
 //    //@IBOutlet weak var lineChartView: LineChartView!
 //    @IBOutlet weak var barChartView: LineChartView! //BarChartView

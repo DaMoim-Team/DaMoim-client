@@ -390,12 +390,12 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
    
     //출발지 위치 fetch
     func fetchStartLocation(from responseData: ResponseData) -> Location? {
-        let startLocation = responseData.optimalRoute.first { $0.topic_id == "start" }
+        let startLocation = responseData.optimalRoute.first { $0.cctv_id == "start" }
         return startLocation
     }
     //검출수 경로를 위한 함수
     func fetchLocations(from responseData: ResponseData, startLocation: Location) -> [Location] {
-        var filteredLocations = responseData.optimalRoute.filter { $0.count_catch > 0 && $0.topic_id != "start" }
+        var filteredLocations = responseData.optimalRoute.filter { $0.count_catch > 0 && $0.cctv_id != "start" }
         
         //출발지 위치를 'filteredLocations'에 넣음
         filteredLocations.insert(startLocation, at: 0)
@@ -558,7 +558,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         let count_cleanup: Int
         let latitude: Double
         let longitude: Double
-        let topic_id: String
+        let cctv_id: String
     }
     
     struct DirectionResponse: Codable {
@@ -647,6 +647,8 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             switch title {
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
+                // 도움말 텍스트 설정
+                howtoViewController.helpText = "여기에 단속반!! 에 대한 도움말을 입력하세요..."   // 원하는 텍스트 입력
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
             case "경로추천설정":
                 guard let countViewController = self.storyboard?.instantiateViewController(withIdentifier: "countViewControllerID") as? countViewController else { return }
@@ -919,7 +921,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 self.fetchedLocations = locations
 
                 //'start' 위치를 찾아서 전역 변수에 저장
-                if let startLocation = locations.first(where: { $0.topic_id == "start" }) {
+                if let startLocation = locations.first(where: { $0.cctv_id == "start" }) {
                     self.startLocation = startLocation
 
                     // 'start' 위치의 위도와 경도를 출력합니다.
@@ -929,7 +931,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 }
                 //출발지 제외하고 내림차순 정렬
                 self.fetchedLocations = self.fetchedLocations
-                    .filter { $0.topic_id != "start" }
+                    .filter { $0.cctv_id != "start" }
                     .sorted(by: {$0.count_catch > $1.count_catch })
 
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.

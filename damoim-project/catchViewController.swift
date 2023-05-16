@@ -538,8 +538,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
             }
 
     }
-    
-
 
     
     //구조체 정의

@@ -698,7 +698,8 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
-                
+                // 도움말 텍스트 설정
+                howtoViewController.helpText = "여기에 미화원!! 에 대한 도움말을 입력하세요..."   // 원하는 텍스트 입력
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
                 
             case "경로추천설정":

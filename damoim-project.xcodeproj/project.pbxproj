@@ -26,6 +26,7 @@
 		E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980829E69A4200807A53 /* LaunchScreen.storyboard */; };
 		E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E095C5E92A0B778F002C1EC1 /* graphViewController.swift */; };
 		E0FE36F32A0CD4B700628E9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */; };
+		E0FE37842A13E17D00628E9F /* fetchTimeranking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		E094980B29E69A4200807A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E095C5E92A0B778F002C1EC1 /* graphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewController.swift; sourceTree = "<group>"; };
 		E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fetchTimeranking.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				E092393F2A0A290500E3E28F /* UIColorExtension.swift */,
 				E09239412A0A2E3400E3E28F /* cleanViewController.swift */,
 				E095C5E92A0B778F002C1EC1 /* graphViewController.swift */,
+				E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */,
 			);
 			path = "damoim-project";
 			sourceTree = "<group>";
@@ -261,6 +264,7 @@
 				E04B409729EE252D00B4BEE1 /* settingsViewController.swift in Sources */,
 				E092393E2A0A1F2300E3E28F /* catchViewController.swift in Sources */,
 				E09239402A0A290500E3E28F /* UIColorExtension.swift in Sources */,
+				E0FE37842A13E17D00628E9F /* fetchTimeranking.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

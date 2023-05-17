@@ -225,7 +225,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         //locationManager.add(self) // 자신을 NMFLocationManager의 위치 업데이트 수신자로 추가합니다.
         let mapView = naverMapView.mapView
         
-        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
+        let initialLocation = NMGLatLng(lat: 37.547174, lng: 127.041846)
         let initialZoomLevel: Double = 15
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))

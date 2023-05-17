@@ -309,20 +309,8 @@
                     <view key="view" contentMode="scaleToFill" id="ZhU-xI-fBC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="도움말" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kdV-AX-B5a">
-                                <rect key="frame" x="157.66666666666666" y="408" width="78" height="36"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="UwC-Nv-nPa"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="kdV-AX-B5a" firstAttribute="centerY" secondItem="ZhU-xI-fBC" secondAttribute="centerY" id="Z2y-bc-tsX"/>
-                            <constraint firstItem="kdV-AX-B5a" firstAttribute="centerX" secondItem="ZhU-xI-fBC" secondAttribute="centerX" id="hE2-MF-UYe"/>
-                        </constraints>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HSG-pw-6Xk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

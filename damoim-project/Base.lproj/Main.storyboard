@@ -239,9 +239,9 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="N번" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tPk-af-NnM">
-                                        <rect key="frame" x="10" y="84" width="40" height="26.333333333333329"/>
+                                        <rect key="frame" x="10" y="84" width="60" height="26.333333333333329"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="40" id="z7d-7s-fw2"/>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="60" id="NKz-aW-e0c"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                         <color key="textColor" red="0.26521070079999998" green="0.26521070079999998" blue="0.26521070079999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
@@ -253,8 +253,8 @@
                                         <color key="textColor" red="0.2652107007575758" green="0.2652107007575758" blue="0.2652107007575758" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=": 검출수 n회" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iGe-pi-9xH">
-                                        <rect key="frame" x="50.000000000000007" y="87" width="82.666666666666686" height="20.333333333333329"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text=": 검출수 n회" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iGe-pi-9xH">
+                                        <rect key="frame" x="84" y="87" width="82.666666666666515" height="20.333333333333258"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <color key="textColor" red="0.26521070079999998" green="0.26521070079999998" blue="0.26521070079999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <nil key="highlightedColor"/>

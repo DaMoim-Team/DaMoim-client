@@ -10,9 +10,9 @@ import Charts
 
 class graphViewController: UIViewController {
     
-    var ranges : [String] = ["9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h"]
-    var counts : [Int] = [6, 8, 26, 30, 8, 10, 7, 16, 27]
-    var specificValues : [String] = ["1번", "2번", "3번", "4번", "5번", "6번", "7번", "8번", "9번"] //cctv_id
+    var ranges : [String] = [] //"9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h"
+    var counts : [Int] = [] //6, 8, 26, 30, 8, 10, 7, 16, 27
+    var specificValues : [String] = [] //cctv_id "1번", "2번", "3번", "4번", "5번", "6번", "7번", "8번", "9번"
 
     @IBOutlet weak var explainLabel: UILabel!
     @IBOutlet weak var barChartView: BarChartView!
@@ -53,6 +53,7 @@ class graphViewController: UIViewController {
             // 차트 업데이트
             DispatchQueue.main.async {
                 self.setChart(dataPoints: self.ranges, values: self.counts.map { Double($0) })
+                self.updateUI()
             }
         }
         
@@ -89,39 +90,19 @@ class graphViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        updateUI()
+    }
+    
+    func updateUI() {
         let date = Date()
-        let calender = Calendar.current
-        let components = calender.dateComponents([.hour], from: date)
-        
-        if let hh = components.hour{
-            switch hh{
-            case 9:
-                topicText.text = specificValues[0]
-                countText.text = ": 검출수 \(counts[0])회"
-            case 10:
-                topicText.text = specificValues[1]
-                countText.text = ": 검출수 \(counts[1])회"
-            case 11:
-                topicText.text = specificValues[2]
-                countText.text = ": 검출수 \(counts[2])회"
-            case 12:
-                topicText.text = specificValues[3]
-                countText.text = ": 검출수 \(counts[3])회"
-            case 13:
-                topicText.text = specificValues[4]
-                countText.text = ": 검출수 \(counts[4])회"
-            case 14:
-                topicText.text = specificValues[5]
-                countText.text = ": 검출수 \(counts[5])회"
-            case 15:
-                topicText.text = specificValues[6]
-                countText.text = ": 검출수 \(counts[6])회"
-            case 16:
-                topicText.text = specificValues[7]
-                countText.text = ": 검출수 \(counts[7])회"
-            case 17:
-                topicText.text = specificValues[8]
-                countText.text = ": 검출수 \(counts[8])회"
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.hour], from: date)
+
+        if let hh = components.hour, hh >= 9, hh <= 17, specificValues.count > hh - 9, counts.count > hh - 9 {
+            switch hh {
+            case 9...17:
+                topicText.text = specificValues[hh - 9]
+                countText.text = ": 검출수 \(counts[hh - 9])회"
             default:
                 topicText.text = " "
                 countText.text = " "

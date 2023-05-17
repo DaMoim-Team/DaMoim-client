@@ -16,7 +16,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
     var naverMapView: NMFNaverMapView!
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
-    var minCount: Int = 3
+    var minCount: Int = 0
     
     var locations: [Location] = []
     var optimalroute: [CLLocationCoordinate2D] = []
@@ -226,7 +226,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let mapView = naverMapView.mapView
         
         let initialLocation = NMGLatLng(lat: 37.547174, lng: 127.041846)
-        let initialZoomLevel: Double = 15
+        let initialZoomLevel: Double = 16
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))
         
@@ -622,8 +622,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
 
-
-    
     //구조체 정의
     //서버에서 보내주는 전체 데이터를 매핑
     struct ResponseData: Codable {
@@ -1027,7 +1025,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 }
                 //출발지 제외하고 내림차순 정렬
                 self.fetchedLocations = self.fetchedLocations
-                    .filter { $0.cctv_id != "start" }
+                    .filter { $0.cctv_id != "start" && $0.count_cleanup >= self.minCount}
                     .sorted(by: {$0.count_cleanup > $1.count_cleanup })
                 
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.

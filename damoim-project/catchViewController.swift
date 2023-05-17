@@ -204,7 +204,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         let mapView = naverMapView.mapView
         
         let initialLocation = NMGLatLng(lat: 37.547174, lng: 127.041846)
-        let initialZoomLevel: Double = 15
+        let initialZoomLevel: Double = 16
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))
         
@@ -968,7 +968,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 }
                 //출발지 제외하고 내림차순 정렬
                 self.fetchedLocations = self.fetchedLocations
-                    .filter { $0.cctv_id != "start" }
+                    .filter { $0.cctv_id != "start" && $0.count_catch >= self.minCount}
                     .sorted(by: {$0.count_catch > $1.count_catch })
 
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.

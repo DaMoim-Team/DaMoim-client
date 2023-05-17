@@ -23,15 +23,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     //출발지
     var startLocation: Location?
-
-    
-//    // 경로로 돌아가는 버튼 추가
-//    let goBackToPathButton: UIButton = {
-//        let button = UIButton(type: .system)
-//        button.setImage(UIImage(named: "bugiIcon")?.withRenderingMode(.alwaysOriginal), for: .normal)
-//        button.translatesAutoresizingMaskIntoConstraints = false
-//        return button
-//    }()
     
     // 햄버거 버튼을 프로퍼티로 추가
     private lazy var hamburgerButton: UIButton = {
@@ -154,17 +145,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         nameText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
         nameText.topAnchor.constraint(equalTo: accountInfoView.topAnchor, constant: 100).isActive = true
         
-//        let emailText = UILabel()
-//        emailText.textAlignment = .left
-//        emailText.text = "Loading..."
-//        emailText.textColor = .black
-//        emailText.font = UIFont.systemFont(ofSize: 13)
-//        emailText.translatesAutoresizingMaskIntoConstraints = false
-//        accountInfoView.addSubview(emailText)
-//
-//        emailText.leadingAnchor.constraint(equalTo: accountInfoView.leadingAnchor, constant: 16).isActive = true
-//        emailText.topAnchor.constraint(equalTo: nameText.bottomAnchor, constant: 16).isActive = true
-        
         if let user = Auth.auth().currentUser {
             let userEmail = user.email ?? "No Email"
             
@@ -176,13 +156,11 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                         let userName = document.get("name") as? String ?? "No Name"
                         let jobNum = document.get("job") as? Int
                         nameText.text = "미화원 " + userName + " 님"
-                        //emailText.text = userEmail
                     }
                 }
             }
         } else {
             nameText.text = "No User"
-            //emailText.text = "No User"
         }
 
 
@@ -221,8 +199,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //locationManager = NMFLocationManager.sharedInstance()
-        //locationManager.add(self) // 자신을 NMFLocationManager의 위치 업데이트 수신자로 추가합니다.
+
         let mapView = naverMapView.mapView
         
         let initialLocation = NMGLatLng(lat: 37.547174, lng: 127.041846)
@@ -251,22 +228,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         // 현재 위치 버튼의 mapView 속성을 설정하세요.
         locationButton.mapView = naverMapView.mapView
         locationButton.addTarget(self, action: #selector(locationButtonTapped), for: .touchUpInside)
-        
-        // 위치 추적 모드를 지정합니다.
-        //naverMapView.mapView.positionMode = .direction
-        
-        // 위치 기능 활성화
-        //naverMapView.positionMode = .direction
-        
-        // 경로로 돌아가는 버튼을 추가하고 제약 조건 설정
-//        view.addSubview(goBackToPathButton)
-//        NSLayoutConstraint.activate([
-//        goBackToPathButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-//            goBackToPathButton.bottomAnchor.constraint(equalTo: locationButton.topAnchor, constant: -16)
-//        ])
-//
-//        // 경로로 돌아가는 버튼에 touchUpInside 이벤트 추가
-//        goBackToPathButton.addTarget(self, action: #selector(moveToInitialPath), for: .touchUpInside)
         
         // 버튼 추가
         view.addSubview(routeButton)
@@ -339,24 +300,24 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
     }
         
-        // 마커에 경로 순위를 표시
-        // 출발지 수정 
-        func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-            label.backgroundColor = .green
-            label.textAlignment = .center
-            label.textColor = .black
-            label.font = UIFont.boldSystemFont(ofSize: 14)
-            label.text = "\(number)"
-            label.layer.cornerRadius = label.bounds.width / 2
-            label.layer.masksToBounds = true
+    // 마커에 경로 순위를 표시
+    // 출발지 수정
+    func createMarkerIconWithNumber(_ number: Int) -> NMFOverlayImage {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        label.backgroundColor = .green
+        label.textAlignment = .center
+        label.textColor = .black
+        label.font = UIFont.boldSystemFont(ofSize: 14)
+        label.text = "\(number)"
+        label.layer.cornerRadius = label.bounds.width / 2
+        label.layer.masksToBounds = true
 
-            UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
-            defer { UIGraphicsEndImageContext() }
-            label.layer.render(in: UIGraphicsGetCurrentContext()!)
-            let image = UIGraphicsGetImageFromCurrentImageContext()!
-            return NMFOverlayImage(image: image)
-        }
+        UIGraphicsBeginImageContextWithOptions(label.bounds.size, false, 0)
+        defer { UIGraphicsEndImageContext() }
+        label.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        return NMFOverlayImage(image: image)
+    }
 
 
     func moveMapTo(coordinate: NMGLatLng) {
@@ -374,12 +335,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         path?.outlineColor = .white
         path?.mapView = naverMapView.mapView
     }
-    
-    @objc func moveToInitialPath() {
-        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
-        moveMapTo(coordinate: initialLocation)
-    }
-   
+       
     //서버에서 JSON 데이터 가져오는 함수
     func fetchData(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void) {
         guard let url = URL(string: "http://52.79.138.34:1105/data") else {
@@ -481,8 +437,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 let polylineOverlay = NMFPolylineOverlay(coordinates)
                 polylineOverlay?.color = .systemBlue
                 polylineOverlay?.width = 10
-                //polylineOverlay?.outlineWidth = 2
-                //polylineOverlay?.outlineColor = .white
                 completion(polylineOverlay, nil)
             } catch {
                 completion(nil, error)
@@ -505,45 +459,69 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         return nil
     }
     
-    //히트맵
-//    func createHeatmap(with locations: [Location]) {
-//        circleOverlays.forEach { overlay in
-//            overlay.mapView = nil
-//        }
-//        circleOverlays.removeAll()
-//
-//        for location in locations {
-//            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
-//            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
-//            circleOverlay.mapView = naverMapView.mapView
-//            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
-//
-//            // 레이블 생성
-//            let label = UILabel()
-//            label.text = "\(location.count_cleanup)"
-//            label.textAlignment = .center
-//            label.textColor = .black
-//            label.font = UIFont.systemFont(ofSize: 25)
-//            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
-//            label.layer.cornerRadius = circleOverlay.radius
-//            label.layer.masksToBounds = true
-//            label.isUserInteractionEnabled = false
-//
-//            // 지도 위에 레이블 추가
-//            if let labelTextImage = labelToImage(label) {
-//                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
-//                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
-//                labelMarker.iconTintColor = .clear
-//                labelMarker.mapView = naverMapView.mapView
-//                circleLabels.append(labelMarker)
-//            }
-//        }
-//    }
+    func createHeatmap(with locations: [Location]) {
+        circleOverlays.forEach { overlay in
+            overlay.mapView = nil
+        }
+        circleOverlays.removeAll()
+        
+        for location in locations {
+            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
+            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
+            circleOverlay.mapView = naverMapView.mapView
+            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
+            
+            // 레이블 생성
+            let label = UILabel()
+            label.text = "\(location.count_cleanup)"
+            label.textAlignment = .center
+            label.textColor = .black
+            label.font = UIFont.systemFont(ofSize: 25)
+            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
+            label.layer.cornerRadius = circleOverlay.radius
+            label.layer.masksToBounds = true
+            label.isUserInteractionEnabled = false
+
+            // 지도 위에 레이블 추가
+            if let labelTextImage = labelToImage(label) {
+                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
+                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
+                labelMarker.iconTintColor = .clear
+                labelMarker.mapView = naverMapView.mapView
+                circleLabels.append(labelMarker)
+            }
+        }
+    }
+
     
-    // 히트맵 표시를 검출수 설정 값 이상만 표시하게 수정
-        func createHeatmap(with locations: [Location]) {
-            circleOverlays.forEach { overlay in
-                overlay.mapView = nil
+    // minCount = 3 으로 되어있음
+    func calculateRadius(from count_cleanup: Int) -> Double {
+           let smallRadius = 30.0
+           let mediumRadius = 70.0
+           let largeRadius = 100.0
+
+           if count_cleanup <= 5 {
+               return smallRadius
+           } else if count_cleanup > 5 && count_cleanup <= 10 {
+               return mediumRadius
+           } else {
+               return largeRadius
+           }
+    }
+
+    
+    // 앱 시작후 히트맵 색깔 수정, 검출 수 조정과 관계없이 히트맵이 검출 수에 의해 색으로 구분되어 표시됌
+    func calculateColor(from count_cleanup: Int) -> UIColor {
+        let color1 = UIColor.green
+        let color2 = UIColor.systemYellow
+        let color3 = UIColor.red
+
+        if count_cleanup <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
+                return color1.withAlphaComponent(0.5)
+            } else if count_cleanup > 6 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
+                return color2.withAlphaComponent(0.5)
+            } else {                                        // 그 이상 검출되면, 빨간색으로 표시
+                return color3.withAlphaComponent(0.5)
             }
             circleOverlays.removeAll()
 
@@ -602,15 +580,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             let color1 = UIColor.green
             let color2 = UIColor.systemYellow
             let color3 = UIColor.red
-    //        let progress = CGFloat(count_cleanup)/10.0
-    //        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
-    //
-    //        // count 값에 따라 원하는 색상 값을 반환합니다.
-    //        if count_cleanup >= minCount {
-    //            return UIColor.red.withAlphaComponent(0.5)
-    //        } else {
-    //            return UIColor.blue.withAlphaComponent(0.5)
-    //        }
+
             if count_cleanup <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
                     return color1.withAlphaComponent(0.5)
                 } else if count_cleanup > 5 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
@@ -690,7 +660,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
     enum MenuItem: String {
-        case idSettings = "계정정보"
         case howTo = "도움말"
         case count = "경로추천설정"
         case cleaning = "흡연자검출초기화"
@@ -698,8 +667,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         var viewController: UIViewController? {
             switch self {
-            case .idSettings:
-                return idSettingsViewController()
             case .howTo:
                 return howtoViewController()
             // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
@@ -729,11 +696,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             print("\(title) 메뉴 아이템이 선택되었습니다.")
 
             switch title {
-            case "계정정보":
-                guard let idSettingsViewController = self.storyboard?.instantiateViewController(withIdentifier: "idSettingsViewControllerID") as? idSettingsViewController else { return }
-    
-                self.navigationController?.pushViewController(idSettingsViewController, animated: true)
-
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
                 // 도움말 텍스트 설정
@@ -971,11 +933,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     @objc private func refreshButtonTapped() {
         
         fetchedLocations.removeAll()
-        //polylineOverlays.removeAll()
-        //markers.removeAll()
-        //totalRouteSegments = 0
-        //completedRouteSegments = 0
-        //optimalRouteCoordinates.removeAll()
         
         // 기존 히트맵 지우기
         circleOverlays.forEach { overlay in
@@ -1052,8 +1009,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             }
         }
     }
-    
-    // whereToGoViewController.swift
 
     func presentCountViewController() {
         let countVC = countViewController()

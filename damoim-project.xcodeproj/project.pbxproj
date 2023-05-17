@@ -8,15 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		A92559B8CF2F923D3B40ABEA /* Pods_damoim_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9758D42EDA5D9DEDE9721F /* Pods_damoim_project.framework */; };
-		E04B409729EE252D00B4BEE1 /* settingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409629EE252D00B4BEE1 /* settingsViewController.swift */; };
-		E04B409929EE933D00B4BEE1 /* idSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */; };
 		E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409A29EE935000B4BEE1 /* howtoViewController.swift */; };
 		E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063367A29EFD6C400490C59 /* whereToGoViewController.swift */; };
+		E08B67DB2A14986500834412 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E08B67DA2A14986500834412 /* GoogleService-Info.plist */; };
 		E0921F8C2A0786EE001DADF1 /* countViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0921F8B2A0786EE001DADF1 /* countViewController.swift */; };
 		E092393E2A0A1F2300E3E28F /* catchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E092393D2A0A1F2300E3E28F /* catchViewController.swift */; };
 		E09239402A0A290500E3E28F /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E092393F2A0A290500E3E28F /* UIColorExtension.swift */; };
 		E09239422A0A2E3400E3E28F /* cleanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09239412A0A2E3400E3E28F /* cleanViewController.swift */; };
-		E094422429E7A90A000C6240 /* mainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E094422329E7A90A000C6240 /* mainViewController.swift */; };
 		E094422629E7BEEE000C6240 /* registerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E094422529E7BEEE000C6240 /* registerViewController.swift */; };
 		E09497FE29E69A4100807A53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09497FD29E69A4100807A53 /* AppDelegate.swift */; };
 		E094980029E69A4100807A53 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E09497FF29E69A4100807A53 /* SceneDelegate.swift */; };
@@ -25,7 +23,6 @@
 		E094980729E69A4200807A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E094980629E69A4200807A53 /* Assets.xcassets */; };
 		E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980829E69A4200807A53 /* LaunchScreen.storyboard */; };
 		E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E095C5E92A0B778F002C1EC1 /* graphViewController.swift */; };
-		E0FE36F32A0CD4B700628E9F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */; };
 		E0FE37842A13E17D00628E9F /* fetchTimeranking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */; };
 /* End PBXBuildFile section */
 
@@ -33,15 +30,13 @@
 		093CDD71324617371A7F189B /* Pods-damoim-project.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damoim-project.debug.xcconfig"; path = "Target Support Files/Pods-damoim-project/Pods-damoim-project.debug.xcconfig"; sourceTree = "<group>"; };
 		0F14218B00C8C077FBA0D0CA /* Pods-damoim-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damoim-project.release.xcconfig"; path = "Target Support Files/Pods-damoim-project/Pods-damoim-project.release.xcconfig"; sourceTree = "<group>"; };
 		BF9758D42EDA5D9DEDE9721F /* Pods_damoim_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_damoim_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E04B409629EE252D00B4BEE1 /* settingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = settingsViewController.swift; sourceTree = "<group>"; };
-		E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = idSettingsViewController.swift; sourceTree = "<group>"; };
 		E04B409A29EE935000B4BEE1 /* howtoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = howtoViewController.swift; sourceTree = "<group>"; };
 		E063367A29EFD6C400490C59 /* whereToGoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = whereToGoViewController.swift; sourceTree = "<group>"; };
+		E08B67DA2A14986500834412 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E0921F8B2A0786EE001DADF1 /* countViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = countViewController.swift; sourceTree = "<group>"; };
 		E092393D2A0A1F2300E3E28F /* catchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = catchViewController.swift; sourceTree = "<group>"; };
 		E092393F2A0A290500E3E28F /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 		E09239412A0A2E3400E3E28F /* cleanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cleanViewController.swift; sourceTree = "<group>"; };
-		E094422329E7A90A000C6240 /* mainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = mainViewController.swift; sourceTree = "<group>"; };
 		E094422529E7BEEE000C6240 /* registerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = registerViewController.swift; sourceTree = "<group>"; };
 		E09497FA29E69A4100807A53 /* damoim-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "damoim-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E09497FD29E69A4100807A53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -52,7 +47,6 @@
 		E094980929E69A4200807A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E094980B29E69A4200807A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E095C5E92A0B778F002C1EC1 /* graphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewController.swift; sourceTree = "<group>"; };
-		E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fetchTimeranking.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -114,11 +108,8 @@
 				E094980629E69A4200807A53 /* Assets.xcassets */,
 				E094980829E69A4200807A53 /* LaunchScreen.storyboard */,
 				E094980B29E69A4200807A53 /* Info.plist */,
-				E094422329E7A90A000C6240 /* mainViewController.swift */,
-				E04B409629EE252D00B4BEE1 /* settingsViewController.swift */,
-				E04B409829EE933D00B4BEE1 /* idSettingsViewController.swift */,
+				E08B67DA2A14986500834412 /* GoogleService-Info.plist */,
 				E04B409A29EE935000B4BEE1 /* howtoViewController.swift */,
-				E0FE36F22A0CD4B700628E9F /* GoogleService-Info.plist */,
 				E063367A29EFD6C400490C59 /* whereToGoViewController.swift */,
 				E0921F8B2A0786EE001DADF1 /* countViewController.swift */,
 				E092393D2A0A1F2300E3E28F /* catchViewController.swift */,
@@ -195,7 +186,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */,
-				E0FE36F32A0CD4B700628E9F /* GoogleService-Info.plist in Resources */,
+				E08B67DB2A14986500834412 /* GoogleService-Info.plist in Resources */,
 				E094980729E69A4200807A53 /* Assets.xcassets in Resources */,
 				E094980529E69A4100807A53 /* Main.storyboard in Resources */,
 			);
@@ -257,11 +248,8 @@
 				E094980029E69A4100807A53 /* SceneDelegate.swift in Sources */,
 				E094422629E7BEEE000C6240 /* registerViewController.swift in Sources */,
 				E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */,
-				E094422429E7A90A000C6240 /* mainViewController.swift in Sources */,
-				E04B409929EE933D00B4BEE1 /* idSettingsViewController.swift in Sources */,
 				E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */,
 				E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */,
-				E04B409729EE252D00B4BEE1 /* settingsViewController.swift in Sources */,
 				E092393E2A0A1F2300E3E28F /* catchViewController.swift in Sources */,
 				E09239402A0A290500E3E28F /* UIColorExtension.swift in Sources */,
 				E0FE37842A13E17D00628E9F /* fetchTimeranking.swift in Sources */,

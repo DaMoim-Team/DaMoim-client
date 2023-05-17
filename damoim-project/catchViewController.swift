@@ -199,8 +199,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //locationManager = NMFLocationManager.sharedInstance()
-        //locationManager.add(self) // 자신을 NMFLocationManager의 위치 업데이트 수신자로 추가합니다.
+   
         let mapView = naverMapView.mapView
         
         let initialLocation = NMGLatLng(lat: 37.547174, lng: 127.041846)
@@ -437,8 +436,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                 let polylineOverlay = NMFPolylineOverlay(coordinates)
                 polylineOverlay?.color = .systemBlue
                 polylineOverlay?.width = 10
-                //polylineOverlay?.outlineWidth = 2
-                //polylineOverlay?.outlineColor = .white
                 completion(polylineOverlay, nil)
             } catch {
                 completion(nil, error)
@@ -518,15 +515,7 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         let color1 = UIColor.green
         let color2 = UIColor.systemYellow
         let color3 = UIColor.red
-//        let progress = CGFloat(count_catch)/10.0
-//        let color = UIColor.interpolate(from: color1, to: color2, progress: progress)
-//
-//        // count 값에 따라 원하는 색상 값을 반환합니다.
-//        if count_cleanup >= minCount {
-//            return UIColor.red.withAlphaComponent(0.5)
-//        } else {
-//            return UIColor.blue.withAlphaComponent(0.5)
-//        }
+
         if count_catch <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
                 return color1.withAlphaComponent(0.5)
             } else if count_catch > 6 && count_catch <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
@@ -873,11 +862,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     @objc private func refreshButtonTapped() {
         
         fetchedLocations.removeAll()
-        //polylineOverlays.removeAll()
-        //markers.removeAll()
-        //totalRouteSegments = 0
-        //completedRouteSegments = 0
-        //optimalRouteCoordinates.removeAll()
         
         // 기존 히트맵 지우기
         circleOverlays.forEach { overlay in

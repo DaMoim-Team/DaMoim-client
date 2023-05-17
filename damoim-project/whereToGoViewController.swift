@@ -16,7 +16,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
     var naverMapView: NMFNaverMapView!
     var locationManager: CLLocationManager! // NMFLocationManager를 사용합니다.
-    var minCount: Int = 3
+    var minCount: Int = 0
     
     var locations: [Location] = []
     var optimalroute: [CLLocationCoordinate2D] = []
@@ -226,7 +226,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         let mapView = naverMapView.mapView
         
         let initialLocation = NMGLatLng(lat: 37.547174, lng: 127.041846)
-        let initialZoomLevel: Double = 15
+        let initialZoomLevel: Double = 16
         let cameraPosition = NMFCameraPosition(initialLocation, zoom: initialZoomLevel)
         mapView.moveCamera(NMFCameraUpdate(position: cameraPosition))
         
@@ -506,36 +506,76 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
     //히트맵
+//    func createHeatmap(with locations: [Location]) {
+//        circleOverlays.forEach { overlay in
+//            overlay.mapView = nil
+//        }
+//        circleOverlays.removeAll()
+//
+//        for location in locations {
+//            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
+//            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
+//            circleOverlay.mapView = naverMapView.mapView
+//            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
+//
+//            // 레이블 생성
+//            let label = UILabel()
+//            label.text = "\(location.count_cleanup)"
+//            label.textAlignment = .center
+//            label.textColor = .black
+//            label.font = UIFont.systemFont(ofSize: 25)
+//            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
+//            label.layer.cornerRadius = circleOverlay.radius
+//            label.layer.masksToBounds = true
+//            label.isUserInteractionEnabled = false
+//
+//            // 지도 위에 레이블 추가
+//            if let labelTextImage = labelToImage(label) {
+//                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
+//                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
+//                labelMarker.iconTintColor = .clear
+//                labelMarker.mapView = naverMapView.mapView
+//                circleLabels.append(labelMarker)
+//            }
+//        }
+//    }
+    
+    // 히트맵 표시를 검출수 설정 값 이상만 표시하게 수정
     func createHeatmap(with locations: [Location]) {
         circleOverlays.forEach { overlay in
             overlay.mapView = nil
         }
         circleOverlays.removeAll()
-        
-        for location in locations {
-            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
-            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
-            circleOverlay.mapView = naverMapView.mapView
-            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
-            
-            // 레이블 생성
-            let label = UILabel()
-            label.text = "\(location.count_cleanup)"
-            label.textAlignment = .center
-            label.textColor = .black
-            label.font = UIFont.systemFont(ofSize: 25)
-            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
-            label.layer.cornerRadius = circleOverlay.radius
-            label.layer.masksToBounds = true
-            label.isUserInteractionEnabled = false
 
-            // 지도 위에 레이블 추가
-            if let labelTextImage = labelToImage(label) {
-                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
-                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
-                labelMarker.iconTintColor = .clear
-                labelMarker.mapView = naverMapView.mapView
-                circleLabels.append(labelMarker)
+        // UserDefaults에서 minCount 값 가져오기
+        let minCount = UserDefaults.standard.integer(forKey: "minCount") == 0 ? 3 : UserDefaults.standard.integer(forKey: "minCount")
+
+        for location in locations {
+            if location.count_catch >= minCount { // count_catch 값이 minCount 이상인 경우에만 히트맵 생성
+                let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
+                circleOverlay.fillColor = calculateColor(from: location.count_catch)
+                circleOverlay.mapView = naverMapView.mapView
+                circleOverlays.append(circleOverlay)
+
+                // 레이블 생성
+                let label = UILabel()
+                label.text = "\(location.count_catch)"
+                label.textAlignment = .center
+                label.textColor = .black
+                label.font = UIFont.systemFont(ofSize: 25)
+                label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
+                label.layer.cornerRadius = circleOverlay.radius
+                label.layer.masksToBounds = true
+                label.isUserInteractionEnabled = false
+
+                // 지도 위에 레이블 추가
+                if let labelTextImage = labelToImage(label) {
+                    let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
+                    labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
+                    labelMarker.iconTintColor = .clear
+                    labelMarker.mapView = naverMapView.mapView
+                    circleLabels.append(labelMarker)
+                }
             }
         }
     }
@@ -582,8 +622,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
 
-
-    
     //구조체 정의
     //서버에서 보내주는 전체 데이터를 매핑
     struct ResponseData: Codable {
@@ -987,7 +1025,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 }
                 //출발지 제외하고 내림차순 정렬
                 self.fetchedLocations = self.fetchedLocations
-                    .filter { $0.cctv_id != "start" }
+                    .filter { $0.cctv_id != "start" && $0.count_cleanup >= self.minCount}
                     .sorted(by: {$0.count_cleanup > $1.count_cleanup })
                 
                 // 경로 설정 버튼이 활성화되어 있다면, 닫기 버튼이 비활성화되어 있는 상태입니다.

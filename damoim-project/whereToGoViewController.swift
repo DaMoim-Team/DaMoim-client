@@ -506,36 +506,76 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
     //히트맵
+//    func createHeatmap(with locations: [Location]) {
+//        circleOverlays.forEach { overlay in
+//            overlay.mapView = nil
+//        }
+//        circleOverlays.removeAll()
+//
+//        for location in locations {
+//            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
+//            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
+//            circleOverlay.mapView = naverMapView.mapView
+//            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
+//
+//            // 레이블 생성
+//            let label = UILabel()
+//            label.text = "\(location.count_cleanup)"
+//            label.textAlignment = .center
+//            label.textColor = .black
+//            label.font = UIFont.systemFont(ofSize: 25)
+//            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
+//            label.layer.cornerRadius = circleOverlay.radius
+//            label.layer.masksToBounds = true
+//            label.isUserInteractionEnabled = false
+//
+//            // 지도 위에 레이블 추가
+//            if let labelTextImage = labelToImage(label) {
+//                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
+//                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
+//                labelMarker.iconTintColor = .clear
+//                labelMarker.mapView = naverMapView.mapView
+//                circleLabels.append(labelMarker)
+//            }
+//        }
+//    }
+    
+    // 히트맵 표시를 검출수 설정 값 이상만 표시하게 수정
     func createHeatmap(with locations: [Location]) {
         circleOverlays.forEach { overlay in
             overlay.mapView = nil
         }
         circleOverlays.removeAll()
-        
-        for location in locations {
-            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
-            circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
-            circleOverlay.mapView = naverMapView.mapView
-            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
-            
-            // 레이블 생성
-            let label = UILabel()
-            label.text = "\(location.count_cleanup)"
-            label.textAlignment = .center
-            label.textColor = .black
-            label.font = UIFont.systemFont(ofSize: 25)
-            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
-            label.layer.cornerRadius = circleOverlay.radius
-            label.layer.masksToBounds = true
-            label.isUserInteractionEnabled = false
 
-            // 지도 위에 레이블 추가
-            if let labelTextImage = labelToImage(label) {
-                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
-                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
-                labelMarker.iconTintColor = .clear
-                labelMarker.mapView = naverMapView.mapView
-                circleLabels.append(labelMarker)
+        // UserDefaults에서 minCount 값 가져오기
+        let minCount = UserDefaults.standard.integer(forKey: "minCount") == 0 ? 3 : UserDefaults.standard.integer(forKey: "minCount")
+
+        for location in locations {
+            if location.count_catch >= minCount { // count_catch 값이 minCount 이상인 경우에만 히트맵 생성
+                let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
+                circleOverlay.fillColor = calculateColor(from: location.count_catch)
+                circleOverlay.mapView = naverMapView.mapView
+                circleOverlays.append(circleOverlay)
+
+                // 레이블 생성
+                let label = UILabel()
+                label.text = "\(location.count_catch)"
+                label.textAlignment = .center
+                label.textColor = .black
+                label.font = UIFont.systemFont(ofSize: 25)
+                label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
+                label.layer.cornerRadius = circleOverlay.radius
+                label.layer.masksToBounds = true
+                label.isUserInteractionEnabled = false
+
+                // 지도 위에 레이블 추가
+                if let labelTextImage = labelToImage(label) {
+                    let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
+                    labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
+                    labelMarker.iconTintColor = .clear
+                    labelMarker.mapView = naverMapView.mapView
+                    circleLabels.append(labelMarker)
+                }
             }
         }
     }

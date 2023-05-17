@@ -613,7 +613,7 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 //        }
         if count_cleanup <= 5 {                 // 검출 수가 5이하일 때, 히트맵 파란색
                 return color1.withAlphaComponent(0.5)
-            } else if count_cleanup > 6 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
+            } else if count_cleanup > 5 && count_cleanup <= 10 {        // 검출 수 6이상 10이하이면 히트맵 주황색
                 return color2.withAlphaComponent(0.5)
             } else {                                        // 그 이상 검출되면, 빨간색으로 표시
                 return color3.withAlphaComponent(0.5)

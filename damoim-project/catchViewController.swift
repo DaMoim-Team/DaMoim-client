@@ -334,11 +334,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         path?.mapView = naverMapView.mapView
     }
     
-    @objc func moveToInitialPath() {
-        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
-        moveMapTo(coordinate: initialLocation)
-    }
-   
     //서버에서 JSON 데이터 가져오는 함수
     func fetchData(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void) {
         guard let url = URL(string: "http://52.79.138.34:1105/data") else {

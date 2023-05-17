@@ -551,15 +551,15 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             let minCount = UserDefaults.standard.integer(forKey: "minCount") == 0 ? 3 : UserDefaults.standard.integer(forKey: "minCount")
 
             for location in locations {
-                if location.count_catch >= minCount { // count_catch 값이 minCount 이상인 경우에만 히트맵 생성
-                    let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
-                    circleOverlay.fillColor = calculateColor(from: location.count_catch)
+                if location.count_cleanup >= minCount { // count_catch 값이 minCount 이상인 경우에만 히트맵 생성
+                    let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_cleanup))
+                    circleOverlay.fillColor = calculateColor(from: location.count_cleanup)
                     circleOverlay.mapView = naverMapView.mapView
                     circleOverlays.append(circleOverlay)
 
                     // 레이블 생성
                     let label = UILabel()
-                    label.text = "\(location.count_catch)"
+                    label.text = "\(location.count_cleanup)"
                     label.textAlignment = .center
                     label.textColor = .black
                     label.font = UIFont.systemFont(ofSize: 25)

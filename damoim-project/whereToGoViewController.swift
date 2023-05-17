@@ -652,7 +652,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     }
     
     enum MenuItem: String {
-        case idSettings = "계정정보"
         case howTo = "도움말"
         case count = "경로추천설정"
         case cleaning = "흡연자검출초기화"
@@ -660,8 +659,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
 
         var viewController: UIViewController? {
             switch self {
-            case .idSettings:
-                return idSettingsViewController()
             case .howTo:
                 return howtoViewController()
             // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
@@ -691,11 +688,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
             print("\(title) 메뉴 아이템이 선택되었습니다.")
 
             switch title {
-            case "계정정보":
-                guard let idSettingsViewController = self.storyboard?.instantiateViewController(withIdentifier: "idSettingsViewControllerID") as? idSettingsViewController else { return }
-    
-                self.navigationController?.pushViewController(idSettingsViewController, animated: true)
-
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
                 // 도움말 텍스트 설정

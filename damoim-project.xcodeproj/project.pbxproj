@@ -23,6 +23,7 @@
 		E094980729E69A4200807A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E094980629E69A4200807A53 /* Assets.xcassets */; };
 		E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E094980829E69A4200807A53 /* LaunchScreen.storyboard */; };
 		E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E095C5E92A0B778F002C1EC1 /* graphViewController.swift */; };
+		E096C6412A1632CC008F7C1D /* whereToGo+UIfunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E096C6402A1632CC008F7C1D /* whereToGo+UIfunc.swift */; };
 		E0FE37842A13E17D00628E9F /* fetchTimeranking.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +48,7 @@
 		E094980929E69A4200807A53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E094980B29E69A4200807A53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E095C5E92A0B778F002C1EC1 /* graphViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = graphViewController.swift; sourceTree = "<group>"; };
+		E096C6402A1632CC008F7C1D /* whereToGo+UIfunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "whereToGo+UIfunc.swift"; sourceTree = "<group>"; };
 		E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = fetchTimeranking.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -117,6 +119,7 @@
 				E09239412A0A2E3400E3E28F /* cleanViewController.swift */,
 				E095C5E92A0B778F002C1EC1 /* graphViewController.swift */,
 				E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */,
+				E096C6402A1632CC008F7C1D /* whereToGo+UIfunc.swift */,
 			);
 			path = "damoim-project";
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				E09497FE29E69A4100807A53 /* AppDelegate.swift in Sources */,
 				E094980029E69A4100807A53 /* SceneDelegate.swift in Sources */,
 				E094422629E7BEEE000C6240 /* registerViewController.swift in Sources */,
+				E096C6412A1632CC008F7C1D /* whereToGo+UIfunc.swift in Sources */,
 				E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */,
 				E095C5EA2A0B778F002C1EC1 /* graphViewController.swift in Sources */,
 				E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */,

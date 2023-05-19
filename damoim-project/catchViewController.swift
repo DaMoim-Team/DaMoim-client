@@ -37,7 +37,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     //경로를 표시하는 버튼
     private lazy var routeButton: UIButton = {
         let button = UIButton(type: .system)
-        //button.setTitle("경로 표시", for: .normal)
         button.setImage(UIImage(named: "shortestroute")?.withRenderingMode(.alwaysOriginal), for: .normal)
         button.addTarget(self, action: #selector(routeButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -155,23 +154,19 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
                         let userName = document.get("name") as? String ?? "No Name"
                         let jobNum = document.get("job") as? Int
                         nameText.text = "단속반 " + userName + " 님"
-                        //emailText.text = userEmail
                     }
                 }
             }
         } else {
             nameText.text = "No User"
-            //emailText.text = "No User"
         }
         
         // 메뉴 아이템 버튼 생성 및 sideMenuView에 추가
-//        let menuItem1 = createMenuButton(menuItem: .idSettings)
         let menuItem1 = createMenuButton(menuItem: .howTo)
         let menuItem2 = createMenuButton(menuItem: .count)
         let menuItem3 = createMenuButton(menuItem: .graph)
         let menuItem4 = createMenuButton(menuItem: .logout)
 
-//        sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem1)
         sideMenuView.addSubview(menuItem2)
         sideMenuView.addSubview(menuItem3)
@@ -452,41 +447,6 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
         }
         return nil
     }
-    
-    //히트맵
-//    func createHeatmap(with locations: [Location]) {
-//        circleOverlays.forEach { overlay in
-//            overlay.mapView = nil
-//        }
-//        circleOverlays.removeAll()
-//
-//        for location in locations {
-//            let circleOverlay = NMFCircleOverlay(NMGLatLng(lat: location.latitude, lng: location.longitude), radius: calculateRadius(from: location.count_catch))
-//            circleOverlay.fillColor = calculateColor(from: location.count_catch)
-//            circleOverlay.mapView = naverMapView.mapView
-//            circleOverlays.append(circleOverlay) // 이 줄을 추가하세요.
-//
-//            // 레이블 생성
-//            let label = UILabel()
-//            label.text = "\(location.count_catch)"
-//            label.textAlignment = .center
-//            label.textColor = .black
-//            label.font = UIFont.systemFont(ofSize: 25)
-//            label.frame = CGRect(x: 0, y: 0, width: circleOverlay.radius * 2, height: circleOverlay.radius)
-//            label.layer.cornerRadius = circleOverlay.radius
-//            label.layer.masksToBounds = true
-//            label.isUserInteractionEnabled = false
-//
-//            // 지도 위에 레이블 추가
-//            if let labelTextImage = labelToImage(label) {
-//                let labelMarker = NMFMarker(position: NMGLatLng(lat: location.latitude, lng: location.longitude))
-//                labelMarker.iconImage = NMFOverlayImage(image: labelTextImage)
-//                labelMarker.iconTintColor = .clear
-//                labelMarker.mapView = naverMapView.mapView
-//                circleLabels.append(labelMarker)
-//            }
-//        }
-//    }
     
     // 히트맵 표시를 검출수 설정 값 이상만 표시하게 수정
         func createHeatmap(with locations: [Location]) {

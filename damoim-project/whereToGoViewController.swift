@@ -21,6 +21,9 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     public var locations: [Location] = []
     public var optimalroute: [CLLocationCoordinate2D] = []
     
+    //출발지
+    var startLocation: Location?
+    
     // 밑쪽 변수
     public var polylineOverlays: [NMFPolylineOverlay] = []
     public var markers: [NMFMarker] = []
@@ -32,9 +35,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
     public var circleOverlays: [NMFCircleOverlay] = []
     
     public var circleLabels: [NMFMarker] = []
-
-    //출발지
-    var startLocation: Location?
     
     // 햄버거 버튼을 프로퍼티로 추가
     public lazy var hamburgerButton: UIButton = {
@@ -297,11 +297,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         path?.outlineColor = .white
         path?.mapView = naverMapView.mapView
     }
-    
-    @objc func moveToInitialPath() {
-        let initialLocation = NMGLatLng(lat: 37.575000, lng: 127.000000)
-        moveMapTo(coordinate: initialLocation)
-    }
    
     //서버에서 JSON 데이터 가져오는 함수
     func fetchData(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void) {
@@ -516,8 +511,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         }
     }
     
-    // whereToGoViewController.swift
-
     func presentCountViewController() {
         let countVC = countViewController()
         countVC.minCount = minCount
@@ -535,9 +528,6 @@ extension whereToGoViewController {
             
         // 현재 위치로 지도를 이동합니다.
         moveMapTo(coordinate: currentLatLng)
-        
-        // 필요한 경우 다른 작업을 수행합니다. 예를 들어, 현재 위치에 마커를 추가하거나,
-        // 현재 위치와 관련된 정보를 사용자 인터페이스에 표시합니다.
     }
 }
 

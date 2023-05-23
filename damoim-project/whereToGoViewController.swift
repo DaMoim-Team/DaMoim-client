@@ -281,22 +281,6 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
         //화면 새로 고침
         self.refreshButtonTapped()
     }
-    
-    func moveMapTo(coordinate: NMGLatLng) {
-        let cameraUpdate = NMFCameraUpdate(scrollTo: coordinate)
-        cameraUpdate.animation = .easeIn
-        cameraUpdate.animationDuration = 1.5
-        naverMapView.mapView.moveCamera(cameraUpdate)
-    }
-    
-    func drawPathOnMap(pathCoordinates: [NMGLatLng]) {
-        let path = NMFPath(points: pathCoordinates)
-        path?.color = .systemBlue
-        path?.width = 10
-        path?.outlineWidth = 2
-        path?.outlineColor = .white
-        path?.mapView = naverMapView.mapView
-    }
    
     //서버에서 JSON 데이터 가져오는 함수
     func fetchData(minimumCount: Int, completion: @escaping ([CLLocationCoordinate2D]?, [Location]?, Error?) -> Void) {
@@ -461,63 +445,31 @@ class whereToGoViewController: UIViewController, NMFLocationManagerDelegate, CLL
                 try traoptimalContainer.encode(path, forKey: .path)
             }
     }
-    
-    enum MenuItem: String {
-        case howTo = "도움말"
-        case count = "경로추천설정"
-        case cleaning = "흡연자검출초기화"
-        case logout = "로그아웃"
-
-        var viewController: UIViewController? {
-            switch self {
-            case .howTo:
-                return howtoViewController()
-            // 다른 뷰 컨트롤러를 나중에 추가할 수 있습니다.
-            case .count:
-                return countViewController()
-            case .cleaning:
-                return cleanViewController()
-            case .logout:
-                return nil
-            }
-        }
-    }
 
     @objc private func blackOverlayViewTapped() {
         // 블랙 오버레이 뷰를 터치하면 사이드 메뉴를 숨깁니다.
         hideSideMenu()
-        
     }
 
     func mapView(_ mapView: NMFMapView, didTapMap latlng: NMGLatLng, point: CGPoint) {
         hideSideMenu()
     }
     
-    func navigateToLoginViewController() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil) // "Main"은 스토리보드의 이름입니다.
-        if let navigationController = storyboard.instantiateViewController(withIdentifier: "firstNavControllerID") as? UINavigationController,
-           let loginViewController = navigationController.viewControllers.first as? loginViewController {
-            // 애니메이션과 함께 뷰 컨트롤러 전환 (옵션)
-            let transition = CATransition()
-            transition.duration = 0.5
-            transition.type = CATransitionType.push
-            transition.subtype = CATransitionSubtype.fromLeft
-            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-            view.window!.layer.add(transition, forKey: kCATransition)
-
-            // 로그인 뷰 컨트롤러를 새로운 루트 뷰 컨트롤러로 설정합니다.
-            view.window?.rootViewController = navigationController
-            view.window?.makeKeyAndVisible()
-        }
-    }
-    
+    // mincount
     func presentCountViewController() {
         let countVC = countViewController()
         countVC.minCount = minCount
         countVC.delegate = self
         navigationController?.pushViewController(countVC, animated: true)
     }
-
+    
+    // 카메라 이동 함수
+    func moveMapTo(coordinate: NMGLatLng) {
+        let cameraUpdate = NMFCameraUpdate(scrollTo: coordinate)
+        cameraUpdate.animation = .easeIn
+        cameraUpdate.animationDuration = 1.5
+        naverMapView.mapView.moveCamera(cameraUpdate)
+    }
 }
 
 extension whereToGoViewController {

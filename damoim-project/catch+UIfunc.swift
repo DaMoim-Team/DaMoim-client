@@ -435,7 +435,7 @@ extension catchViewController {
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
                 // 도움말 텍스트 설정
-                howtoViewController.helpText = "여기에 단속반!! 에 대한 도움말을 입력하세요..."   // 원하는 텍스트 입력
+                howtoViewController.helpText = "✅프로젝트 <바른흡연>은,\n흡연자의 행위패턴을 분석하여 만들어낸 흡연자 검출 모델을 활용한 경로추천 서비스입니다\n\n흡연 관련 업무를 수행하는 단속반 분들에게 최적의 업무 경로를 제공하는 것을 목표로 합니다\n\n➡️ 검출수 히트맵을 통해 효율적인 구역관리 지원\n\n➡️ 사용자 맞춤형 경로 추천으로 업무 효율 향상\n\n➡️ 검출수 데이터 통계로 더 정확한 단속 계획 수립 지원\n\n"   // 원하는 텍스트 입력
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
             case "경로추천설정":
                 guard let countViewController = self.storyboard?.instantiateViewController(withIdentifier: "countViewControllerID") as? countViewController else { return }

@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		A92559B8CF2F923D3B40ABEA /* Pods_damoim_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF9758D42EDA5D9DEDE9721F /* Pods_damoim_project.framework */; };
+		E00E92852A1C924C00647919 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E00E92842A1C924C00647919 /* GoogleService-Info.plist */; };
+		E00E92902A1CA15300647919 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = E00E92862A1C965600647919 /* Config.swift */; };
 		E04B409B29EE935000B4BEE1 /* howtoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04B409A29EE935000B4BEE1 /* howtoViewController.swift */; };
 		E063367B29EFD6C500490C59 /* whereToGoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063367A29EFD6C400490C59 /* whereToGoViewController.swift */; };
-		E08B67DB2A14986500834412 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E08B67DA2A14986500834412 /* GoogleService-Info.plist */; };
 		E08D81142A19873100991F34 /* catch+UIfunc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08D81132A19873100991F34 /* catch+UIfunc.swift */; };
 		E0921F8C2A0786EE001DADF1 /* countViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0921F8B2A0786EE001DADF1 /* countViewController.swift */; };
 		E092393E2A0A1F2300E3E28F /* catchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E092393D2A0A1F2300E3E28F /* catchViewController.swift */; };
@@ -32,9 +33,10 @@
 		093CDD71324617371A7F189B /* Pods-damoim-project.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damoim-project.debug.xcconfig"; path = "Target Support Files/Pods-damoim-project/Pods-damoim-project.debug.xcconfig"; sourceTree = "<group>"; };
 		0F14218B00C8C077FBA0D0CA /* Pods-damoim-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-damoim-project.release.xcconfig"; path = "Target Support Files/Pods-damoim-project/Pods-damoim-project.release.xcconfig"; sourceTree = "<group>"; };
 		BF9758D42EDA5D9DEDE9721F /* Pods_damoim_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_damoim_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E00E92842A1C924C00647919 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E00E92862A1C965600647919 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		E04B409A29EE935000B4BEE1 /* howtoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = howtoViewController.swift; sourceTree = "<group>"; };
 		E063367A29EFD6C400490C59 /* whereToGoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = whereToGoViewController.swift; sourceTree = "<group>"; };
-		E08B67DA2A14986500834412 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E08D81132A19873100991F34 /* catch+UIfunc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "catch+UIfunc.swift"; sourceTree = "<group>"; };
 		E0921F8B2A0786EE001DADF1 /* countViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = countViewController.swift; sourceTree = "<group>"; };
 		E092393D2A0A1F2300E3E28F /* catchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = catchViewController.swift; sourceTree = "<group>"; };
@@ -112,9 +114,9 @@
 				E094980629E69A4200807A53 /* Assets.xcassets */,
 				E094980829E69A4200807A53 /* LaunchScreen.storyboard */,
 				E094980B29E69A4200807A53 /* Info.plist */,
-				E08B67DA2A14986500834412 /* GoogleService-Info.plist */,
 				E04B409A29EE935000B4BEE1 /* howtoViewController.swift */,
 				E063367A29EFD6C400490C59 /* whereToGoViewController.swift */,
+				E00E92842A1C924C00647919 /* GoogleService-Info.plist */,
 				E0921F8B2A0786EE001DADF1 /* countViewController.swift */,
 				E092393D2A0A1F2300E3E28F /* catchViewController.swift */,
 				E092393F2A0A290500E3E28F /* UIColorExtension.swift */,
@@ -123,6 +125,7 @@
 				E0FE37832A13E17D00628E9F /* fetchTimeranking.swift */,
 				E096C6402A1632CC008F7C1D /* whereToGo+UIfunc.swift */,
 				E08D81132A19873100991F34 /* catch+UIfunc.swift */,
+				E00E92862A1C965600647919 /* Config.swift */,
 			);
 			path = "damoim-project";
 			sourceTree = "<group>";
@@ -192,7 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E094980A29E69A4200807A53 /* LaunchScreen.storyboard in Resources */,
-				E08B67DB2A14986500834412 /* GoogleService-Info.plist in Resources */,
+				E00E92852A1C924C00647919 /* GoogleService-Info.plist in Resources */,
 				E094980729E69A4200807A53 /* Assets.xcassets in Resources */,
 				E094980529E69A4100807A53 /* Main.storyboard in Resources */,
 			);
@@ -249,6 +252,7 @@
 			files = (
 				E0921F8C2A0786EE001DADF1 /* countViewController.swift in Sources */,
 				E08D81142A19873100991F34 /* catch+UIfunc.swift in Sources */,
+				E00E92902A1CA15300647919 /* Config.swift in Sources */,
 				E09239422A0A2E3400E3E28F /* cleanViewController.swift in Sources */,
 				E094980229E69A4100807A53 /* loginViewController.swift in Sources */,
 				E09497FE29E69A4100807A53 /* AppDelegate.swift in Sources */,

@@ -592,7 +592,7 @@
                                                             <segmentedControl opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="251" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="XsS-vE-rlq">
                                                                 <rect key="frame" x="0.0" y="32" width="313" height="32"/>
                                                                 <segments>
-                                                                    <segment title="학교 청소 미화원"/>
+                                                                    <segment title="청소 미화원"/>
                                                                     <segment title="금연구역 단속반"/>
                                                                 </segments>
                                                             </segmentedControl>

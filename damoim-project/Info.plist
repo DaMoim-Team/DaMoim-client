@@ -2,40 +2,40 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>위치 권한을 허가해주세요.</string>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-	<key>NMFClientId</key>
-	<string>hag6m0rapi</string>
-	<key>NMFClientSecret</key>
-	<string>gAdjj4m7csASJFgaTg9aLetetBf4DNWZZpcBWBpY</string>
-	<key>DirectionAPI</key>
-	<string>https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving</string>
-	<key>clientIdKey</key>
-	<string>X-NCP-APIGW-API-KEY-ID</string>
-	<key>clientSecretKey</key>
-	<string>X-NCP-APIGW-API-KEY</string>
-	<key>CFBundleExecutable</key>
-	<string></string>
-	<key>UIApplicationSceneManifest</key>
-	<dict>
-		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
-		<key>UISceneConfigurations</key>
-		<dict>
-			<key>UIWindowSceneSessionRoleApplication</key>
-			<array>
-				<dict>
-					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
-					<key>UISceneStoryboardFile</key>
-					<string>Main</string>
-				</dict>
-			</array>
-		</dict>
-	</dict>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>위치 권한을 허가해주세요.</string>
+    <key>CFBundleIdentifier</key>
+    <string></string>
+    <key>NMFClientId</key>
+    <string></string>
+    <key>NMFClientSecret</key>
+    <string></string>
+    <key>DirectionAPI</key>
+    <string></string>
+    <key>clientIdKey</key>
+    <string></string>
+    <key>clientSecretKey</key>
+    <string></string>
+    <key>CFBundleExecutable</key>
+    <string></string>
+    <key>UIApplicationSceneManifest</key>
+    <dict>
+        <key>UIApplicationSupportsMultipleScenes</key>
+        <false/>
+        <key>UISceneConfigurations</key>
+        <dict>
+            <key>UIWindowSceneSessionRoleApplication</key>
+            <array>
+                <dict>
+                    <key>UISceneConfigurationName</key>
+                    <string>Default Configuration</string>
+                    <key>UISceneDelegateClassName</key>
+                    <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+                    <key>UISceneStoryboardFile</key>
+                    <string>Main</string>
+                </dict>
+            </array>
+        </dict>
+    </dict>
 </dict>
 </plist>

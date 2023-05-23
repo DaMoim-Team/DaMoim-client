@@ -28,6 +28,10 @@ class registerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        idIsInvalid.isHidden = true
+        pwIsNotCorrect.isHidden = true
+        pwIsInvalid.isHidden = true
+        nameIsInvalid.isHidden = true
     }
     
     func isValidEmail(_ email: String) -> Bool {

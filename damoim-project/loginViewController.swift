@@ -43,24 +43,7 @@ class loginViewController: UIViewController {
                     }
                 }
             }
-            
-//            guard let secondNavController = self.storyboard?.instantiateViewController(withIdentifier: "secondNavControllerID") as? UINavigationController else { return }
-//            navigateToSecondNavigationController()
-            //navigateToTabBarController()
-            
-            
-//            let transition = CATransition()
-//            transition.duration = 0.5
-//            transition.type = CATransitionType.push
-//            transition.subtype = CATransitionSubtype.fromRight
-//            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-//
-//            if let window = view.window {
-//                window.layer.add(transition, forKey: kCATransition)
-//                window.rootViewController = secondNavController
-//                window.makeKeyAndVisible()
-//            }
-            //self.present(whereToGoViewController, animated: true, completion: nil)
+    
         }
     }
     
@@ -99,10 +82,7 @@ class loginViewController: UIViewController {
                         }
                     }
                 }
-                //self.navigateToSecondNavigationController()
-                //self.navigateToTabBarController()
-                //self.present(whereToGoViewController, animated: true, completion: nil)
-                
+               
             } else{
                 print("로그인실패")
                 print(error.debugDescription)

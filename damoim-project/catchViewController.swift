@@ -99,6 +99,8 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        Config.load()
+        
         //UserDefaults의 minCount값 불러오기
         minCount = UserDefaults.standard.integer(forKey: "minCount") == 0 ? 3 : UserDefaults.standard.integer(forKey: "minCount")
         
@@ -347,20 +349,26 @@ class catchViewController: UIViewController, NMFLocationManagerDelegate, CLLocat
   
     //네이버지도 방향api를 사용해 경로를 가져오는 함수
     func requestDirection(start: CLLocationCoordinate2D, end: CLLocationCoordinate2D, completion: @escaping (NMFPolylineOverlay?, Error?) -> Void) {
-        let directionAPI = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving"
-        let clientId = "hag6m0rapi"
-        let clientSecret = "gAdjj4m7csASJFgaTg9aLetetBf4DNWZZpcBWBpY"
-        
-        guard let url = URL(string: "\(directionAPI)?start=\(start.longitude),\(start.latitude)&goal=\(end.longitude),\(end.latitude)") else {
+        guard let directionAPI = Config.DirectionAPI,
+              let clientId = Config.NMFClientId,
+              let clientSecret = Config.NMFClientSecret,
+              let clientIdKey = Config.clientIdKey,
+              let clientSecretKey = Config.clientSecretKey else {
+                    completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Configuration Error"]))
+                return
+                }
+                
+        guard let url = URL(string: "\(directionAPI)?start=\(start.longitude),\(start.latitude)&goal=\(end.longitude),\(end.latitude)")
+        else {
             completion(nil, NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"]))
             return
         }
-        
+                
         var request = URLRequest(url: url)
         request.addValue("application/json", forHTTPHeaderField: "Accept")
-        request.addValue(clientId, forHTTPHeaderField: "X-NCP-APIGW-API-KEY-ID")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-NCP-APIGW-API-KEY")
-        
+        request.addValue(clientId, forHTTPHeaderField: clientIdKey)
+        request.addValue(clientSecret, forHTTPHeaderField: clientSecretKey)
+            
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 completion(nil, error)

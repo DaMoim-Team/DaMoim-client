@@ -8,6 +8,16 @@
 	<string></string>
 	<key>NMFClientId</key>
 	<string>hag6m0rapi</string>
+	<key>NMFClientSecret</key>
+	<string>gAdjj4m7csASJFgaTg9aLetetBf4DNWZZpcBWBpY</string>
+	<key>DirectionAPI</key>
+	<string>https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving</string>
+	<key>clientIdKey</key>
+	<string>X-NCP-APIGW-API-KEY-ID</string>
+	<key>clientSecretKey</key>
+	<string>X-NCP-APIGW-API-KEY</string>
+	<key>CFBundleExecutable</key>
+	<string></string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

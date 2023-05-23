@@ -108,6 +108,10 @@ class graphViewController: UIViewController {
                 countText.text = " "
                 explainLabel.text = "검출 시간이 아닙니다"
             }
+        }else {
+            topicText.text = " "
+            countText.text = " "
+            explainLabel.text = "검출 시간이 아닙니다"
         }
     }
     

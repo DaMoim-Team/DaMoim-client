@@ -10,9 +10,9 @@ import Charts
 
 class graphViewController: UIViewController {
     
-    var ranges : [String] = [] //"9h", "10h", "11h", "12h", "13h", "14h", "15h", "16h", "17h"
-    var counts : [Int] = [] //6, 8, 26, 30, 8, 10, 7, 16, 27
-    var specificValues : [String] = [] //cctv_id "1번", "2번", "3번", "4번", "5번", "6번", "7번", "8번", "9번"
+    var ranges : [String] = []
+    var counts : [Int] = []
+    var specificValues : [String] = []
 
     @IBOutlet weak var explainLabel: UILabel!
     @IBOutlet weak var barChartView: BarChartView!
@@ -45,7 +45,7 @@ class graphViewController: UIViewController {
             self.specificValues = timerankings.map { $0.most }
             
             // 데이터 확인
-            print("Ranges: \(self.ranges)")
+            //print("Ranges: \(self.ranges)") 8888888888888
             print("Counts: \(self.counts)")
             print("Specific Values: \(self.specificValues)")
 
@@ -79,10 +79,7 @@ class graphViewController: UIViewController {
         barChartView.leftAxis.drawGridLinesEnabled = false
         barChartView.rightAxis.drawGridLinesEnabled = false
         barChartView.legend.enabled = false
-
-        
-        //setChart(dataPoints: ranges, values: counts.map { Double($0) })
-        
+   
         // 1초마다 updateClock 함수를 호출하는 타이머 생성
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(updateClock), userInfo: nil, repeats: true)
     }
@@ -103,6 +100,7 @@ class graphViewController: UIViewController {
             case 9...17:
                 topicText.text = specificValues[hh - 9]
                 countText.text = ": 검출수 \(counts[hh - 9])회"
+                explainLabel.text = "어제 이시간, 가장 많이 검출된 장소는..."
             default:
                 topicText.text = " "
                 countText.text = " "

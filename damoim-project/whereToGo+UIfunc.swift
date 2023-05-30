@@ -433,7 +433,7 @@ extension whereToGoViewController {
             switch title {
             case "도움말":
                 guard let howtoViewController = self.storyboard?.instantiateViewController(withIdentifier: "howtoViewControllerID") as? howtoViewController else { return }
-                // 도움말 텍스트 설정✅⭐✔️➡️⚫•
+                // 도움말 텍스트 설정
                 howtoViewController.helpText = "✅프로젝트 <바른흡연>은,\n흡연자의 행위패턴을 분석하여 만들어낸 흡연자 검출 모델을 활용한 경로추천 서비스입니다\n\n흡연 관련 업무를 수행하는 미화원 분들에게 최적의 업무 경로를 제공하는 것을 목표로 합니다\n\n➡️ 검출수 히트맵을 통해 효율적인 구역관리 지원\n\n➡️ 사용자 맞춤형 경로 추천으로 업무 효율 향상\n\n➡️ 구역별 검출수 초기화 기능으로 미화원간 업무 혼선을 방지\n\n"   // 원하는 텍스트 입력
                 self.navigationController?.pushViewController(howtoViewController, animated: true)
                 

@@ -1,3 +1,4 @@
+## 📁 디렉토리 구조
 ```
 📦 DaMoim-client
 └─ 📂 damoim_project
@@ -21,5 +22,4 @@
    ├─ 📜 catch+UIfunc.swift                     - 단속반 메인화면 extension
    ├─ 📜 whereToGoViewController.swift          - 미화원 메인화면
    └─ 📜 whereToGo+UIfunc.swift                 - 미화원 메인화면 extension
-  ```
-
+```

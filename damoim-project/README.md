@@ -3,7 +3,7 @@
 📦 damoim
 └─ damoim
    ├─ AppDelegate.swift
-SceneDelegate.swift
+   ├─ SceneDelegate.swift
    ├─ Assets.xcassets
    │  ├─ Base.lproj
    │  ├─ LaunchScreen.storyboard
@@ -19,8 +19,8 @@ SceneDelegate.swift
    ├─ howtoViewController.swift
    ├─ loginViewController.swift
    ├─ registerViewController.swift
-catchViewController.swift
-catch+UIfunc.swift
+   ├─ catchViewController.swift
+   ├─ catch+UIfunc.swift
    ├─ whereToGoViewController.swift
    └─ whereToGo+UIfunc.swift
 ```

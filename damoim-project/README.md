@@ -4,8 +4,7 @@
 └─ 📂damoim
    ├─ 📜 AppDelegate.swift
    ├─ 📜 SceneDelegate.swift
-   ├─ 📂 Assets.xcassets
-   │  ├─ 📜 Base.lproj
+   ├─ 📂 Base.lproj
    │  ├─ 📜 LaunchScreen.storyboard
    │  └─ 📜 Main.storyboard
    ├─ 📜 Config.swift

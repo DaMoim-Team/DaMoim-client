@@ -10,7 +10,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 
-class registerViewController: UIViewController {
+class registerViewController: UIViewController , UITextFieldDelegate {
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -32,6 +32,14 @@ class registerViewController: UIViewController {
         pwIsNotCorrect.isHidden = true
         pwIsInvalid.isHidden = true
         nameIsInvalid.isHidden = true
+        
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        repwTextField.delegate = self
+        nameTextField.delegate = self
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tapGesture)
     }
     
     func isValidEmail(_ email: String) -> Bool {
@@ -116,5 +124,18 @@ class registerViewController: UIViewController {
         
     }
     
+    @objc func handleTap(){
+        emailTextField.resignFirstResponder()
+        passwordTextField.resignFirstResponder()
+        repwTextField.resignFirstResponder()
+        nameTextField.resignFirstResponder()
+    }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        emailTextField.resignFirstResponder()
+        passwordTextField.resignFirstResponder()
+        repwTextField.resignFirstResponder()
+        nameTextField.resignFirstResponder()
+        return true
+    }
 }

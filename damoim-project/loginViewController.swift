@@ -12,7 +12,7 @@ import FirebaseDatabase
 import FirebaseFirestore
 
 
-class loginViewController: UIViewController {
+class loginViewController: UIViewController , UITextFieldDelegate {
 
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -23,6 +23,11 @@ class loginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tapGesture)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -168,7 +173,15 @@ class loginViewController: UIViewController {
         }
     }
 
+    @objc func handleTap(){
+        emailTextField.resignFirstResponder()
+        passwordTextField.resignFirstResponder()
+    }
     
-
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        emailTextField.resignFirstResponder()
+        passwordTextField.resignFirstResponder()
+        return true
+    }
 }
 

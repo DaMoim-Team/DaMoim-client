@@ -10,7 +10,6 @@
    ├─ 📜 loginViewController.swift              - 로그인 화면
    ├─ 📜 registerViewController.swift           - 회원가입 화면
    ├─ 📜 Config.swift                           - 설정값 로드
-   ├─ 📜 CustomMarker.swift                     -
    ├─ 📜 Info.plist
    ├─ 📜 cleanViewController.swift              - (미화원)흡연자 검출 초기화
    ├─ 📜 countViewController.swift              - 경로추천설정

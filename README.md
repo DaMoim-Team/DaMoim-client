@@ -9,13 +9,12 @@
    │  └─ 📜 Main.storyboard
    ├─ 📜 loginViewController.swift              - 로그인 화면
    ├─ 📜 registerViewController.swift           - 회원가입 화면
-   ├─ 📜 Config.swift                           -
-   ├─ 📜 CustomMarker.swift                     -
+   ├─ 📜 Config.swift                           - 설정값 로드
+   ├─ 📜 CustomMarker.swift                     -
    ├─ 📜 Info.plist
-   ├─ 📜 UIColorExtension.swift                 -
    ├─ 📜 cleanViewController.swift              - (미화원)흡연자 검출 초기화
    ├─ 📜 countViewController.swift              - 경로추천설정
-   ├─ 📜 fetchTimeranking.swift                 -
+   ├─ 📜 fetchTimeranking.swift                 - 흡연자 검출 그래프 데이터 요청
    ├─ 📜 graphViewController.swift              - (단속반)흡연자 검출 그래프
    ├─ 📜 howtoViewController.swift              - 도움말 화면
    ├─ 📜 catchViewController.swift              - 단속반 메인화면
